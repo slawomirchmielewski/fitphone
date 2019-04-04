@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "81463391287",
+    "firebase_url": "https://fitphone-93ca4.firebaseio.com",
+    "project_id": "fitphone-93ca4",
+    "storage_bucket": "fitphone-93ca4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81463391287:android:04e19056661a789d",
+        "android_client_info": {
+          "package_name": "com.physiqonomics.fitphone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "81463391287-tdsn98g551iobboj2461hk0coenj2hoe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.physiqonomics.fitphone",
+            "certificate_hash": "b848c0d81db70ed8771729fe2de2d0ff70017c4c"
+          }
+        },
+        {
+          "client_id": "81463391287-1nf3k8cqobj74ecehovbb1rinu84v45a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIHZ4uB7-sZKwS1rMG4_1s8XpoTrItdyA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "81463391287-1nf3k8cqobj74ecehovbb1rinu84v45a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "81463391287-n48knkaf5geejudm6g6f036dftm6eggm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.physiqonomics.fitphone"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
