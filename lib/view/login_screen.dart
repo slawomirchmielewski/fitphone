@@ -41,9 +41,10 @@ class LoginScreenState extends State<LoginScreen> {
       applicationBloc.setLoaderState(LoadersState.Visible);
       userBloc.loginUser().then((callback) {
         if(callback.success == true){
-          userBloc.getObservableInfo();
-          userBloc.getObservableWeightData();
-          userBloc.getObservableImagesData();
+          userBloc.getUserUpdate();
+          userBloc.getWeightUpdate();
+          userBloc.getPhotosUpdate();
+          applicationBloc.setUpBottomAppBar();
           applicationBloc.getWeightUnit();
           applicationBloc.setLoaderState(LoadersState.Hidden);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainHubScreen()));

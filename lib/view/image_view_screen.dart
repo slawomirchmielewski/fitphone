@@ -15,7 +15,7 @@ class ImageViewScreen extends StatelessWidget{
       appBar:  AppBar(
         brightness: Theme.of(context).brightness,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(photo.getDate().toString(),style: Theme.of(context).textTheme.title.copyWith(
+        title: Text(photo.date.toString(),style: Theme.of(context).textTheme.title.copyWith(
             fontWeight: FontWeight.bold)),
         automaticallyImplyLeading: true,
         iconTheme: Theme.of(context).iconTheme,

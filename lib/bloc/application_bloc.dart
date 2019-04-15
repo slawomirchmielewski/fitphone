@@ -8,13 +8,12 @@ import 'package:fitphone/utils/enums.dart';
 class ApplicationBloc implements BlocBase{
 
   bool _isDark;
-  int _setUpPageIndex;
 
   final _themeController = BehaviorSubject<bool>();
   Stream<bool> get darkThemeEnabled => _themeController.stream;
   Function(bool) get changeTheme => _themeController.sink.add;
 
-  final _setUpPageIndexController = BehaviorSubject<int>();
+  final _setUpPageIndexController = BehaviorSubject.seeded(0);
   Stream <int> get getPageIndex=> _setUpPageIndexController.stream;
   Function(int) get setPageIndex => _setUpPageIndexController.sink.add;
 
@@ -42,9 +41,6 @@ class ApplicationBloc implements BlocBase{
     getTheme();
     getWeightUnit();
 
-     initializeSetUpPageIndex();
-
-
     _weightUnitController.listen((data) {
 
       print("Data $data");
@@ -59,11 +55,6 @@ class ApplicationBloc implements BlocBase{
 
   }
 
-  initializeSetUpPageIndex(){
-    _setUpPageIndex = 0;
-    _setUpPageIndexController.sink.add(_setUpPageIndex);
-  }
-
   getTheme() async {
     _isDark = await preferencesController.getTheme();
     if(_isDark != null)
@@ -71,6 +62,12 @@ class ApplicationBloc implements BlocBase{
     else
       _themeController.sink.add(false);
   }
+
+
+  setUpBottomAppBar(){
+    _bottomBarIndexController.sink.add(0);
+  }
+
 
 
   getWeightUnit() async{
@@ -97,10 +94,10 @@ class ApplicationBloc implements BlocBase{
   }
 
   cleanUserData(){
-    _setUpPageIndexController.sink.add(null);
-    _loaderStateController.sink.add(null);
+    _setUpPageIndexController.sink.add(0);
+    _loaderStateController.sink.add(LoadersState.Hidden);
     _weightUnitController.sink.add(WeightUnit.Kilogram);
-    _weightUnitTextController.add(null);
+    _weightUnitTextController.add("kg");
     _bottomBarIndexController.sink.add(0);
   }
 

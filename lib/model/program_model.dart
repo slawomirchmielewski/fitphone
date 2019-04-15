@@ -1,14 +1,13 @@
-import 'package:fitphone/model/workout_model.dart';
+import 'package:fitphone/model/exercise_model.dart';
+
+  class WorkoutModel{
+    String name;
+    List<ExerciseModel> exercises;
+    String date;
+
+    WorkoutModel({this.name,this.exercises,this.date});
+
+  }
 
 
-class ProgramModel {
 
-  String name;
-  List<WorkoutModel> workouts;
-  bool isPrimary;
-
-  ProgramModel({this.name,this.workouts, this.isPrimary});
-
-
-
-}

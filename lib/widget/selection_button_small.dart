@@ -1,4 +1,3 @@
-import 'package:fitphone/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 

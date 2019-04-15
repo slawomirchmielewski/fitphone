@@ -22,8 +22,15 @@ class CongratulationScreen extends StatelessWidget{
       appBar: AppBar(
         leading: GestureDetector(
             onTap: (){
-                if(Navigator.canPop(context))
-                     Navigator.pop(context);
+                if(Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+                exerciseBloc.setPageIndex(0);
+                exerciseBloc.setDoneExerciseCounter(0);
+                exerciseBloc.setCurrentPage(0);
+                exerciseBloc.setProgressBarValue(0);
+
+
             },
             child: Icon(Icons.close)),
         iconTheme: Theme.of(context).iconTheme,

@@ -8,15 +8,15 @@ import 'package:rxdart/rxdart.dart';
 class SetupBloc extends BlocBase{
 
   
-  final _weightController = BehaviorSubject<double>();
+  final _weightController = BehaviorSubject.seeded(80.0);
   Stream<double> get getWeight => _weightController.stream;
   Function(double) get setWeight => _weightController.sink.add;
 
-  final _fitnessGoalController = BehaviorSubject<FitnessGoal>();
+  final _fitnessGoalController = BehaviorSubject.seeded(FitnessGoal.FatLoss);
   Stream<FitnessGoal> get getFitnessGoal => _fitnessGoalController.stream;
   Function(FitnessGoal) get setFitnessGoal => _fitnessGoalController.sink.add;
 
-  final _dietStyleController = BehaviorSubject<DietStyle>();
+  final _dietStyleController = BehaviorSubject.seeded(DietStyle.BalancedApproach);
   Stream<DietStyle> get getDietStyle => _dietStyleController.stream;
   Function(DietStyle) get setDietStyle => _dietStyleController.sink.add;
 
@@ -32,7 +32,7 @@ class SetupBloc extends BlocBase{
   Stream<List<Nutrition>> get getNutrition => _nutritionController.stream;
   Function(List<Nutrition>) get setNutrition => _nutritionController.sink.add;
 
-  final _weightUnitController = BehaviorSubject<WeightUnit>();
+  final _weightUnitController = BehaviorSubject.seeded(WeightUnit.Kilogram);
   Stream<WeightUnit> get weightUnit => _weightUnitController.stream;
   Function(WeightUnit) get setWeightUnit => _weightUnitController.sink.add;
 
@@ -43,7 +43,9 @@ class SetupBloc extends BlocBase{
 
 
   getWeightUnit() async{
-    var unit = await FirebaseUserAPI().getWeightUnit();
+    String unit = await FirebaseUserAPI().getWeightUnit();
+    print("unit : $unit");
+
     if(unit == "Kilograms"){
       _weightUnitController.sink.add(WeightUnit.Kilogram);
     }
@@ -68,7 +70,7 @@ class SetupBloc extends BlocBase{
         break;
     }
 
-    FirebaseUserAPI().updateUserProfile(map).then((result) => print(result));
+    FirebaseUserAPI().updateUserProfile(map);
   }
 
 
@@ -176,7 +178,7 @@ class SetupBloc extends BlocBase{
 
     _nutritionController.sink.add(macros);
 
-    FirebaseUserAPI().updateUserProfile(map);
+   FirebaseUserAPI().updateUserProfile(map);
     FirebaseUserAPI().addWeight(_weightController.stream.value);
   }
 

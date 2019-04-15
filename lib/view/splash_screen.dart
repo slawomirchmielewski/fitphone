@@ -1,4 +1,3 @@
-import 'package:fitphone/bloc/application_bloc.dart';
 import 'package:fitphone/bloc/bloc_provider.dart';
 import 'package:fitphone/bloc/user_bloc.dart';
 import 'package:fitphone/view/main_hub_screen.dart';
@@ -29,7 +28,6 @@ class FitSplashScreen extends StatelessWidget{
             navigateAfterSeconds: snapshot.hasData
                 ? MainHubScreen()
                 : LoginScreen()
-
         );
       });
 

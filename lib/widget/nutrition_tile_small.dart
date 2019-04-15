@@ -1,4 +1,3 @@
-import 'package:fitphone/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 
@@ -26,7 +25,7 @@ class NutritionTileSmall extends StatelessWidget{
             Text(name,style: Theme.of(context).textTheme.subtitle),
             Text(value.toStringAsFixed(1),style: Theme.of(context).textTheme.title.copyWith(
               color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.w400
             ))
           ],
         ),

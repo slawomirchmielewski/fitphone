@@ -35,8 +35,6 @@ class _SetupScreenState extends State<SetupScreen> {
   Widget build(BuildContext context) {
     
     final ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
-    applicationBloc.initializeSetUpPageIndex();
-
 
     int pagesCount = views.length - 1;
 
@@ -68,11 +66,10 @@ class _SetupScreenState extends State<SetupScreen> {
       return Future.value(false);
     }
 
-
     return StreamBuilder(
       stream: applicationBloc.getPageIndex,
+      initialData: 0,
       builder: (context,snapshot){
-        if(!snapshot.hasData) return Container(child: Center(child: Text("hello")));
       return WillPopScope(
         onWillPop:() => _goBack(snapshot),
         child: Scaffold(
@@ -120,7 +117,7 @@ class _SetupScreenState extends State<SetupScreen> {
                            }
                            else {
                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => MainHubScreen()));
-                               applicationBloc.initializeSetUpPageIndex();
+                               applicationBloc.setPageIndex(0);
                            }
                       },
                     ),

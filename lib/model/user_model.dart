@@ -1,4 +1,4 @@
-import 'package:fitphone/utils/enums.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class User {
   String name;
@@ -34,13 +34,13 @@ class User {
 
   User.empty({
     this.name = "",
-    this.level = 0,
+    this.level = 1,
     this.photoUrl ="",
     this.points = 0,
-    this.goalPoints = 2000,
+    this.goalPoints = 50,
     this.workoutsCompleted = 0,
     this.weight = 0.0,
-    this.weightUnit = "kilograms",
+    this.weightUnit = "Kilograms",
     this.carbs = 0.0,
     this.calories = 0.0,
     this.fat = 0.0,
@@ -54,36 +54,21 @@ class User {
     return list[0];
   }
 
-  WeightUnit getWeightUnit(){
-
-    WeightUnit unit;
-
-    if(this.weightUnit == "Kilograms" ) {
-      unit = WeightUnit.Kilogram;
-    }
-    else if(this.weightUnit == "Pounds") {
-      unit = WeightUnit.Pound;
-    }
-
-    return unit;
-
-  }
-
-  factory User.fromMap(Map<String,dynamic> map){
+  factory User.fromSnapshot(DataSnapshot snapshot){
     return User(
-      name: map["name"],
-      level: map["level"],
-      photoUrl: map["photoUrl"],
-      workoutsCompleted: map["workout completed"],
-      points: map["currents points"],
-      goalPoints: map["goal points"],
-      weight: map["weight"],
-      weightUnit: map["weightUnit"],
-      carbs: map["carbs"],
-      calories: map["calories"],
-      fat: map["fat"],
-      protein: map["protein"],
-      primaryWorkout: map["primary workout"]
+        name: snapshot.value["name"].toString(),
+        level: snapshot.value["level"],
+        photoUrl: snapshot.value["photoUrl"],
+        workoutsCompleted: snapshot.value["workout completed"],
+        points: snapshot.value["currents points"],
+        goalPoints: snapshot.value["goal points"],
+        weight: double.tryParse(snapshot.value["weight"].toString()),
+        weightUnit: snapshot.value["weightUnit"],
+        carbs:double.tryParse(snapshot.value["carbs"].toString()),
+        calories:double.tryParse(snapshot.value["calories"].toString()) ,
+        fat: double.parse(snapshot.value["fat"].toString()),
+        protein: double.tryParse(snapshot.value["protein"].toString()),
+        primaryWorkout: snapshot.value["primary workout"].toString()
     );
   }
 
@@ -102,6 +87,27 @@ class User {
       "fat": this.fat,
       "protein": this.protein,
       "primary workout" : this.primaryWorkout
+    };
+
+    return userData;
+  }
+
+
+  Map<String,dynamic> emptyToMap() {
+    Map<String, dynamic> userData = {
+      "name": this.name,
+      "level": 1,
+      "photoUrl": "",
+      "workout completed": 0,
+      "currents points": 0,
+      "goal points": 50,
+      "weight": 0,
+      "weightUnit" : "Kilograms",
+      "carbs": 0.0,
+      "calories": 0.0,
+      "fat": 0.0,
+      "protein": 0.0,
+      "primary workout" : "3 days"
     };
 
     return userData;

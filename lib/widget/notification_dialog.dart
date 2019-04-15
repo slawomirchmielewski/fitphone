@@ -18,7 +18,7 @@ class NotificationDialog extends StatelessWidget{
       backgroundColor: backgroundColor,
       children: <Widget>[
         Container(
-          height: 400,
+          height: 400 ,
           width: MediaQuery.of(context).size.width - 32,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

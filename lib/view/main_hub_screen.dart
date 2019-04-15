@@ -32,24 +32,25 @@ class MainHubScreen extends StatelessWidget{
               stream: applicationBloc.getBottomBarIndex,
               initialData: 0,
               builder: (context,snapshot) {
-                 int index = snapshot.data;
 
-                 switch(index){
-                   case 0:
-                     return _homeScreen;
-                     break;
-                   case 1:
-                     return _programsScreen;
-                     break;
-                   case 2:
-                     return _summeryScreen;
-                     break;
-                   case 3:
-                     return _settingsScreen;
-                     break;
-                 }
+                if(snapshot.hasData){
+                  int index = snapshot.data;
 
-
+                  switch(index){
+                    case 0:
+                      return _homeScreen;
+                      break;
+                    case 1:
+                      return _programsScreen;
+                      break;
+                    case 2:
+                      return _summeryScreen;
+                      break;
+                    case 3:
+                      return _settingsScreen;
+                      break;
+                  }
+                }
               }),
       ),
       bottomNavigationBar: StreamBuilder<int>(

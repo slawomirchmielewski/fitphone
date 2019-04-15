@@ -36,61 +36,72 @@ class SummeryScreen extends StatelessWidget{
     UserBloc userBloc = BlocProvider.of<UserBloc>(context);
     ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
 
-    return StreamBuilder<List<WeightModel>>(
-      stream: userBloc.getWeightList,
-      builder: (context, snapshot) {
 
-        if(!snapshot.hasData) return Container(child: Center(child: CircularProgressIndicator()));
+  return CustomScrollView(
+    slivers: <Widget>[
+      SliverAppBar(
+        elevation: 3,
+        centerTitle: true,
+        forceElevated: false,
+        expandedHeight: 100,
+        floating: false,
+        pinned: true,
+        flexibleSpace: FlexibleSpaceBar(
+          collapseMode: CollapseMode.pin,
+          titlePadding: EdgeInsets.only(left: 16,bottom: 16),
+          centerTitle: false,
+          title:Text("Summary",style: Theme.of(context).textTheme.title.copyWith(
+              fontWeight: FontWeight.bold
+          ),),
+        ),
+        automaticallyImplyLeading: false,
+        brightness: Theme.of(context).brightness,
+        textTheme: Theme.of(context).textTheme,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      SliverList(delegate: SliverChildListDelegate([
+        StreamBuilder<List<WeightModel>>(
+          stream: userBloc.getWeightList,
+          builder: (context, snapshot) {
 
-        return CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              elevation: 0,
-              centerTitle: true,
-              forceElevated: true,
-              floating: true,
-              snap: true,
-              automaticallyImplyLeading: false,
-              brightness: Theme.of(context).brightness,
-              title: Text("Summary",style: Theme.of(context).textTheme.title.copyWith(
-                  fontWeight: FontWeight.bold
-              ),),
-              textTheme: Theme.of(context).textTheme,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            ),
-            SliverList(delegate: SliverChildListDelegate([
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  WeightChart(name: "Weight", data: snapshot.data),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      physics: PageScrollPhysics(parent: NeverScrollableScrollPhysics()),
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context,index){
-                        return StreamBuilder<String>(
-                            stream: applicationBloc.getUnitText,
-                            builder: (context, unit) {
-                              return ListTile(
-                                leading: _getIcon(snapshot.data, index),
-                                title: Text("${snapshot.data[index].weight} ${unit.data}",style: Theme.of(context).textTheme.body1.copyWith(
-                                    fontWeight: FontWeight.bold
-                                ),),
-                                trailing: Text((snapshot.data[index].getDate())),
-                              );
-                            }
-                        );
-                      }
-                  )
 
-                ],
-              )
-            ]))
-          ],
-        );
-      }
-    );
+            if(!snapshot.hasData) return Center(child: CircularProgressIndicator());
+
+            if(snapshot.data.length == 0) return Center(child: Text("No data"));
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                WeightChart(name: "Weight", data: snapshot.data),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: PageScrollPhysics(parent: NeverScrollableScrollPhysics()),
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context,index){
+                      return StreamBuilder<String>(
+                          stream: applicationBloc.getUnitText,
+                          builder: (context, unit) {
+                            return ListTile(
+                              leading: _getIcon(snapshot.data, index),
+                              title: Text("${snapshot.data[index].weight} ${unit.data}",style: Theme.of(context).textTheme.body1.copyWith(
+                                  fontWeight: FontWeight.bold
+                              ),),
+                              trailing: Text((snapshot.data[index].date)),
+                            );
+                          }
+                      );
+                    }
+                )
+
+              ],
+            );
+          }
+        )
+      ]))
+    ],
+  );
+
   }
 }

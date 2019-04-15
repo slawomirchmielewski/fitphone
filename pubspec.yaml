@@ -33,7 +33,6 @@ dependencies:
   firebase_core: ^0.3.1+1
   firebase_auth: ^0.8.3
   firebase_storage: ^2.1.0+1
-  cloud_firestore: ^0.9.9
   image_picker: ^0.5.0+9
   image_cropper: ^0.0.9
   cached_network_image: ^0.7.0
@@ -43,6 +42,7 @@ dependencies:
   rounded_modal: ^1.0.0
   gradient_widgets: ^0.3.1
   flutter_youtube_view: ^1.1.0
+  firebase_database: ^2.0.2
 
 
 dev_dependencies:
@@ -70,7 +70,7 @@ flutter:
   - assets/logo_white.png
   - assets/placeholder_face.png
   - assets/trophy.png
-  - assets/weight.png
+  - assets/weight_new.png
   - assets/dumbeell.png
   - assets/trophy_hand.png
   - assets/rest_day.png
@@ -80,6 +80,20 @@ flutter:
 
 
   fonts:
+  - family:  Rubik
+    fonts:
+    - asset: fonts/Rubik/Rubik-Black.ttf
+    - asset: fonts/Rubik/Rubik-BlackItalic.ttf
+    - asset: fonts/Rubik/Rubik-Bold.ttf
+    - asset: fonts/Rubik/Rubik-BoldItalic.ttf
+    - asset: fonts/Rubik/Rubik-Italic.ttf
+    - asset: fonts/Rubik/Rubik-Light.ttf
+    - asset: fonts/Rubik/Rubik-LightItalic.ttf
+    - asset: fonts/Rubik/Rubik-Medium.ttf
+    - asset: fonts/Rubik/Rubik-MediumItalic.ttf
+    - asset: fonts/Rubik/Rubik-Regular.ttf
+
+
   - family:  NutritionIcons
     fonts:
     - asset: fonts/NutritionIcons.ttf

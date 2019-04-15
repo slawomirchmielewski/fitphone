@@ -51,8 +51,9 @@ class _ExercisePageState extends State<ExercisePage> {
   Widget build(BuildContext context) {
 
     final ExerciseBloc exerciseBloc = BlocProvider.of<ExerciseBloc>(context);
+    final YouTubePlayer youTubePlayer = YouTubePlayer();
 
-    return widget.exercise != null ? Container(
+    return Container(
       child: Column(
         children: <Widget>[
           Text(widget.exercise.name != null ? widget.exercise.name : "",style: Theme.of(context).textTheme.title.copyWith(
@@ -61,7 +62,7 @@ class _ExercisePageState extends State<ExercisePage> {
           SizedBox(height: 16),
           Container(
             height: 250,
-            child: YouTubePlayer()
+            child: youTubePlayer
           ),
           SizedBox(height: 32),
           _buildLabels(context),
@@ -81,10 +82,6 @@ class _ExercisePageState extends State<ExercisePage> {
             ),
           )
         ],
-      ),
-    ): Container(
-      child: Center(
-        child: CircularProgressIndicator(),
       ),
     );
   }

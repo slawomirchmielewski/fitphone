@@ -9,16 +9,15 @@ import 'package:fitphone/repository/firebase_api.dart';
 import 'package:fitphone/utils/firebase_result.dart';
 import 'package:fitphone/utils/weight_change_result.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:fitphone/utils/login_validator.dart';
 import 'package:fitphone/utils/levels_repo.dart';
 
-class UserBloc extends Object with Validator implements BlocBase{
+class UserBloc implements BlocBase{
 
   final _userIdController = BehaviorSubject<String>();
   Stream<String> get getUserId => _userIdController.stream;
   Function(String) get setUserID => _userIdController.sink.add;
 
-  final _userController = BehaviorSubject<User>();
+  final _userController = BehaviorSubject.seeded(User.empty());
   Stream<User> get getUser => _userController.stream;
   Function(User) get setUser =>_userController.sink.add;
 
@@ -61,7 +60,7 @@ class UserBloc extends Object with Validator implements BlocBase{
   Stream<List<WeightModel>> get getWeightList => _weightListController.stream;
   Function(List<WeightModel>) get setWeightList => _weightListController.sink.add;
 
-  final _progressBarPointController = BehaviorSubject<double>();
+  final _progressBarPointController = BehaviorSubject.seeded(0.0);
   Stream<double> get getProgressBarValue => _progressBarPointController.stream;
   Function(double) get setProgressBarValue => _progressBarPointController.sink.add;
 
@@ -76,7 +75,7 @@ class UserBloc extends Object with Validator implements BlocBase{
   Function(WeightChangeResult) get setWeightChange => _weightChangeController.sink.add;
 
 
-  final _levelUpgradeNotificationController = BehaviorSubject<bool>();
+  final _levelUpgradeNotificationController = BehaviorSubject.seeded(false);
   Stream<bool> get getLevelUpgradeNotification => _levelUpgradeNotificationController.stream;
   Function(bool) get setLevelUpgradeNotification => _levelUpgradeNotificationController.sink.add;
 
@@ -89,90 +88,81 @@ class UserBloc extends Object with Validator implements BlocBase{
 
 
   UserBloc() {
-    getObservableInfo();
-    getObservableWeightData();
-    getObservableImagesData();
-
     _userController.stream.listen((data) async {
-      _progressBarPointController.sink.add(
-          _calculateProgressBarPoints(data.points, data.goalPoints));
-      await _updateLevel(data);
+      if(data != null){
+        _progressBarPointController.sink.add(
+            _calculateProgressBarPoints(data.points, data.goalPoints));
+        await _updateLevel(data);
+      }
     });
-
 
     _weightListController.stream.listen((data){
       _weightChangeController.sink.add(_calculateChangeRate(data));
     });
 
-
+    getUserUpdate();
+    getWeightUpdate();
+    getPhotosUpdate();
   }
 
-  getObservableInfo(){
-    FirebaseUserAPI().getCurrentUser().then((user){
-
-      print("getting user info");
-
-      if(user !=null){
-        Observable(FirebaseUserAPI().listeningForUserData(user.uid)).listen((userData){
-
-          if(userData.exists) _userController.sink.add(User.fromMap(userData.data));
-
-        }).onError((handleError) => print);
+  getUserUpdate(){
+    FirebaseUserAPI().getCurrentUser().then((user) {
+      if(user != null){
+        Observable(FirebaseUserAPI().getUserData(user.uid)).listen((event){
+          if(event.snapshot.value != null){
+            User user = User.fromSnapshot(event.snapshot);
+            _userController.sink.add(user);
+          }
+        }).onError((error) => print(error?.toString()));
       }
-    }).catchError((error) => print);
+    }).catchError((error) => print(error?.toString()));
   }
 
-  getObservableWeightData(){
+  getWeightUpdate(){
     FirebaseUserAPI().getCurrentUser().then((user){
       if(user != null){
-        Observable(FirebaseUserAPI().listeningForWeightData(user.uid)).listen((weightData){
+        Observable(FirebaseUserAPI().getWeights(user.uid)).listen((event){
+          
+          List<WeightModel> weightsList = [];
+          
+          if(event.snapshot.value != null){
+           Map<String,dynamic> weights = Map.from(event.snapshot.value);
+            weights.values.forEach((f){
 
-          if(weightData != null){
-            List<WeightModel> weightList = [];
+              //Add weight to list
+              weightsList.add(WeightModel.fromMap(f));
 
-            weightData.documents.forEach((weight){
-
-              if(weight.exists){
-
-                final WeightModel model = WeightModel.fromMap(weight.data);
-
-                weightList.add(model);
-
-                _weightListController.sink.add(weightList);
-
-              }
+              //Sort list by date
+             // weightsList.sort((a,b) => a.date.compareTo(b.date));
             });
           }
 
-        }).onError((error)=>print);
+          _weightListController.sink.add(weightsList);
+        });
       }
-    }).catchError((error)=>print);
+    }).catchError((error)=> print(error?.toString()));
   }
 
-  getObservableImagesData(){
 
+  getPhotosUpdate(){
     FirebaseUserAPI().getCurrentUser().then((user){
+      if(user !=null){
+        Observable(FirebaseUserAPI().getPhotos(user.uid)).listen((event){
 
-     if(user != null){
-       FirebaseUserAPI().listeningForImagesData(user.uid).listen((images){
+          List<PhotoModel> photosList = [];
 
-         List<PhotoModel> photos = [];
+          if(event.snapshot.value != null){
+            Map<String,dynamic> photos = Map.from(event.snapshot.value);
+            photos.values.forEach((f) => photosList.add(PhotoModel.fromMap(f)));
+          }
 
-         images.documents.forEach((f){
-           PhotoModel photoModel = PhotoModel.fromMap(f.data);
-           photos.add(photoModel);
+          _photosListController.sink.add(photosList);
 
-         });
-
-         _photosListController.sink.add(photos);
-       });
-     }
-
-    }).catchError((error) => print);
-
-
+        });
+      }
+    }).catchError((error)=> print(error?.toString()));
   }
-
+  
   clearData(){
     setEmail(null);
     setPassword(null);
@@ -192,20 +182,23 @@ class UserBloc extends Object with Validator implements BlocBase{
 
   WeightChangeResult _calculateChangeRate(List<WeightModel> model){
 
-    WeightChangeResult result = WeightChangeResult(value: 0.0 , text: "No data");
+    WeightChangeResult result = WeightChangeResult(value: 0.0 , text: "No changes");
 
-    if(_userController.value != null && model != null){
+    if(_userController.value != null && model.length >= 2 ){
 
-      var value1 = model[model.length -1].weight;
-      var value2 = model[model.length - 2].weight;
+      var value1 = model[model.length -1]?.weight;
+      var value2 = model[model.length - 2]?.weight;
 
       result.value = (value1 - value2).toDouble().abs();
 
       if(value2 > value1){
         result.text = "Lost since last month";
       }
-      else{
+      else if(value2 < value1){
         result.text = "Gain since last month";
+      }
+      else{
+        result.text = "No changes";
       }
 
       return result;
@@ -215,27 +208,17 @@ class UserBloc extends Object with Validator implements BlocBase{
   }
 
 
-  LevelModel printLevel(int index){
-    return levelsRepository.level[index];
-  }
-
-
   _updateLevel(User user){
 
     if(user != null){
       int level = _userController.stream.value.level;
       if(user.points >= user.goalPoints) {
-        if (level < LevelsRepo().level.length) {
-          var map = {
-            "level": user.level + 1,
-            "currents points": 0,
-            "goal points": LevelsRepo().level[user.level + 1].points,
-          };
-          FirebaseUserAPI().updateUserProfile(map).catchError((error) => print);
-          _levelUpgradeNotificationController.sink.add(true);
-        } else if (level == LevelsRepo().level.length) {
-          print("You are the master");
-        }
+        var map = {
+          "level": user.level + 1,
+          "currents points": 0,
+        };
+        FirebaseUserAPI().updateUserProfile(map);
+        _levelUpgradeNotificationController.sink.add(true);
       }
     }
   }
@@ -250,17 +233,17 @@ class UserBloc extends Object with Validator implements BlocBase{
       "workout completed" : workoutsCount + 1
     };
 
-    await FirebaseUserAPI().updateUserProfile(map).catchError((error) => print);
+    FirebaseUserAPI().updateUserProfile(map);
   }
 
 
-  Future<void> updatePoints() async {
+  Future<void> updatePoints(int value) async {
 
     int currentPoints = _userController.stream.value.points;
 
-    var map = {"currents points" : currentPoints + 200};
+    var map = {"currents points" : currentPoints + value};
 
-    await FirebaseUserAPI().updateUserProfile(map).catchError((error) => print);
+    FirebaseUserAPI().updateUserProfile(map);
 
   }
 
@@ -320,10 +303,10 @@ class UserBloc extends Object with Validator implements BlocBase{
     }).catchError((error) => print);
   }
 
-  Future<Null> addNewWeight() async{
-
+   addNewWeight(){
     if(_weightController.stream.value != null){
-      await FirebaseUserAPI().addWeight(_weightController.stream.value).catchError((error) => print);
+      FirebaseUserAPI().addWeight(_weightController.stream.value).catchError((error) => print);
+      updatePoints(5);
     }
     
   }
@@ -384,6 +367,14 @@ class UserBloc extends Object with Validator implements BlocBase{
   }
 
 
+  updateProgramIntensity(String value){
+
+    var map = {"primary workout": value};
+
+    FirebaseUserAPI().updateUserProfile(map);
+  }
+
+
   clearUserData(){
     _userController.sink.add(null);
     _nameController.sink.add(null);
@@ -396,7 +387,7 @@ class UserBloc extends Object with Validator implements BlocBase{
     _resetPasswordController.sink.add(null);
     _weightController.sink.add(null);
     _weightListController.sink.add(null);
-    _progressBarPointController.sink.add(null);
+    _progressBarPointController.sink.add(0);
     _monthsSelectorController.sink.add(1);
     _weightChangeController.sink.add(null);
     _levelUpgradeNotificationController.sink.add(null);

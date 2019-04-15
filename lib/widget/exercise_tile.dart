@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fitphone/model/workout_model.dart';
+import 'package:fitphone/model/program_model.dart';
 
 class ExerciseTile extends StatelessWidget{
 

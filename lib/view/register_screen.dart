@@ -43,9 +43,10 @@ class RegistrationScreenState extends State<RegistrationScreen> {
       applicationBloc.setLoaderState(LoadersState.Visible);
       userBloc.registerUser().then((callback) {
         if(callback.success == true){
-          userBloc.getObservableInfo();
-          userBloc.getObservableWeightData();
-          userBloc.getObservableImagesData();
+          userBloc.getUserUpdate();
+          userBloc.getWeightUpdate();
+          userBloc.getPhotosUpdate();
+          applicationBloc.setUpBottomAppBar();
           applicationBloc.setLoaderState(LoadersState.Hidden);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SetupScreen()));
         }
@@ -55,7 +56,6 @@ class RegistrationScreenState extends State<RegistrationScreen> {
           _passwordTextController.clear();
           _nameTextController.clear();
           _passcodeTextController.clear();
-
           applicationBloc.setLoaderState(LoadersState.Hidden);
         }
 

@@ -7,12 +7,12 @@ import 'package:fitphone/model/user_model.dart';
 import 'package:fitphone/utils/weight_change_result.dart';
 import 'package:fitphone/view/image_view_screen.dart';
 import 'package:fitphone/view/photos_screen.dart';
+import 'package:fitphone/widget/notifiacation_square_small.dart';
 import 'package:fitphone/widget/notification_dialog.dart';
 import 'package:fitphone/widget/nutrition_icons_icons.dart';
 import 'package:fitphone/widget/slide_left_route.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:fitphone/widget/nofification_square.dart';
 import 'package:fitphone/widget/nutrition_tile_small.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -44,6 +44,7 @@ class HomeScreen extends StatelessWidget {
         userBloc.uploadSelfie(file);
     });
   }
+
 
 
   Future<Null> _cropImage(File imageFile, UserBloc userBloc) async {
@@ -84,22 +85,25 @@ class HomeScreen extends StatelessWidget {
         )
     );
   }
-  
-  
+
   Widget _buildImage(BuildContext context , UserBloc userBloc){
 
     const double IMAGE_SIZE = 56;
+
+
+
 
     return StreamBuilder<User>(
       stream: userBloc.getUser,
       builder: (context,snapshot) => GestureDetector(
           onTap: () => _showImageDialog(context, userBloc),
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(35.0),
-              child: snapshot.hasData && snapshot.data.photoUrl != "" ? CachedNetworkImage(
-                height: IMAGE_SIZE,
-                width: IMAGE_SIZE,
-                imageUrl: snapshot.data.photoUrl) : Image.asset("assets/placeholder_face.png", width: IMAGE_SIZE, height: IMAGE_SIZE)
+          child: snapshot.hasData ?  CircleAvatar(
+            radius: 30,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundImage: snapshot.data.photoUrl != ""  ? CachedNetworkImageProvider(snapshot.data.photoUrl) : AssetImage("assets/placeholder_face.png")
+          ) : CircleAvatar(
+            radius: 30,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           )
       ),
     );
@@ -116,13 +120,13 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(userBloc.printLevel(user.level).name.toUpperCase(),style: Theme.of(context).textTheme.subhead.copyWith(
+                    Text("LEVEL:  ${user.level}",style: Theme.of(context).textTheme.subhead.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor
+                        //color: Theme.of(context).primaryColor
                     ), ),
                     Text("${user.points}/${user.goalPoints}",style: Theme.of(context).textTheme.subhead.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor
+                       // color: Theme.of(context).primaryColor
                     ),)
                   ],
                 ),
@@ -190,11 +194,11 @@ class HomeScreen extends StatelessWidget {
       );
     }
 
-    Observable(userBloc.getLevelUpgradeNotification).first.then((data){
+   Observable(userBloc.getLevelUpgradeNotification).first.then((data){
      if(data == true){
         showLevelDialog();
+        userBloc.setLevelUpgradeNotification(false);
      }
-     userBloc.setLevelUpgradeNotification(false);
     });
 
 
@@ -208,13 +212,11 @@ class HomeScreen extends StatelessWidget {
                 elevation: 0,
                 centerTitle: true,
                 forceElevated: true,
-                floating: true,
-                snap: true,
+                floating: false,
+                snap: false,
+                pinned: false,
                 automaticallyImplyLeading: false,
                 brightness: Theme.of(context).brightness,
-                title: Text("Home",style: Theme.of(context).textTheme.title.copyWith(
-                    fontWeight: FontWeight.bold
-                ),),
                 textTheme: Theme.of(context).textTheme,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
@@ -246,7 +248,7 @@ class HomeScreen extends StatelessWidget {
 
                                     Text("Hi ${userSnap.data.getFirstName()}",style: Theme.of(context).textTheme.display1.copyWith(
                                         color: Theme.of(context).textTheme.title.color,
-                                        fontWeight: FontWeight.bold
+                                        fontWeight: FontWeight.bold,
                                     ),),
                                   ],
                                 ),
@@ -256,36 +258,45 @@ class HomeScreen extends StatelessWidget {
                             ),
                             _buildLevelIndicator(context, userBloc, userSnap.data),
                             _buildNutritionsWidget(context, userSnap.data),
-                            Text("Activity",style: Theme.of(context).textTheme.title.copyWith(
-                              fontWeight: FontWeight.bold
+                            Text("Activity",style: Theme.of(context).textTheme.headline.copyWith(
+                              fontWeight: FontWeight.bold,
                             )),
                             SizedBox(height:16),
-                            StreamBuilder<WeightChangeResult>(
-                              stream: userBloc.getWeightChange,
-                              initialData: WeightChangeResult(value: 0,text: ""),
-                              builder: (context, snapshot) {
-                                return StreamBuilder<String>(
-                                  stream: applicationBloc.getUnitText,
-                                  initialData: "",
-                                  builder: (context, unitSnap) {
-                                    return NotificationSquare(image: "assets/weight.png",title:"${snapshot.data.value.toStringAsPrecision(2)} ${unitSnap.data}" ,subtitle: snapshot.data.text,
-                                    backgroundColor: Color(0xffFF8EAC),);
-                                  }
-                                );
-                              }
+
+                            Column(
+                              children: <Widget>[
+                                StreamBuilder<WeightChangeResult>(
+                                    stream: userBloc.getWeightChange,
+                                    initialData: WeightChangeResult(value: 0,text: ""),
+                                    builder: (context, snapshot) {
+                                      return StreamBuilder<String>(
+                                          stream: applicationBloc.getUnitText,
+                                          initialData: "",
+                                          builder: (context, unitSnap) {
+                                            return NotificationSquareSmall(image:"assets/weight_new.png",title: "${snapshot.data.value.toStringAsPrecision(2)} ${unitSnap.data}",
+                                                subtitle: snapshot.hasData ? snapshot.data.text : "");
+                                          }
+                                      );
+                                    }
+                                ),
+
+                                NotificationSquareSmall(image:"assets/trophy.png",title: userSnap.data.workoutsCompleted.toString() ,subtitle: "Workouts complated",),
+
+                              ],
                             ),
-                            NotificationSquare(image: "assets/trophy.png",title: userSnap.data.workoutsCompleted.toString(),subtitle: "Workouts Complated",backgroundColor: Color(0xffc78fe8),),
+
                             SizedBox(height:16),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
-                                Text("Photos",style: Theme.of(context).textTheme.title.copyWith(
-                                    fontWeight: FontWeight.bold
+                                Text("Photos",style: Theme.of(context).textTheme.headline.copyWith(
+                                    fontWeight: FontWeight.bold,
+
                                 )),
                                 FlatButton(
                                   child: Text("All Photos",style: Theme.of(context).textTheme.subhead.copyWith(
-                                    color: Theme.of(context).primaryColor
+                                    color: Theme.of(context).primaryColor,
                                   )),
                                   onPressed: (){
                                     Navigator.push(context, SlideLeftRoute(widget: PhotosScreen()));

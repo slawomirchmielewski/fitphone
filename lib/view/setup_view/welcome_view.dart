@@ -1,5 +1,6 @@
 import 'package:fitphone/bloc/application_bloc.dart';
 import 'package:fitphone/bloc/bloc_provider.dart';
+import 'package:fitphone/bloc/user_bloc.dart';
 import 'package:fitphone/utils/enums.dart';
 import 'package:fitphone/widget/page_base.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class WelcomeView extends PageBase {
   Widget build(BuildContext context) {
 
     final ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
+    final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
     applicationBloc.setWeightUnit(WeightUnit.Kilogram);
 
     return Container(

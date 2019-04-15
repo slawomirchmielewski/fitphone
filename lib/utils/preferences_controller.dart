@@ -4,6 +4,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PreferencesController{
 
 
+   void saveLastProgramName(String name) async{
+     SharedPreferences pref = await SharedPreferences.getInstance();
+     await pref.setString("lastProgram", name);
+   }
+
+   Future<String> getLastProgramName() async{
+     final SharedPreferences pref = await SharedPreferences.getInstance();
+     return pref.getString("lastProgram");
+   }
+
+
     void saveTheme(bool value) async{
       SharedPreferences pref = await SharedPreferences.getInstance();
       await pref.setBool("darkTheme", value);

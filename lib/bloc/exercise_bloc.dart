@@ -1,18 +1,25 @@
 import 'package:fitphone/bloc/bloc_provider.dart';
 import 'package:fitphone/model/exercise_model.dart';
 import 'package:fitphone/model/program_model.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:fitphone/model/user_model.dart';
 import 'package:fitphone/repository/firebase_api.dart';
+import 'package:fitphone/utils/day_converter.dart';
+import 'package:fitphone/utils/preferences_controller.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ExerciseBloc implements BlocBase {
 
 
-  final _programController = BehaviorSubject<List<ProgramModel>>();
-  Stream<List<ProgramModel>> get getPrograms => _programController.stream;
+  List<String> tempData = [];
 
-  final _workoutController = BehaviorSubject<List<ExerciseModel>>();
-  Stream<List<ExerciseModel>> get getExerciseList => _workoutController.stream;
-  Function(List<ExerciseModel>) get setExerciseList => _workoutController.sink.add;
+
+  final _workoutController = BehaviorSubject<List<WorkoutModel>>();
+  Stream<List<WorkoutModel>> get getWorkoutsList => _workoutController.stream;
+
+
+  final _exerciseController = BehaviorSubject<List<ExerciseModel>>();
+  Stream<List<ExerciseModel>> get getExerciseList => _exerciseController.stream;
+  Function(List<ExerciseModel>) get setExerciseList => _exerciseController.sink.add;
 
   final _pageIndexController = BehaviorSubject.seeded(0);
 
@@ -60,57 +67,48 @@ class ExerciseBloc implements BlocBase {
   Function(bool) get setProgramNotification => _programNotificationController.sink.add;
 
 
-  final _programsController = BehaviorSubject<List<String>>();
+  final _exercisesController = BehaviorSubject<List<String>>();
 
-  Stream<List<String>> get getProgramsNames => _programsController.stream;
+  Stream<List<String>> get getExercisesNames => _exercisesController.stream;
+
+  final _programNamesController = BehaviorSubject<List<String>>();
+
+  Stream<List<String>> get getProgramNames => _programNamesController.stream;
 
 
   ExerciseBloc(){
 
-    List<String> list= [];
+    getProgramsNames();
 
 
-    _programsController.sink.add(list);
-
-    List<ExerciseModel> exList = [
-      ExerciseModel(
-      name: "Back Squats",
-      reps: "6-8",
-      set:  4,
-      url: "https://www.youtube.com/watch?v=qTDYVZ9HslI&feature=youtu.be"
-    ),
-    ExerciseModel(
-        name: "BB Romanian Deadlifts",
-        reps: "6-8",
-        set:  4,
-        url: "https://www.youtube.com/watch?v=Zu9RVJvnHyE&feature=youtu.be"
-    ),
-      ExerciseModel(
-          name: "Back Squats",
-          reps: "6-8",
-          set:  4,
-          url: "https://www.youtube.com/watch?v=qTDYVZ9HslI&feature=youtu.be"
-      ),
-      ExerciseModel(
-          name: "BB Romanian Deadlifts",
-          reps: "6-8",
-          set:  4,
-          url: "https://www.youtube.com/watch?v=Zu9RVJvnHyE&feature=youtu.be"
-      )
-    ];
-
-
-    _workoutController.sink.add(exList);
-    _currentPageController.stream.listen((data) =>_calculatePrograssValue(data));
+    _currentPageController.stream.listen((data){
+        if(data != null){
+          _calculatePrograssValue(data);
+        }
+      }
+    );
     _doneExerciseController.stream.listen((data) => _checkDoneExercisec(data));
+
+    _programNamesController.stream.listen((data){
+      if(tempData.length != 0 && tempData.length != data.length){
+        _programNotificationController.sink.add(true);
+      }
+
+      tempData = data;
+
+    });
   }
 
    _calculatePrograssValue(int data){
 
-     if(data >= 0 && data < _workoutController.stream.value.length){
-       double progress = data/(_workoutController.stream.value.length -1);
-       _progressBarValueController.sink.add(progress);
-     }
+    List<ExerciseModel> list = _exerciseController.stream.value;
+
+    if(list != null){
+      if(data >= 0 && data < list.length ){
+        double progress = data/(list.length -1);
+        _progressBarValueController.sink.add(progress);
+      }
+    }
    }
 
 
@@ -127,7 +125,7 @@ class ExerciseBloc implements BlocBase {
 
    incrementPageIndex(){
       final int pageIndex = _pageIndexController.stream.value;
-      final int pagesCount = _workoutController.stream.value.length;
+      final int pagesCount = _exerciseController.stream.value.length;
 
       if(pageIndex < pagesCount -1){
         _pageIndexController.sink.add(pageIndex +1);
@@ -143,25 +141,136 @@ class ExerciseBloc implements BlocBase {
 
    _checkDoneExercisec(int doneExercises){
       final int pageIndex = _pageIndexController.stream.value;
-      final List<ExerciseModel> list = _workoutController.stream.value;
-      int setsCount = list[pageIndex].set;
+      final List<ExerciseModel> list = _exerciseController.stream.value;
 
-      if(doneExercises == setsCount){
-        incrementPageIndex();
-        _doneExerciseController.sink.add(0);
+      if(list != null && pageIndex != null){
+        int setsCount = list[pageIndex].set;
+
+        if(doneExercises == setsCount){
+          incrementPageIndex();
+          _doneExerciseController.sink.add(0);
+        }
       }
-
    }
 
    setPrimaryProgram(String workout) async {
      await FirebaseUserAPI().updateUserProfile({"primary workout" : workout}).catchError((error) => print);
    }
+   
+   
+   getWorkout() async {
+
+     List<ExerciseModel> exercisesList = [];
+
+     List<String> programsList = _programNamesController.stream.value;
+
+     if(programsList != null) {
+       String program = programsList.last;
+       String programType;
+
+       String userId = await FirebaseUserAPI().getCurrentUser().then((
+           user) => user.uid);
+
+       await FirebaseUserAPI().getUserDataOnce(userId).then((snapshot) {
+         User user = User.fromSnapshot(snapshot);
+         programType = user.primaryWorkout;
+       });
+
+       String workoutDay = DayConverter.getDay(DateTime.now().weekday);
+
+       await FirebaseUserAPI().getWorkout(program, programType, workoutDay).then((snapshot) {
+
+         if (snapshot.value != null) {
+           Map<dynamic, dynamic> e = Map.from(snapshot.value);
+
+           if (e != null) {
+             e.values.forEach((f) {
+               ExerciseModel exerciseModel = ExerciseModel.formMap(f);
+               exercisesList.add(exerciseModel);
+             });
+           }
+         }
+       });
+     }
+
+     _exerciseController.sink.add(exercisesList);
+
+   }
+
+
+   getProgramsNames(){
+    Observable(FirebaseUserAPI().getProgramsName()).listen((event){
+
+        List<String> programs = [];
+        print("Event key ${event.snapshot.key}");
+
+        if(event.snapshot.key != null){
+          List<String> programsNames = event.snapshot.key.split("\n");
+          programsNames.forEach((f) => programs.add(f));
+
+          PreferencesController().getLastProgramName().then((value){
+            if(programs.last != value){
+              _programNotificationController.sink.add(true);
+              PreferencesController().saveLastProgramName(programs.last);
+            }
+          });
+        }
+
+        _programNamesController.sink.add(programs);
+    });
+   }
+
+
+   getWorkouts() async {
+
+    List<WorkoutModel> workouts = [];
+
+    List<String> program = _programNamesController.stream.value;
+    String programType;
+
+
+    if(program.length != null) {
+
+      String userId = await FirebaseUserAPI().getCurrentUser().then((user) => user.uid);
+
+      await FirebaseUserAPI().getUserDataOnce(userId).then((snapshot){
+        User user = User.fromSnapshot(snapshot);
+        programType = user.primaryWorkout;
+      });
+
+      await FirebaseUserAPI().getWorkoutsDay(program.last, programType).then((snapshot){
+
+
+        if(snapshot.value != null){
+          Map<dynamic,dynamic> m = snapshot.value;
+
+          m?.forEach((key,value) {
+            WorkoutModel workoutModel = WorkoutModel(name:key ,exercises:[]);
+
+            if(value != null){
+              Map<String,dynamic> exercise = Map.from(value);
+              exercise.values.forEach((f){
+                if(f != null){
+                  ExerciseModel exerciseModel = ExerciseModel.formMap(f);
+                  workoutModel.exercises.add(exerciseModel);
+                }
+              });
+            }
+            workouts.add(workoutModel);
+          });
+        }
+      });
+
+    }
+    _workoutController.sink.add(workouts);
+
+   }
 
 
     @override
     void dispose() {
-      _programController.close();
       _workoutController.close();
+      _exerciseController.close();
       _pageIndexController.close();
       _doneExerciseController.close();
       _currentPageController.close();
@@ -169,7 +278,11 @@ class ExerciseBloc implements BlocBase {
       _doneWorkoutController.close();
       _totalWeightController.close();
       _programNotificationController.close();
-      _programsController.close();
+      _exercisesController.close();
+      _programNamesController.close();
     }
 
+  String getWorkoutDay() {
+    return "Workout A";
+  }
 }

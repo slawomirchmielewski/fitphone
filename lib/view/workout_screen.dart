@@ -25,6 +25,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
     final ExerciseBloc exerciseBloc = BlocProvider.of<ExerciseBloc>(context);
 
+    exerciseBloc.getWorkout();
+
 
     Observable(exerciseBloc.getPageIndex).listen((pageIndex) {
       if(pageController.hasClients)
@@ -34,7 +36,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     Observable(exerciseBloc.getIsWorkoutDone).listen((isWorkoutDone){
       if(isWorkoutDone == true){
         userBloc.updateWorkoutsCount();
-        userBloc.updatePoints();
+        userBloc.updatePoints(10);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CongratulationScreen()));
         exerciseBloc.setIsWorkoutDone(false);
       }
@@ -45,7 +47,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         stream: exerciseBloc.getExerciseList,
         builder: (context, snapshot) {
 
-          if(!snapshot.hasData){ return Scaffold(
+          if(!snapshot.hasData) return Scaffold(body: Center(child: CircularProgressIndicator()));
+
+          if(snapshot.data.length == 0){ return Scaffold(
             appBar: AppBar(
               title: Text("Workout",style: Theme.of(context).textTheme.title.copyWith(
                   fontWeight: FontWeight.bold
@@ -140,7 +144,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           child: PageView.builder(
                               controller: pageController,
                               itemCount: snapshot.data.length,
-                              //physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
+                              physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
                               scrollDirection: Axis.horizontal,
                               onPageChanged: (pageIndex){
                                 exerciseBloc.setCurrentPage(pageIndex);
