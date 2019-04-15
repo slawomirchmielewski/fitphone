@@ -6,6 +6,7 @@ import 'package:fitphone/utils/colors.dart';
 import 'package:fitphone/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:fcharts/fcharts.dart';
+import 'package:intl/intl.dart';
 import 'package:rounded_modal/rounded_modal.dart';
 
 
@@ -62,7 +63,7 @@ class WeightChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(name, style: Theme.of(context).textTheme.display1.copyWith(
+          Text(name, style: Theme.of(context).textTheme.headline.copyWith(
             color: Colors.white
           )),
           SizedBox(height: 16),
@@ -93,64 +94,74 @@ class WeightChart extends StatelessWidget {
                   )
               ),
 
-              FlatButton.icon(
-                icon: Icon(Icons.add),
-                label: Text("New Weight"),
-                textColor: Colors.white,
-                onPressed:() => showRoundedModalBottomSheet(
-                  radius: 15,
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  context: context,
-                  builder: (context) => Container(
-                    padding: EdgeInsets.all(16),
-                    height: 300,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Add weight",style: Theme.of(context).textTheme.subhead.copyWith(
-                            fontWeight: FontWeight.bold
-                        ),),
-                        StreamBuilder(
-                          stream: applicationBloc.getUnitText,
-                          builder: (context, snapshot) => TextField(
-                            onChanged: (value) {
-                              userBloc.setWeight(double.parse(value));
-                            },
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.numberWithOptions(),
-                            style: Theme.of(context).textTheme.display1.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).textTheme.title.color
-                            ),
-                            decoration: InputDecoration(
-                                filled: true,
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                hintText: "${snapshot.data}"),
-                          ),
+              StreamBuilder<List<WeightModel>>(
+                stream: userBloc.getWeightList,
+                builder: (context, snapshot) {
+                  return FlatButton.icon(
+                    icon: Icon(Icons.add),
+                    label: Text("New Weight"),
+                    textColor: Colors.white,
+                    onPressed:() => showRoundedModalBottomSheet(
+                      radius: 15,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      context: context,
+                      builder: (context) => snapshot.data.last.date == DateFormat.yMMMd().format(new DateTime.now()).toString() ? Container(
+                        height: 300,
+                        child: Center(
+                          child: Text("Already added you weight today", style: Theme.of(context).textTheme.headline),
                         ),
-                        RaisedButton(
-                          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                          color: Theme.of(context).primaryColor,
-                          padding: EdgeInsets.only(left: 64,right: 64),
-                          elevation: 0,
-                          child:Text("Add",style: Theme.of(context).textTheme.body1.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),),
-                          textColor: Colors.white,
-                          onPressed:  () {
-                            userBloc.addNewWeight();
-                            Navigator.pop(context);
-                          },
-                        )
-                      ],
-                    ),
-                  )
-                )
+                      ) : Container(
+                        padding: EdgeInsets.all(16),
+                        height: 300,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Add weight",style: Theme.of(context).textTheme.headline.copyWith(
+
+                            ),),
+                            StreamBuilder(
+                              stream: applicationBloc.getUnitText,
+                              builder: (context, snapshot) => TextField(
+                                onChanged: (value) {
+                                  userBloc.setWeight(double.parse(value));
+                                },
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.numberWithOptions(),
+                                style: Theme.of(context).textTheme.display1.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).textTheme.title.color
+                                ),
+                                decoration: InputDecoration(
+                                    filled: true,
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    hintText: "${snapshot.data}"),
+                              ),
+                            ),
+                            RaisedButton(
+                              shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                              color: Theme.of(context).primaryColor,
+                              padding: EdgeInsets.only(left: 64,right: 64),
+                              elevation: 0,
+                              child:Text("Add",style: Theme.of(context).textTheme.body1.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white
+                              ),),
+                              textColor: Colors.white,
+                              onPressed:  () {
+                                userBloc.addNewWeight();
+                                Navigator.pop(context);
+                              },
+                            )
+                          ],
+                        ),
+                      )
+                    )
+                  );
+                }
               ),
             ],
           ),
