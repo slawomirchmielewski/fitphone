@@ -21,7 +21,7 @@ class HelpScreen extends StatelessWidget{
           child: Container(
             child: Column(
               children: <Widget>[
-                ListTile(title: Text("FitPhone"),subtitle: Text("Verison 1.0.0"),),
+                ListTile(title: Text("FitPhone"),subtitle: Text("Verison 0.1.0-Beta"),),
                 ListTile(title: Text("Developer contact"),subtitle: Text("physiconomics.service@gmail.com"),)
               ],
             ),
