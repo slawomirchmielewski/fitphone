@@ -66,6 +66,7 @@ class MyApp extends StatelessWidget {
   final ThemeData lightTheme = ThemeData.light().copyWith(
     textTheme: _textThemeBlack,
     brightness: Brightness.light,
+    primaryColorDark: CustomColors.colorLightBackground,
     primaryColor: color,
     accentColor: color,
     backgroundColor: Colors.white,
@@ -78,6 +79,7 @@ class MyApp extends StatelessWidget {
   final ThemeData darkTheme = ThemeData.dark().copyWith(
     textTheme: _textThemeWhite,
     brightness: Brightness.dark,
+    primaryColorDark:CustomColors.colorDarkBackground,
     primaryColor: color,
     accentColor: color,
     cursorColor: color,
