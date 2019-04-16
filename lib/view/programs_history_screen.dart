@@ -19,6 +19,7 @@ class ProgramsHistoryScreen extends StatelessWidget{
         title: Text("Programs",style: Theme.of(context).textTheme.title),
         iconTheme: Theme.of(context).iconTheme,
         elevation: 0,
+        brightness: Theme.of(context).brightness,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: SafeArea(

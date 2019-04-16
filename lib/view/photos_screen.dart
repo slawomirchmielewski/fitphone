@@ -11,6 +11,7 @@ class PhotosScreen extends StatelessWidget {
     final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
     return Scaffold(
       appBar: AppBar(
+        brightness: Theme.of(context).brightness,
         automaticallyImplyLeading: true,
         title: Text("Photos",style: Theme.of(context).textTheme.title),
         elevation: 0,

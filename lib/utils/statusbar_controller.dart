@@ -1,6 +1,7 @@
 import 'package:screentheme/screentheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+
 
 
 class StatusBarController{
@@ -14,19 +15,22 @@ class StatusBarController{
   }
 
   setTransparentStatusBar() async{
-    await FlutterStatusbarManager.setColor(Colors.transparent, animated:true);
+    await FlutterStatusbarcolor.setStatusBarColor(Colors.transparent,animate: true);
   }
 
   enableLightNavigationBar() async{
-    await FlutterStatusbarManager.setNavigationBarStyle(NavigationBarStyle.LIGHT);
+   await FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+   await FlutterStatusbarcolor.setNavigationBarWhiteForeground(true);
   }
 
   enableDarkNavigationBar() async{
-    await FlutterStatusbarManager.setNavigationBarStyle(NavigationBarStyle.DARK);
+   await FlutterStatusbarcolor.setNavigationBarWhiteForeground(false);
+   await FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+
   }
 
   setNavigationBarColor(Color color) async{
-    await FlutterStatusbarManager.setNavigationBarColor(color, animated: true);
+    await FlutterStatusbarcolor.setNavigationBarColor(color,animate: true);
   }
 
 }
