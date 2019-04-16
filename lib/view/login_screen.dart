@@ -1,3 +1,4 @@
+import 'package:fitphone/bloc/exercise_bloc.dart';
 import 'package:fitphone/utils/enums.dart';
 import 'package:fitphone/utils/firebase_result.dart';
 import 'package:fitphone/view/reset_password_screen.dart';
@@ -30,6 +31,7 @@ class LoginScreenState extends State<LoginScreen> {
 
     final ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
     final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+    final ExerciseBloc exerciseBoc = BlocProvider.of<ExerciseBloc>(context);
 
     applicationBloc.setBottomBarIndex(0);
 
@@ -47,6 +49,8 @@ class LoginScreenState extends State<LoginScreen> {
           applicationBloc.setUpBottomAppBar();
           applicationBloc.getWeightUnit();
           applicationBloc.setLoaderState(LoadersState.Hidden);
+          exerciseBoc.getProgramsNames();
+          exerciseBoc.getWorkouts();
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainHubScreen()));
         }
         else{

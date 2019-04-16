@@ -214,7 +214,7 @@ class FirebaseUserAPI {
       Future<String> result = database.child("users").child(userId).child("profile").child("weightUnit").once().then((data) => data.value);
       return result;
     }
-    return "";
+    return Future.value("");
   }
 
 
@@ -227,6 +227,6 @@ class FirebaseUserAPI {
   }
 
   Stream<Event> getProgramsName(){
-    return database.child("programs").onChildAdded;
+    return database.child("programs").onChildAdded.handleError((error)=> print(error.toString()));
   }
 }

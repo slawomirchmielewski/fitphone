@@ -1,5 +1,6 @@
 import 'package:fitphone/bloc/application_bloc.dart';
 import 'package:fitphone/bloc/bloc_provider.dart';
+import 'package:fitphone/bloc/exercise_bloc.dart';
 import 'package:fitphone/bloc/user_bloc.dart';
 import 'package:fitphone/utils/enums.dart';
 import 'package:fitphone/utils/firebase_result.dart';
@@ -34,6 +35,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
 
     final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
     final ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
+    final ExerciseBloc exerciseBoc = BlocProvider.of<ExerciseBloc>(context);
 
     Widget displayLogo(bool isDark){
         return isDark ? Image.asset("assets/logo_white.png" , width: 150, height: 100) : Image.asset("assets/logo.png" , width: 150, height: 100);
@@ -48,6 +50,8 @@ class RegistrationScreenState extends State<RegistrationScreen> {
           userBloc.getPhotosUpdate();
           applicationBloc.setUpBottomAppBar();
           applicationBloc.setLoaderState(LoadersState.Hidden);
+          exerciseBoc.getProgramsNames();
+          exerciseBoc.getWorkouts();
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SetupScreen()));
         }
         else

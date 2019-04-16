@@ -78,8 +78,6 @@ class ExerciseBloc implements BlocBase {
 
   ExerciseBloc(){
 
-    getProgramsNames();
-
 
     _currentPageController.stream.listen((data){
         if(data != null){
