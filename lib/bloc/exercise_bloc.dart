@@ -200,17 +200,25 @@ class ExerciseBloc implements BlocBase {
     Observable(FirebaseUserAPI().getProgramsName()).listen((event){
 
         List<String> programs = [];
-        print("Event key ${event.snapshot.key}");
 
-          List<String> programsNames = event.snapshot.key.split("\n");
-          programsNames.forEach((f) => programs.add(f));
+          if(event.snapshot.value != null){
 
-          PreferencesController().getLastProgramName().then((value){
-            if(programs.last != value){
-              _programNotificationController.sink.add(true);
-              PreferencesController().saveLastProgramName(programs.last);
-            }
-          });
+            Map<dynamic,dynamic> m = event.snapshot.value;
+
+
+            m?.forEach((key,value){
+              print("Event key $key");
+              List<String> programsNames = key.split("\n");
+              programsNames.forEach((f) => programs.add(f));
+
+              PreferencesController().getLastProgramName().then((value){
+                if(programs.last != value){
+                  _programNotificationController.sink.add(true);
+                  PreferencesController().saveLastProgramName(programs.last);
+                }
+              });
+            });
+          }
         _programNamesController.sink.add(programs);
     });
    }

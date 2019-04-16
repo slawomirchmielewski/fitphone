@@ -219,14 +219,14 @@ class FirebaseUserAPI {
 
 
   Future<DataSnapshot> getWorkout(String program, String programType, String workoutDay) async{
-    return await  database.child("programs").child(program).child(programType).child(workoutDay).once().catchError((error) => print(error.toString()));
+    return await  database.child("programs").child(program).child(programType).child(workoutDay).once();
   }
 
   Future<DataSnapshot> getWorkoutsDay(String program, String programType) async{
-    return await database.child("programs").child(program).child(programType).once().catchError((error) => print(error.toString()));
+    return await database.child("programs").child(program).child(programType).once();
   }
 
   Stream<Event> getProgramsName(){
-    return database.child("programs").onChildAdded.handleError((error)=> print(error.toString()));
+    return database.child("programs").onValue;
   }
 }
