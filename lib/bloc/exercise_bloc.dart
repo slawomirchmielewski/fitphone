@@ -226,7 +226,7 @@ class ExerciseBloc implements BlocBase {
     String programType;
 
 
-    if(program.length != null) {
+    if(program?.length != null) {
 
       String userId = await FirebaseUserAPI().getCurrentUser().then((user) => user.uid);
 
