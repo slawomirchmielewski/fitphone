@@ -25,7 +25,6 @@ class StatusBarController{
 
   enableDarkNavigationBar() async{
    await FlutterStatusbarcolor.setNavigationBarWhiteForeground(false);
-   await FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
 
   }
 

@@ -204,7 +204,6 @@ class ExerciseBloc implements BlocBase {
         List<String> programs = [];
         print("Event key ${event.snapshot.key}");
 
-        if(event.snapshot.key != null){
           List<String> programsNames = event.snapshot.key.split("\n");
           programsNames.forEach((f) => programs.add(f));
 
@@ -214,8 +213,6 @@ class ExerciseBloc implements BlocBase {
               PreferencesController().saveLastProgramName(programs.last);
             }
           });
-        }
-
         _programNamesController.sink.add(programs);
     });
    }
