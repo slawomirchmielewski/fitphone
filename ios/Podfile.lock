@@ -14,7 +14,7 @@ PODS:
     - Firebase/CoreOnly
     - FirebaseStorage (= 3.0.3)
   - firebase_auth (0.0.1):
-    - Firebase/Auth
+    - Firebase/Auth (~> 5.0)
     - Firebase/Core
     - Flutter
   - firebase_core (0.0.1):
@@ -55,11 +55,8 @@ PODS:
     - FirebaseCore (~> 5.1)
     - GTMSessionFetcher/Core (~> 1.1)
   - Flutter (1.0.0)
-  - flutter_statusbar_manager (0.0.1):
+  - flutter_statusbarcolor (0.0.1):
     - Flutter
-  - flutter_youtube_view (0.0.1):
-    - Flutter
-    - XCDYouTubeKit
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -109,7 +106,6 @@ PODS:
     - Flutter
     - FMDB (~> 2.7.2)
   - TOCropViewController (2.3.8)
-  - XCDYouTubeKit (2.7.1)
 
 DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -117,8 +113,7 @@ DEPENDENCIES:
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
-  - flutter_statusbar_manager (from `.symlinks/plugins/flutter_statusbar_manager/ios`)
-  - flutter_youtube_view (from `.symlinks/plugins/flutter_youtube_view/ios`)
+  - flutter_statusbarcolor (from `.symlinks/plugins/flutter_statusbarcolor/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -143,7 +138,6 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - TOCropViewController
-    - XCDYouTubeKit
 
 EXTERNAL SOURCES:
   firebase_auth:
@@ -156,10 +150,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
-  flutter_statusbar_manager:
-    :path: ".symlinks/plugins/flutter_statusbar_manager/ios"
-  flutter_youtube_view:
-    :path: ".symlinks/plugins/flutter_youtube_view/ios"
+  flutter_statusbarcolor:
+    :path: ".symlinks/plugins/flutter_statusbarcolor/ios"
   image_cropper:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
@@ -175,7 +167,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Firebase: 9190018e296139d938b99521cde0c15a6e8d2946
-  firebase_auth: a5b249720380ab4ee1c633368cbb84aac9959359
+  firebase_auth: 6212feecfa5de35c8702dbe0193090bb9bf07554
   firebase_core: c96aa8b2fcf7f5167d32f22034f502f9304952b8
   firebase_database: 431f77dc97eaba31168762025bc31c8a9a68e68b
   firebase_storage: 4991d126595463648bd10b5f75bca54bea4ee924
@@ -187,14 +179,13 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
   FirebaseStorage: 3d22c041370593e639fba013d1eb698a8dae2881
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  flutter_statusbar_manager: eb7538441baef19aa0899dc64565bc5befb1e7e1
-  flutter_youtube_view: 2147afad9cc73e4b7c597cb822a9ee2b73e7cb21
+  flutter_statusbarcolor: ccc8f90efe5e571f817aaed60dac5382d2cec98d
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAppMeasurement: 5029d78f2b438bd30ffb44e6c558b57c21622727
   GoogleUtilities: bb6ff5a302c97a0bc9820dad775505778c5a2676
   GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
   image_cropper: 046482c5501fc775e17f792d5af4b46c19bb774e
-  image_picker: ee00aab0487cedc80a304085219503cc6d0f2e22
+  image_picker: 86b84c4fe89267356a1f17297a45b5d317ebd2e7
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   path_provider: 09407919825bfe3c2deae39453b7a5b44f467873
@@ -202,8 +193,7 @@ SPEC CHECKSUMS:
   shared_preferences: 5a1d487c427ee18fcd3ea1f2a131569481834b53
   sqflite: d1612813fa7db7c667bed9f1d1b508deffc56999
   TOCropViewController: 0a075f02c253e88095143bbac7b013fc6fba5090
-  XCDYouTubeKit: c8567fd5cb388a3099fa26eee4b30df2a467847d
 
-PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
+PODFILE CHECKSUM: d231b65d6bea6d24555f84ca7901720538b5791f
 
 COCOAPODS: 1.5.3

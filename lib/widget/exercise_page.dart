@@ -2,7 +2,6 @@ import 'package:fitphone/bloc/bloc_provider.dart';
 import 'package:fitphone/bloc/exercise_bloc.dart';
 import 'package:fitphone/model/exercise_model.dart';
 import 'package:fitphone/widget/custom_tile.dart';
-import 'package:fitphone/widget/youtube_player.dart';
 import 'package:flutter/material.dart';
 
 
@@ -51,7 +50,6 @@ class _ExercisePageState extends State<ExercisePage> {
   Widget build(BuildContext context) {
 
     final ExerciseBloc exerciseBloc = BlocProvider.of<ExerciseBloc>(context);
-    final YouTubePlayer youTubePlayer = YouTubePlayer();
 
     return Container(
       child: Column(
@@ -60,10 +58,10 @@ class _ExercisePageState extends State<ExercisePage> {
             fontWeight: FontWeight.bold
           ),),
           SizedBox(height: 16),
-          Container(
+         /* Container(
             height: 250,
-            child: youTubePlayer
-          ),
+            child: YouTubePlayer(id: widget.exercise.url)
+          ),*/
           SizedBox(height: 32),
           _buildLabels(context),
           SizedBox(height: 8),
