@@ -17,7 +17,7 @@ class ApplicationBloc implements BlocBase{
   Stream <int> get getPageIndex=> _setUpPageIndexController.stream;
   Function(int) get setPageIndex => _setUpPageIndexController.sink.add;
 
-  final _bottomBarIndexController = BehaviorSubject.seeded(0);
+  final _bottomBarIndexController = BehaviorSubject<int>();
   Stream<int> get getBottomBarIndex => _bottomBarIndexController.stream;
   Function(int) get setBottomBarIndex => _bottomBarIndexController.sink.add;
 
@@ -87,7 +87,7 @@ class ApplicationBloc implements BlocBase{
   _setWeightUnitText(WeightUnit unit){
     if(unit == WeightUnit.Kilogram){
       _weightUnitTextController.sink.add("kg");
-    }else{
+    }else if(unit == WeightUnit.Pound){
       _weightUnitTextController.sink.add("lbs");
     }
 
@@ -98,7 +98,6 @@ class ApplicationBloc implements BlocBase{
     _loaderStateController.sink.add(LoadersState.Hidden);
     _weightUnitController.sink.add(WeightUnit.Kilogram);
     _weightUnitTextController.add("kg");
-    _bottomBarIndexController.sink.add(0);
   }
 
   @override

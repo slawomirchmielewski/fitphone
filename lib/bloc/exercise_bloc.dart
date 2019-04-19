@@ -9,7 +9,6 @@ import 'package:rxdart/rxdart.dart';
 
 class ExerciseBloc implements BlocBase {
 
-
   List<String> tempData = [];
 
 
@@ -78,6 +77,7 @@ class ExerciseBloc implements BlocBase {
 
   ExerciseBloc(){
 
+    getProgramsNames();
 
     _currentPageController.stream.listen((data){
         if(data != null){
@@ -156,7 +156,7 @@ class ExerciseBloc implements BlocBase {
    }
    
    
-   getWorkout() async {
+   getWorkout(String primaryWorkout) async {
 
      List<ExerciseModel> exercisesList = [];
 
@@ -164,19 +164,10 @@ class ExerciseBloc implements BlocBase {
 
      if(programsList != null) {
        String program = programsList.last;
-       String programType;
-
-       String userId = await FirebaseUserAPI().getCurrentUser().then((
-           user) => user.uid);
-
-       await FirebaseUserAPI().getUserDataOnce(userId).then((snapshot) {
-         User user = User.fromSnapshot(snapshot);
-         programType = user.primaryWorkout;
-       });
 
        String workoutDay = DayConverter.getDay(DateTime.now().weekday);
 
-       await FirebaseUserAPI().getWorkout(program, programType, workoutDay).then((snapshot) {
+       await FirebaseUserAPI().getWorkout(program,  primaryWorkout, workoutDay).then((snapshot) {
 
          if (snapshot.value != null) {
            Map<dynamic, dynamic> e = Map.from(snapshot.value);
@@ -196,53 +187,46 @@ class ExerciseBloc implements BlocBase {
    }
 
 
-   getProgramsNames(){
-    Observable(FirebaseUserAPI().getProgramsName()).listen((event){
+   getProgramsNames() async {
+    await FirebaseUserAPI().getProgramsName().then((snapshot){
+      List<String> programs = [];
 
-        List<String> programs = [];
+      if(snapshot.value != null){
 
-          if(event.snapshot.value != null){
+        Map<dynamic,dynamic> m = snapshot.value;
 
-            Map<dynamic,dynamic> m = event.snapshot.value;
+        m?.forEach((key,value){
+          print("Event key $key");
+          List<String> programsNames = key.split("\n");
+          programsNames.forEach((f) => programs.add(f));
 
-
-            m?.forEach((key,value){
-              print("Event key $key");
-              List<String> programsNames = key.split("\n");
-              programsNames.forEach((f) => programs.add(f));
-
-              PreferencesController().getLastProgramName().then((value){
-                if(programs.last != value){
-                  _programNotificationController.sink.add(true);
-                  PreferencesController().saveLastProgramName(programs.last);
-                }
-              });
-            });
-          }
-        _programNamesController.sink.add(programs);
+          PreferencesController().getLastProgramName().then((value){
+            if(programs.last != value){
+              _programNotificationController.sink.add(true);
+              PreferencesController().saveLastProgramName(programs.last);
+            }
+          });
+        });
+      }
+      _programNamesController.sink.add(programs);
+      print("Programs names ${_programNamesController.stream.value}");
     });
    }
 
 
-   getWorkouts() async {
+   getWorkouts(String primaryWorkout) async {
 
     List<WorkoutModel> workouts = [];
+    print("Get workout now: ${_programNamesController.stream.value}");
 
     List<String> program = _programNamesController.stream.value;
-    String programType;
-
 
     if(program?.length != null) {
 
-      String userId = await FirebaseUserAPI().getCurrentUser().then((user) => user.uid);
 
-      await FirebaseUserAPI().getUserDataOnce(userId).then((snapshot){
-        User user = User.fromSnapshot(snapshot);
-        programType = user.primaryWorkout;
-      });
+      print("Get workout: $primaryWorkout");
 
-      await FirebaseUserAPI().getWorkoutsDay(program.last, programType).then((snapshot){
-
+      await FirebaseUserAPI().getWorkoutsDay(program.last, primaryWorkout).then((snapshot){
 
         if(snapshot.value != null){
           Map<dynamic,dynamic> m = snapshot.value;

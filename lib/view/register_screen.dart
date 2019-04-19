@@ -49,9 +49,8 @@ class RegistrationScreenState extends State<RegistrationScreen> {
           userBloc.getWeightUpdate();
           userBloc.getPhotosUpdate();
           applicationBloc.setUpBottomAppBar();
-          applicationBloc.setLoaderState(LoadersState.Hidden);
           exerciseBoc.getProgramsNames();
-          exerciseBoc.getWorkouts();
+          applicationBloc.setLoaderState(LoadersState.Hidden);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SetupScreen()));
         }
         else

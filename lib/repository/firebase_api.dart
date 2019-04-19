@@ -226,7 +226,7 @@ class FirebaseUserAPI {
     return await database.child("programs").child(program).child(programType).once();
   }
 
-  Stream<Event> getProgramsName(){
-    return database.child("programs").onValue;
+  Future<DataSnapshot> getProgramsName(){
+    return database.child("programs").once();
   }
 }

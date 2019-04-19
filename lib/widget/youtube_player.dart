@@ -1,74 +1,38 @@
-/*
 import 'package:flutter/material.dart';
-import 'package:flutter_youtube_view/flutter_youtube_view.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 
-class YouTubePlayer extends StatefulWidget {
-
-  final String id ;
-
-  YouTubePlayer({this.id = "Zu9RVJvnHyE"});
-
-  @override
-  _YouTubePlayerState createState() => _YouTubePlayerState();
-}
-
-class _YouTubePlayerState extends State<YouTubePlayer>  implements YouTubePlayerListener{
+class VideoPlayer extends StatelessWidget {
 
 
-  FlutterYoutubeViewController flutterYoutubeViewController;
+  final String url;
+
+  VideoPlayer(this.url);
 
 
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      child: FlutterYoutubeView(
-        onViewCreated: _onYoutubeCreated,
-        listener: this,
-        params: YoutubeParam(
-            videoId: widget.id,
-            showUI: true,
-            startSeconds: 0.0),
-      )
+
+    print("Url $url");
+
+    Widget youtubePlayer = YoutubePlayer(
+        context: context,
+        videoId: url,
+        autoPlay: false,
+        showVideoProgressIndicator: true,
+        videoProgressIndicatorColor: Colors.amber,
+        progressColors: ProgressColors(
+          playedColor: Colors.amber,
+          handleColor: Colors.amberAccent,
+        ),
+        onPlayerInitialized: (controller) {
+        }
     );
-  }
 
-  @override
-  void onCurrentSecond(double second) {
-  }
 
-  @override
-  void onError(String error) {
-    print((error.toString()));
-  }
 
-  @override
-  void onReady() {
-    print("Ready");
-    flutterYoutubeViewController.pause();
-  }
-
-  @override
-  void onStateChange(String state) {
+    return youtubePlayer;
 
   }
-
-  @override
-  void onVideoDuration(double duration) {
-  }
-
-  void _onYoutubeCreated(FlutterYoutubeViewController controller) {
-
-    flutterYoutubeViewController = controller;
-
-  }
-
- @override
-  void dispose() {
-    flutterYoutubeViewController.pause();
-    super.dispose();
-  }
-
 }
-*/

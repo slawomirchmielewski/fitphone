@@ -15,9 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:fitphone/widget/nutrition_tile_small.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -56,7 +56,7 @@ class HomeScreen extends StatelessWidget {
       maxHeight: 512,
     );
 
-    userBloc.uploadProfilePicture(croppedFile);
+   userBloc.uploadProfilePicture(croppedFile);
   }
 
 

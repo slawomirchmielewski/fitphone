@@ -179,6 +179,10 @@ class UserBloc implements BlocBase{
     return progress;
   }
 
+  User getUserData(){
+    return _userController.stream.value;
+  }
+
 
   WeightChangeResult _calculateChangeRate(List<WeightModel> model){
 
@@ -198,7 +202,7 @@ class UserBloc implements BlocBase{
         result.text = "Gain since last month";
       }
       else{
-        result.text = "No changes";
+        result.text = "No changes from last month";
       }
 
       return result;

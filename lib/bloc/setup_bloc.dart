@@ -49,7 +49,7 @@ class SetupBloc extends BlocBase{
     if(unit == "Kilograms"){
       _weightUnitController.sink.add(WeightUnit.Kilogram);
     }
-    else{
+    else if(unit == "Pounds"){
       _weightUnitController.sink.add(WeightUnit.Pound);
     }
   }

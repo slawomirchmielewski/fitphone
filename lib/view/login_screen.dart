@@ -48,9 +48,8 @@ class LoginScreenState extends State<LoginScreen> {
           userBloc.getPhotosUpdate();
           applicationBloc.setUpBottomAppBar();
           applicationBloc.getWeightUnit();
-          applicationBloc.setLoaderState(LoadersState.Hidden);
           exerciseBoc.getProgramsNames();
-          exerciseBoc.getWorkouts();
+          applicationBloc.setLoaderState(LoadersState.Hidden);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainHubScreen()));
         }
         else{

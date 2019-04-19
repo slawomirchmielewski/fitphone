@@ -25,8 +25,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
     final ExerciseBloc exerciseBloc = BlocProvider.of<ExerciseBloc>(context);
 
-    exerciseBloc.getWorkout();
-
+    exerciseBloc.getWorkout(userBloc.getUserData().primaryWorkout);
 
     Observable(exerciseBloc.getPageIndex).listen((pageIndex) {
       if(pageController.hasClients)
@@ -140,6 +139,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       stream: exerciseBloc.getPageIndex,
                       initialData: 0,
                       builder: (context, pageIndexSnap) {
+
+                        if(!pageIndexSnap.hasData) return Container();
+
                         return Expanded(
                           child: PageView.builder(
                               controller: pageController,

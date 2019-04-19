@@ -16,7 +16,7 @@ class ExerciseModel{
       set: int.parse(map["sets"].toString()),
       weights: 0,
       reps: map["reps"].toString(),
-      url: map["url"]
+      url: map["video_url"]
     );
   }
 
@@ -27,7 +27,7 @@ class ExerciseModel{
         set: int.parse(snapshot.value["sets"].toString()),
         weights: 0,
         reps: snapshot.value["reps"].toString(),
-        url: snapshot.value["url"]
+        url: snapshot.value["video_url"]
     );
   }
 

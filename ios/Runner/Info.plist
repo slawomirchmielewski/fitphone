@@ -46,7 +46,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>FitPhone</string>
 	<key>io.flutter.embedded_views_preview</key>
-	<true/>
+	<string>true</string>
 	<key>CFBundleGetInfoString</key>
 	<string>NSMicrophoneUsageDescription</string>
 </dict>

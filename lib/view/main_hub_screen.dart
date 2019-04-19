@@ -25,7 +25,6 @@ class MainHubScreen extends StatelessWidget{
 
     ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
 
-
     return Scaffold(
       body: SafeArea(
         child: StreamBuilder<int>(

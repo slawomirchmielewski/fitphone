@@ -19,6 +19,9 @@ class WeightView extends PageBase {
     final SetupBloc setupBloc = BlocProvider.of<SetupBloc>(context);
     final ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
 
+
+    setupBloc.saveWeightUnit(WeightUnit.Kilogram);
+
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[

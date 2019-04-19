@@ -21,7 +21,10 @@ class ProgramsScreen extends StatelessWidget{
     final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
     final ExerciseBloc exerciseBloc = BlocProvider.of<ExerciseBloc>(context);
 
-    exerciseBloc.getWorkouts();
+
+    exerciseBloc.getWorkouts(userBloc.getUserData().primaryWorkout);
+
+
     Future<Null> _showNotification(){
       return showDialog(
           barrierDismissible: false,
@@ -108,13 +111,13 @@ class ProgramsScreen extends StatelessWidget{
                                        SizedBox(height: 16),
                                        WorkoutMarketTile(title:"3 days",groupValue: intensitySnap.data.primaryWorkout,value: "3 days",onChange:(change){
                                          userBloc.updateProgramIntensity(change);
-                                         exerciseBloc.getWorkouts();
                                          Navigator.pop(context);
+                                         exerciseBloc.getWorkouts(change);
                                        }),
                                        WorkoutMarketTile(title:"4 days",groupValue: intensitySnap.data.primaryWorkout,value: "4 days",onChange:(change) {
                                          userBloc.updateProgramIntensity(change);
-                                         exerciseBloc.getWorkouts();
                                          Navigator.pop(context);
+                                         exerciseBloc.getWorkouts(change);
                                        }),
                                      ],
                                    );

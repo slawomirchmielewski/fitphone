@@ -70,7 +70,7 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.4+3"
+    version: "0.8.4+5"
   firebase_core:
     dependency: "direct main"
     description:
@@ -143,7 +143,7 @@ packages:
       name: image_cropper
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.9"
+    version: "1.0.1"
   image_picker:
     dependency: "direct main"
     description:
@@ -338,6 +338,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
+  youtube_player_flutter:
+    dependency: "direct main"
+    description:
+      name: youtube_player_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1+1"
+  ytview:
+    dependency: transitive
+    description:
+      name: ytview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.7+1"
 sdks:
   dart: ">=2.2.0 <3.0.0"
   flutter: ">=1.2.1 <2.0.0"

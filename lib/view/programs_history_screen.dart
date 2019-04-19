@@ -30,6 +30,8 @@ class ProgramsHistoryScreen extends StatelessWidget{
                 if(!snapshot.hasData) return Center(child: CircularProgressIndicator());
 
                 return ListView.builder(
+
+                    padding: EdgeInsets.symmetric(vertical: 16),
                     itemCount: snapshot.data.length,
                     itemBuilder: (context,index) => ListTile(
                       title: Text(snapshot.data[index]),
