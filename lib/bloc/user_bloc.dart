@@ -133,10 +133,10 @@ class UserBloc implements BlocBase{
               weightsList.add(WeightModel.fromMap(f));
 
               //Sort list by date
-             // weightsList.sort((a,b) => a.date.compareTo(b.date));
+
             });
           }
-
+          weightsList.sort((a,b) => a.date.compareTo(b.date));
           _weightListController.sink.add(weightsList);
         });
       }

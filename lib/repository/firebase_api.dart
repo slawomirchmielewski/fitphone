@@ -192,13 +192,15 @@ class FirebaseUserAPI {
 
   addWeight(double weight) async {
     var id = await getCurrentUser().then((user) => user.uid).catchError((error) => print(error?.toString()));
+    var date = DateFormat.yMMMd().format(new DateTime.now()).toString();
+
     if (id != null) {
       var weightData = {
         "weight": weight,
-        "date": DateFormat.yMMMd().format(new DateTime.now()).toString()
+        "date": date
       };
 
-      await database.child("users").child(id).child("weights").push().set(weightData);
+      await database.child("users").child(id).child("weights").child(date).set(weightData);
     }
   }
 
