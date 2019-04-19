@@ -280,7 +280,7 @@ class HomeScreen extends StatelessWidget {
                                     }
                                 ),
 
-                                NotificationSquareSmall(image:"assets/trophy.png",title: userSnap.data.workoutsCompleted.toString() ,subtitle: "Workouts complated",),
+                                NotificationSquareSmall(image:"assets/trophy.png",title: userSnap.data.workoutsCompleted.toString() ,subtitle: "Workouts completed",),
 
                               ],
                             ),

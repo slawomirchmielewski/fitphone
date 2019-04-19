@@ -18,6 +18,29 @@ class CongratulationScreen extends StatelessWidget{
     final ExerciseBloc exerciseBloc = BlocProvider.of<ExerciseBloc>(context);
 
 
+
+    String getWorkoutNumber(int number){
+      String endName;
+
+      switch(number){
+        case 1:
+          endName = "st";
+          break;
+        case 2:
+          endName = "nd";
+          break;
+        case 3:
+          endName = "rd";
+          break;
+        default:
+          endName = "th";
+
+      }
+
+
+      return "$number$endName";
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -59,7 +82,7 @@ class CongratulationScreen extends StatelessWidget{
                 StreamBuilder<User>(
                   stream: userBloc.getUser,
                   builder: (context, snapshot) {
-                    return snapshot.hasData ? Text("You finished your ${snapshot.data.workoutsCompleted}th workout",style: Theme.of(context).textTheme.subhead,
+                    return snapshot.hasData ? Text("You finished your ${getWorkoutNumber(snapshot.data.workoutsCompleted)} workout",style: Theme.of(context).textTheme.subhead,
                     ) : Container();
                   }
                 ),
