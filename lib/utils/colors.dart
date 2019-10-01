@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 
+  const kFitPrimary = const Color(0xFF594DFE);
+  const kFitPrimaryLight = const Color(0xFF594DFE);
+  const kFitGreyLight = const Color(0xFFF4F4F4);
+  const kFitGreyDark = const Color(0xFF1A1A1A);
+  const kFitScaffoldBackground = const Color(0xFFFAFFFC);
+  const kFitDarkScaffoldBackground = const Color(0xFF000000);
+  const kFitCard = const Color(0xFFFFFFFF);
+  const kFitDarkCard = const Color(0xFF1B1B1D);
+  const greyBackground = const Color(0xFFF5F5F5);
 
-class CustomColors{
-
-  static const colorRed = Color(0xFFC21F1F);
-  static const colorLightBlack = Color(0xFF272727);
-  static const colorBlackDarker = Color(0xFF212121); 
-  static const colorLightGrey  = Color(0xFFECEFF1);
-  static const colorLightRed = Color(0xFFF94163);
-  static const colorViolet= Color(0xFFE06CE3);
-  static const colorLightBackground = Color(0xFFf9f9f9);
-  static const colorDarkBackground = Color(0xFF1c1b1b);
-
-
-}

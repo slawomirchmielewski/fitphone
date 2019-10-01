@@ -1,116 +1,102 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
+
 
 class User {
-  String name;
-  int level;
-  String photoUrl;
-  int points;
-  int goalPoints;
-  int workoutsCompleted;
-  double weight;
-  String weightUnit;
-  double carbs;
-  double calories;
-  double fat;
-  double protein;
-  String primaryWorkout;
+
+  final String id;
+  final String name;
+  final double weight;
+  final int xp;
+  final int maxXp;
+  final bool isActive;
+  final int level;
+  final String photoUrl;
+  final int registrationDate;
 
 
-  User({
+  const User({
+    this.id,
     this.name,
+    this.weight,
+    this.xp,
+    this.maxXp,
+    this.isActive,
     this.level,
     this.photoUrl,
-    this.points,
-    this.goalPoints,
-    this.workoutsCompleted,
-    this.weight ,
-    this.weightUnit,
-    this.carbs,
-    this.calories,
-    this.fat,
-    this.protein,
-    this.primaryWorkout
+    this.registrationDate,
   });
 
-  User.empty({
-    this.name = "",
-    this.level = 1,
-    this.photoUrl ="",
-    this.points = 0,
-    this.goalPoints = 50,
-    this.workoutsCompleted = 0,
-    this.weight = 0.0,
-    this.weightUnit = "Kilograms",
-    this.carbs = 0.0,
-    this.calories = 0.0,
-    this.fat = 0.0,
-    this.protein = 0.0,
-    this.primaryWorkout = "3 days"
-  });
 
+  factory User.init(String id, String name, int registrationDate){
+    return User(
+      id:id,
+      name:name,
+      weight: 0.0,
+      xp: 0,
+      maxXp: 50,
+      isActive: true,
+      level: 1,
+      photoUrl: "",
+      registrationDate: registrationDate,
+    );
+  }
+
+
+  factory User.fromMap(Map<String,dynamic> map){
+    return User(
+      id: map["id"],
+      name: map["name"],
+      weight: map["weight"],
+      xp: map["xp"],
+      maxXp: map["maxXp"],
+      isActive: map["isActive"],
+      level: map["level"],
+      photoUrl: map["photoUrl"],
+      registrationDate: map["registrationDate"],
+    );
+  }
+
+  Map<String,dynamic> toMap(){
+    return {
+      "id" : this.id,
+      "name" : this.name,
+      "weight" : this.weight,
+      "xp" :  this.xp,
+      "maxXp" : this.maxXp,
+      "isActive" : this.isActive,
+      "level" : this.level,
+      "photoUrl" : this.photoUrl,
+      "registrationDate" : this.registrationDate,
+    };
+  }
+
+
+  double get levelPercent => getLevelPercent();
+
+  DateTime get firstRegistrationDate => DateTime.fromMillisecondsSinceEpoch(registrationDate);
+
+  int get remainingPoints  => maxXp - xp;
+
+
+  double getLevelPercent(){
+    if(xp > maxXp){
+      return 1;
+    }
+
+    return xp / maxXp;
+  }
 
   String getFirstName(){
     List<String> list = name.split(" ");
     return list[0];
   }
 
-  factory User.fromSnapshot(DataSnapshot snapshot){
-    return User(
-        name: snapshot.value["name"].toString(),
-        level: snapshot.value["level"],
-        photoUrl: snapshot.value["photoUrl"],
-        workoutsCompleted: snapshot.value["workout completed"],
-        points: snapshot.value["currents points"],
-        goalPoints: snapshot.value["goal points"],
-        weight: double.tryParse(snapshot.value["weight"].toString()),
-        weightUnit: snapshot.value["weightUnit"],
-        carbs:double.tryParse(snapshot.value["carbs"].toString()),
-        calories:double.tryParse(snapshot.value["calories"].toString()) ,
-        fat: double.parse(snapshot.value["fat"].toString()),
-        protein: double.tryParse(snapshot.value["protein"].toString()),
-        primaryWorkout: snapshot.value["primary workout"].toString()
-    );
-  }
+  String getReadableDate(){
 
-  Map<String,dynamic> toMap() {
-    Map<String, dynamic> userData = {
-      "name": this.name,
-      "level": this.level,
-      "photoUrl": this.photoUrl,
-      "workout completed": this.workoutsCompleted,
-      "currents points": this.points,
-      "goal points": this.goalPoints,
-      "weight": this.weight,
-      "weightUnit" : this.weightUnit,
-      "carbs": this.carbs,
-      "calories": this.calories,
-      "fat": this.fat,
-      "protein": this.protein,
-      "primary workout" : this.primaryWorkout
-    };
-
-    return userData;
+    DateFormat dateFormat = DateFormat.yMMMd();
+    return dateFormat.format(DateTime.fromMillisecondsSinceEpoch(registrationDate));
   }
 
 
-  Map<String,dynamic> emptyToMap() {
-    Map<String, dynamic> userData = {
-      "name": this.name,
-      "level": 1,
-      "photoUrl": "",
-      "workout completed": 0,
-      "currents points": 0,
-      "goal points": 50,
-      "weight": 0,
-      "weightUnit" : "Kilograms",
-      "carbs": 0.0,
-      "calories": 0.0,
-      "fat": 0.0,
-      "protein": 0.0,
-      "primary workout" : "3 days"
-    };
-
-    return userData;
-  }
 
 }

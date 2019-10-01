@@ -1,34 +1,56 @@
 import 'package:firebase_database/firebase_database.dart';
 
-class ExerciseModel{
+class Exercise{
 
+  String workoutName;
+  String programIntensity;
   String name;
+  int order;
   int set;
-  int weights;
+  List<double> weights;
+  int restTime;
   String reps;
   String url;
 
-  ExerciseModel({this.name,this.set,this.url,this.weights,this.reps});
+  Exercise({
+    this.workoutName,
+    this.programIntensity,
+    this.name,
+    this.order,
+    this.set,
+    this.url,
+    this.weights,
+    this.reps,
+    this.restTime
+  });
 
-  factory ExerciseModel.formMap(Map<dynamic,dynamic> map){
-    return ExerciseModel(
-      name: map["name"],
-      set: int.parse(map["sets"].toString()),
-      weights: 0,
-      reps: map["reps"].toString(),
-      url: map["video_url"]
+
+  factory Exercise.fromMap(Map<dynamic,dynamic> map){
+    return Exercise(
+      workoutName: map["workout name"] ?? "",
+      programIntensity: map["program intensity"] ?? "",
+      name: map["name"] ?? "",
+      order: map["order"] ?? 0,
+      set: map["sets"] ?? 0,
+      weights: map["weight"] ?? [],
+      reps: map["reps"] ?? "",
+      url: map["video_url"] ?? "",
+      restTime: map["rest time"] ?? 0
     );
   }
 
 
-  factory ExerciseModel.formSnapshot(DataSnapshot snapshot){
-    return ExerciseModel(
-        name: snapshot.value["name"],
-        set: int.parse(snapshot.value["sets"].toString()),
-        weights: 0,
-        reps: snapshot.value["reps"].toString(),
-        url: snapshot.value["video_url"]
-    );
+  Map<String,dynamic> toMap(){
+    return{
+      "workout name" : workoutName,
+      "program intensity" : programIntensity,
+      "name" : name,
+      "order" : order,
+      "sets" : set,
+      "reps" : reps,
+      "weights" : weights,
+      "video_url" : url,
+      "rest time" : restTime
+    };
   }
-
 }

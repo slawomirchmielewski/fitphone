@@ -1,160 +1,125 @@
-import 'package:fitphone/bloc/exercise_bloc.dart';
-import 'package:fitphone/utils/enums.dart';
-import 'package:fitphone/utils/firebase_result.dart';
-import 'package:fitphone/view/reset_password_screen.dart';
-import 'package:fitphone/view/setup_screen.dart';
-import 'package:fitphone/widget/system_icon_icons.dart';
+import 'package:fitphone/enums/view_states.dart';
+import 'package:fitphone/view/password_reset_screen.dart';
+import 'package:fitphone/view_model/session_manager.dart';
+import 'package:fitphone/widget/fit_animated_button.dart';
+import 'package:fitphone/widget/fit_text_form.dart';
+import 'package:fitphone/widget/fit_text_form_protected.dart';
 import 'package:flutter/material.dart';
-import 'package:fitphone/widget/custom_button.dart';
-import 'package:fitphone/utils/colors.dart';
-import 'package:fitphone/view/register_screen.dart';
-import 'package:fitphone/bloc/user_bloc.dart';
-import 'package:fitphone/bloc/bloc_provider.dart';
-import 'package:fitphone/bloc/application_bloc.dart';
-import 'package:fitphone/view/main_hub_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
-class LoginScreen extends StatefulWidget{
 
-  @override
-  LoginScreenState createState() {
-    return new LoginScreenState();
-  }
-}
 
-class LoginScreenState extends State<LoginScreen> {
-
-  final TextEditingController _emailTextController = new TextEditingController();
-  final TextEditingController _passwordTextController = new TextEditingController();
+class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
 
-    final ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
-    final UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-    final ExerciseBloc exerciseBoc = BlocProvider.of<ExerciseBloc>(context);
+    final SessionManager sessionManager = Provider.of<SessionManager>(context);
 
-    applicationBloc.setBottomBarIndex(0);
-
-    Widget displayLogo(bool isDark){
-        return isDark ? Image.asset("assets/logo_white.png" , width: 150, height: 100) : Image.asset("assets/logo.png" , width: 150, height: 100);
+    Widget loginForm(){
+      return Container(
+        child: Column(
+          children: <Widget>[
+            FitTextForm(icon: SimpleLineIcons.envelope,hint:"Email",onChange: (text) => sessionManager.setLoginEmail(text),text: sessionManager.loginEmail,),
+            SizedBox(height: 16),
+            FitTextFormProtected(icon: SimpleLineIcons.lock,hint:"Password",onChange:(text) => sessionManager.setLoginPassword(text),
+              text: sessionManager.loginPassword,onSuffixTap:(isVisible) =>sessionManager.setLoginPasswordVisibility(!isVisible),
+              isPasswordVisible: sessionManager.loginPasswordVisible,),
+            SizedBox(height: 16),
+            Text(sessionManager.loginErrorMassage,textAlign: TextAlign.center,style: Theme.of(context).textTheme.subtitle.copyWith(
+              color: Colors.redAccent
+            ),),
+            SizedBox(height: 32),
+            FitAnimatedButton(buttonText: "Login",onTap:() => sessionManager.loginUser()),
+            SizedBox(height: 32),
+            FlatButton(
+              child: Text("Forgot password ?",style: Theme.of(context).textTheme.subtitle.copyWith(
+                  fontWeight: FontWeight.bold
+              ),),
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordResetScreen()))),
+          ],
+        ),
+      );
     }
 
-    loginUser(){
-      applicationBloc.setLoaderState(LoadersState.Visible);
-      userBloc.loginUser().then((callback) {
-        if(callback.success == true){
-          userBloc.getUserUpdate();
-          userBloc.getWeightUpdate();
-          userBloc.getPhotosUpdate();
-          applicationBloc.setUpBottomAppBar();
-          applicationBloc.getWeightUnit();
-          exerciseBoc.getProgramsNames();
-          applicationBloc.setLoaderState(LoadersState.Hidden);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainHubScreen()));
-        }
-        else{
-          _passwordTextController.clear();
-          _emailTextController.clear();
-          applicationBloc.setLoaderState(LoadersState.Hidden);
-        }
-      });
+
+    Widget registrationForm(){
+      return Container(
+        child: Column(
+          children: <Widget>[
+            FitTextForm(icon: SimpleLineIcons.user_follow,hint:"Full Name",onChange: (text) => sessionManager.setName(text),text: sessionManager.name),
+            SizedBox(height: 16),
+            FitTextForm(icon: SimpleLineIcons.envelope,hint: "Email",onChange: (text) => sessionManager.setRegistrationEmail(text),text: sessionManager.registrationEmail),
+            SizedBox(height: 16),
+            FitTextFormProtected(icon: SimpleLineIcons.lock,hint:"Password",onChange: (text) => sessionManager.setRegistrationPassword(text),text: sessionManager.registrationPassword,
+            onSuffixTap: (isVisible) => sessionManager.setRegistrationPasswordVisibility(!isVisible), isPasswordVisible: sessionManager.registrationPasswordVisible,),
+            SizedBox(height: 16),
+            FitTextForm(icon: SimpleLineIcons.shield,hint:"Passcode",onChange: (text) => sessionManager.setPasscode(text),text: sessionManager.passcode),
+            SizedBox(height: 16),
+            Text(sessionManager.registrationErrorMassage,textAlign: TextAlign.center,style: Theme.of(context).textTheme.subtitle.copyWith(
+                color: Colors.redAccent
+            ),),
+            SizedBox(height: 72),
+            FitAnimatedButton(buttonText: "Register",onTap:() => sessionManager.registerUser()),
+          ],
+        ),
+      );
     }
 
-    return StreamBuilder(
-        stream:applicationBloc.darkThemeEnabled,
-        initialData: false,
-        builder: (context, snapshot) => Scaffold(
-        body: SafeArea(
-            child: Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 32.0, left: 32.0),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-              children: <Widget>[
-                      SizedBox(height: 32.0,),
-                      displayLogo(snapshot.data),
-                      SizedBox(height: 32.0,),
-                      StreamBuilder(
-                        stream: userBloc.getEmail,
-                        builder: (context,snapshot) =>
-                        TextField(
-                          onChanged: userBloc.setEmail,
-                          autocorrect: false,
-                          maxLines: 1,
-                          controller: _emailTextController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(SystemIcon.new_email_back_closed_envelope_symbol),
-                            hintText: "Email",
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            filled: true,
-                            errorText: snapshot.hasError ? snapshot.error  : ""
-                          ),
-                        ),
-                      ),
-                      StreamBuilder(
-                        stream: userBloc.getPassword,
-                        builder: (context,snapshot) =>
-                        TextField(
-                          onChanged: userBloc.setPassword,
-                          keyboardType: TextInputType.text,
-                          controller: _passwordTextController,
-                          maxLines: 1,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(SystemIcon.lock),
-                            hasFloatingPlaceholder: false,
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            filled: true,
-                            hintText: "Password",
-                            errorText: snapshot.hasError ? snapshot.error : ""
-                          ),
-                        ),
-                      ),
-                    //  SizedBox(height: 16.0),
-                      StreamBuilder<FirebaseResultCallback>(
-                        stream: userBloc.getLoginResult,
-                        builder: (context,snapshot)=>
-                         Text(snapshot.hasData && snapshot.data.success == false ? "Invalid username or password" : "", style: TextStyle(color: CustomColors.colorRed),)
-                      ),
-                      SizedBox(height: 16.0),
-                      FlatButton(
-                        child: Text("Forgot my password"),
-                        onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen()));
-                        },
-                      ),
-                      SizedBox(height: 16.0),
-                        CustomButton(
-                          title: "Login",
-                          onClick: () => loginUser()
-                        ),
-                      SizedBox(height: 32.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("New Member?"),
-                          SizedBox(width: 8.0,),
-                          FlatButton(
-                            child: Text("Register"),
-                            textColor: Theme.of(context).primaryColor,
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationScreen()))
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-            ),
-            )
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        brightness: Theme.of(context).brightness,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
       ),
-    )
+      body: Container(
+        margin: EdgeInsets.only(left: 32,right: 32,top: 16,bottom: 16),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: 36),
+              Row(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => sessionManager.setViewState(ViewState.Login),
+                    child: Text("Login",textAlign: TextAlign.left,style: Theme.of(context).textTheme.headline.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color:sessionManager.viewState == ViewState.Login ?  Theme.of(context).textTheme.title.color : Colors.grey,
+                    )),
+                  ),
+                  SizedBox(width: 16),
+                  GestureDetector(
+                    onTap: () => sessionManager.setViewState(ViewState.Register),
+                    child: Text("Register",style: Theme.of(context).textTheme.headline.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color:sessionManager.viewState == ViewState.Register ?  Theme.of(context).textTheme.title.color : Colors.grey,
+                    )),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 72),
+              Consumer(builder: (context,SessionManager sessionManager,_) {
+                    switch(sessionManager.viewState) {
+                      case ViewState.Login:
+                        return loginForm();
+                        break;
+                      case ViewState.Register:
+                        return registrationForm();
+                        break;
+                      default:
+                        return loginForm();
+                    }
+                  }
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

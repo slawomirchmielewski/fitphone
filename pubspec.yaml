@@ -14,7 +14,7 @@ description: Gym app
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 < 3.0.0"
 
 dependencies:
   flutter:
@@ -23,31 +23,42 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  outline_material_icons: ^0.1.0
-  splashscreen: ^1.2.0
   screentheme: ^0.0.2
-  rxdart: ^0.21.0
-  percent_indicator: ^1.0.10
-  shared_preferences: ^0.5.1+2
-  firebase_core: ^0.3.4
-  firebase_auth: ^0.8.4+5
-  firebase_storage: ^2.1.0+1
-  image_picker: ^0.5.3+1
-  cached_network_image: ^0.7.0
-  fcharts: ^0.0.10
-  toast: ^0.1.3
-  intl: ^0.15.8
-  rounded_modal: ^1.0.0
-  gradient_widgets: ^0.3.1
-  firebase_database: ^2.0.3
-  flutter_statusbarcolor: ^0.2.0
-  image_cropper: ^1.0.1
-  youtube_player_flutter: ^1.0.1+1
+  percent_indicator: ^2.1.1+1
+  shared_preferences: ^0.5.3+4
+  firebase_core: ^0.4.0+9
+  firebase_auth: ^0.14.0+5
+  firebase_storage: ^3.0.6
+  firebase_messaging: ^5.1.6
+  firebase_database: ^3.0.7
+  cloud_firestore: ^0.12.9+4
+  image_picker: ^0.6.1+4
+  fcharts: ^0.0.11
+  cached_network_image: ^1.1.1
+  toast: ^0.1.5
+  intl: ^0.15.2
+  rounded_modal: ^1.0.1
+  flutter_statusbarcolor: ^0.2.2
+  image_cropper: ^1.0.2
+  youtube_player_flutter: ^4.1.0
+  random_string: ^1.1.0
+  provider: ^3.1.0
+  animated_text_kit: ^1.3.1
+  flutter_fadein: ^1.1.1
+  flutter_xlider: ^2.5.2
+  flutter_vector_icons: ^0.2.1
+  flutter_spinkit: ^4.0.0
+  page_transition: ^1.1.4
+  charts_flutter: ^0.8.1
+  date_util: ^0.1.4
+  transparent_image: ^1.0.0
+  bubble_tab_indicator: ^0.1.4
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
 
 # For information on the generic Dart part of this file, see the
@@ -69,42 +80,26 @@ flutter:
   - assets/logo.png
   - assets/logo_white.png
   - assets/placeholder_face.png
-  - assets/trophy.png
-  - assets/weight_new.png
-  - assets/dumbeell.png
+  - assets/weight.png
+  - assets/workout.png
+  - assets/strenght.png
+  - assets/activity_image.png
+  - assets/goal_image.png
+  - assets/welcome_image.png
+  - assets/weight_image.png
+  - assets/unit_image.png
+  - assets/diet_image.png
+  - assets/summary_image.png
+  - assets/workout_image.png
+  - assets/nutrition_image.png
+  - assets/dump_image.png
+  - assets/happy.png
+  - assets/neutral.png
+  - assets/sad.png
+  - assets/program.png
+  - assets/folder.png
   - assets/trophy_hand.png
-  - assets/rest_day.png
-  - assets/gallery.png
-  - assets/list.png
 
-
-
-  fonts:
-  - family:  Rubik
-    fonts:
-    - asset: fonts/Rubik/Rubik-Black.ttf
-    - asset: fonts/Rubik/Rubik-BlackItalic.ttf
-    - asset: fonts/Rubik/Rubik-Bold.ttf
-    - asset: fonts/Rubik/Rubik-BoldItalic.ttf
-    - asset: fonts/Rubik/Rubik-Italic.ttf
-    - asset: fonts/Rubik/Rubik-Light.ttf
-    - asset: fonts/Rubik/Rubik-LightItalic.ttf
-    - asset: fonts/Rubik/Rubik-Medium.ttf
-    - asset: fonts/Rubik/Rubik-MediumItalic.ttf
-    - asset: fonts/Rubik/Rubik-Regular.ttf
-
-
-  - family:  NutritionIcons
-    fonts:
-    - asset: fonts/NutritionIcons.ttf
-
-  - family:  NavigationIcons
-    fonts:
-    - asset: fonts/NavigationIcons.ttf
-
-  - family:  SystemIcon
-    fonts:
-    - asset: fonts/SystemIcon.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
 

@@ -1,135 +1,186 @@
-import 'package:fitphone/bloc/exercise_bloc.dart';
-import 'package:fitphone/bloc/setup_bloc.dart';
-import 'package:fitphone/bloc/user_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:fitphone/view/splash_screen.dart';
 import 'package:fitphone/utils/colors.dart';
+import 'package:fitphone/view/login_screen.dart';
+import 'package:fitphone/view/main_screen.dart';
+import 'package:fitphone/view/setup_screen.dart';
+import 'package:fitphone/view/splash_screen.dart';
+import 'package:fitphone/view_model/nutrtion_view_model.dart';
+import 'package:fitphone/view_model/photos_view_model.dart';
+import 'package:fitphone/view_model/session_manager.dart';
+import 'package:fitphone/view_model/settings_manager.dart';
+import 'package:fitphone/view_model/setup_manager.dart';
+import 'package:fitphone/view_model/programs_view_model.dart';
+import 'package:fitphone/view_model/ui_helper.dart';
+import 'package:fitphone/view_model/user_view_model.dart';
+import 'package:fitphone/view_model/weight_view_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fitphone/utils/statusbar_controller.dart';
-import 'package:fitphone/bloc/bloc_provider.dart';
-import 'package:fitphone/bloc/application_bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/cupertino.dart';
+import 'enums/session_states.dart';
+import 'dart:io';
 
 
 void main() {
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   runApp(
-    BlocProvider<ApplicationBloc>(
-      bloc: ApplicationBloc(),
-      child:BlocProvider<UserBloc>(
-        bloc: UserBloc(),
-        child: BlocProvider<SetupBloc>(
-            bloc: SetupBloc(),
-            child: BlocProvider<ExerciseBloc>(
-                child: MyApp(),
-                bloc: ExerciseBloc()),
-      ),
-  )));
+    MyApp()
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
 
   static final appName = "FitPhone";
-  static final color = CustomColors.colorLightRed;
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
-  static final Typography _typography = new Typography();
+class _MyAppState extends State<MyApp> {
 
-  static final TextTheme _textThemeWhite = _typography.white.copyWith(
-    display4: _typography.white.display4.copyWith(fontFamily: "Rubik"),
-    display3: _typography.white.display3.copyWith(fontFamily: "Rubik"),
-    display2: _typography.white.display2.copyWith(fontFamily: "Rubik"),
-    display1: _typography.white.display1.copyWith(fontFamily: "Rubik"),
-    headline: _typography.white.headline.copyWith(fontFamily: "Rubik"),
-    title: _typography.white.title.copyWith(fontFamily: "Rubik"),
-    subhead: _typography.white.subhead.copyWith(fontFamily: "Rubik"),
-    body2: _typography.white.body2.copyWith(fontFamily: "Rubik"),
-    body1: _typography.white.body1.copyWith(fontFamily: "Rubik"),
-    caption: _typography.white.caption.copyWith(fontFamily: "Rubik"),
-    button: _typography.white.button.copyWith(fontFamily: "Rubik"),
-  );
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  static final TextTheme _textThemeBlack = _typography.black.copyWith(
-    display4: _typography.black.display4.copyWith(fontFamily: "Rubik"),
-    display3: _typography.black.display3.copyWith(fontFamily: "Rubik"),
-    display2: _typography.black.display2.copyWith(fontFamily: "Rubik"),
-    display1: _typography.black.display1.copyWith(fontFamily: "Rubik"),
-    headline: _typography.black.headline.copyWith(fontFamily: "Rubik"),
-    title: _typography.black.title.copyWith(fontFamily: "Rubik"),
-    subhead: _typography.black.subhead.copyWith(fontFamily: "Rubik"),
-    body2: _typography.black.body2.copyWith(fontFamily: "Rubik"),
-    body1: _typography.black.body1.copyWith(fontFamily: "Rubik"),
-    caption: _typography.black.caption.copyWith(fontFamily: "Rubik"),
-    button: _typography.black.button.copyWith(fontFamily: "Rubik"),
-  );
+  @override
+  void initState() {
+    super.initState();
 
+    _firebaseMessaging.autoInitEnabled();
 
+    _firebaseMessaging.configure(
+      onLaunch: (Map<String,dynamic> message){
+        print("on message $message");
+        return null;
+      },
+      onMessage: (Map<String,dynamic> message){
+        print("on message $message");
+        return null;
+      },
+      onResume: (Map<String,dynamic> message){
+        print("on message $message");
+        return null;
+      },
 
-  final ThemeData lightTheme = ThemeData.light().copyWith(
-    textTheme: _textThemeBlack,
-    brightness: Brightness.light,
-    primaryColorDark: CustomColors.colorLightBackground,
-    primaryColor: color,
-    accentColor: color,
-    backgroundColor: Colors.white,
-    toggleableActiveColor: color,
-    cursorColor: color,
-    scaffoldBackgroundColor: CustomColors.colorLightBackground,
-    dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15))) )
-  );
+    );
+    _firebaseMessaging.requestNotificationPermissions( const IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+  }
 
-  final ThemeData darkTheme = ThemeData.dark().copyWith(
-    textTheme: _textThemeWhite,
-    brightness: Brightness.dark,
-    primaryColorDark:CustomColors.colorDarkBackground,
-    primaryColor: color,
-    accentColor: color,
-    cursorColor: color,
-    backgroundColor: CustomColors.colorBlackDarker,
-    scaffoldBackgroundColor: CustomColors.colorDarkBackground,
-    dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15))) )
-  );
 
   @override
   Widget build(BuildContext context) {
-   
-    final ApplicationBloc applicationBloc = BlocProvider.of<ApplicationBloc>(context);
-    final StatusBarController statusBarController = StatusBarController();
 
-    return StreamBuilder(
-          stream: applicationBloc.darkThemeEnabled,
-          initialData: false,
-          builder: (context,snapshot) {
 
-              statusBarController.setTransparentStatusBar();
-              statusBarController.enableDarkStatusBar();
-              statusBarController.enableDarkNavigationBar();
-              statusBarController.setNavigationBarColor(Colors.white);
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SessionManager>(
+          builder: (context) => SessionManager(),
+        ),
+        ChangeNotifierProvider<UserViewModel>(
+          builder: (context) => UserViewModel(),
+        ),
+        ChangeNotifierProvider<NutritionViewModel>(
+          builder: (context) => NutritionViewModel(),
+        ),
+        ChangeNotifierProvider<UIHelper>(
+          builder: (context) => UIHelper(),
+        ),
+        ChangeNotifierProvider<SetupManager>(
+          builder: (context) => SetupManager(),
+        ),
+        ChangeNotifierProvider<SettingsManager>(
+          builder: (context)=> SettingsManager(),
+        ),
+        ChangeNotifierProvider<ProgramsViewModel>(
+          builder: (context)=> ProgramsViewModel(),
+        ),
+        ChangeNotifierProvider<WeightViewModel>(
+          builder: (context)=> WeightViewModel(),
+        ),
+        ChangeNotifierProvider<PhotosViewModel>(
+          builder: (context)=> PhotosViewModel(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: MyApp.appName,
+        darkTheme: ThemeData(
+          iconTheme: Theme.of(context).iconTheme.copyWith(
+              color: kFitPrimaryLight
+          ),
+            primaryColor: kFitPrimaryLight,
+            scaffoldBackgroundColor: kFitDarkScaffoldBackground,
+            accentColor: kFitPrimaryLight,
+            backgroundColor: kFitDarkScaffoldBackground,
+            brightness: Brightness.dark,
+            primaryColorLight: kFitGreyDark,
+            cardColor: kFitDarkCard,
+            bottomAppBarColor: kFitDarkCard,
+            toggleableActiveColor: kFitPrimary,
+            canvasColor: kFitDarkCard,
+            dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))) )
 
-              if(snapshot.data){
-                statusBarController.enableLightStatusBar();
-                statusBarController.enableLightNavigationBar();
-                statusBarController.setNavigationBarColor(Colors.black);
+
+        ),
+        theme: ThemeData(
+          iconTheme: Theme.of(context).iconTheme.copyWith(
+              color: kFitPrimary
+          ),
+          primaryColor: kFitPrimary,
+          scaffoldBackgroundColor: kFitScaffoldBackground,
+          accentColor: kFitPrimary,
+          toggleableActiveColor: kFitPrimary,
+          brightness: Brightness.light,
+          primaryColorLight: kFitGreyLight,
+          cardColor:kFitCard,
+          bottomAppBarColor: kFitCard,
+          dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))) )
+
+        ),
+        home: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowGlow();
+            return true;
+          },
+          child: Consumer(
+              builder: (context,SessionManager sessionManager,_) {
+
+
+
+                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                    statusBarColor: Colors.transparent,
+                    systemNavigationBarColor: Theme.of(context).canvasColor
+                ));
+
+
+                switch(sessionManager.sessionState){
+                  case SessionState.Uninitialized:
+                    return SplashScreen();
+                    break;
+                  case SessionState.Unauthenticated:
+                    return LoginScreen();
+                    break;
+                  case SessionState.Authenticated:
+                    return MainScreen();
+                    break;
+                  case SessionState.Registered:
+                    return SetupScreen();
+                    break;
+                  case SessionState.Authenticating:
+                    return LoginScreen();
+                    break;
+                  default:
+                    return LoginScreen();
+                }
               }
-
-             SystemChannels.lifecycle.setMessageHandler((msg){
-               if(msg == AppLifecycleState.resumed.toString() && snapshot.data){
-                 statusBarController.enableLightStatusBar();
-                 statusBarController.enableLightNavigationBar();
-                 statusBarController.setNavigationBarColor(Colors.black);
-
-               }else if(msg == AppLifecycleState.resumed.toString()){
-                   statusBarController.enableDarkStatusBar();
-                   statusBarController.enableDarkNavigationBar();
-                   statusBarController.setNavigationBarColor(Colors.white);
-               }
-             });
-             
-            return MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  title: appName,
-                  theme: snapshot.data ? darkTheme : lightTheme,
-                  home: FitSplashScreen()
-      );}
+          ),
+        )
+      ),
     );
+
   }
 }
 

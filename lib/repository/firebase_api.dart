@@ -1,59 +1,38 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fitphone/model/account_info_model.dart';
 import 'package:fitphone/model/photo_model.dart';
+import 'package:fitphone/model/program_model.dart';
+import 'package:fitphone/model/programs_info_model.dart';
+import 'package:fitphone/model/settings_model.dart';
 import 'package:fitphone/model/user_model.dart';
 import 'package:fitphone/utils/firebase_result.dart';
 import 'package:fitphone/utils/passcode.dart';
 import 'package:intl/intl.dart';
+import 'package:random_string/random_string.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirebaseUserAPI {
-  static final FirebaseUserAPI _singleton = FirebaseUserAPI._internal();
+class FirebaseAPI {
+  static final FirebaseAPI _singleton = FirebaseAPI._internal();
   FirebaseAuth _firebaseAuth;
-  FirebaseDatabase _firebaseDatabase;
-  FirebaseApp _firebaseApp;
-  DatabaseReference database;
+  Firestore _firestore;
 
-  factory FirebaseUserAPI() {
+  factory FirebaseAPI() {
     return _singleton;
   }
 
-  FirebaseUserAPI._internal() {
-    setAppFirebase();
+  FirebaseAPI._internal() {
     _firebaseAuth = FirebaseAuth.instance;
-    _firebaseDatabase = FirebaseDatabase(app: _firebaseApp);
-    _firebaseDatabase.setPersistenceEnabled(true);
-    _firebaseDatabase.setPersistenceCacheSizeBytes(10000000);
-    database = _firebaseDatabase.reference();
+    _firestore = Firestore.instance;
   }
 
-  setAppFirebase() async {
-    _firebaseApp = await FirebaseApp.configure(
-      name: 'db2',
-      options: Platform.isIOS
-          ? const FirebaseOptions(
-              googleAppID: '1:81463391287:ios:04e19056661a789d',
-              gcmSenderID: '81463391287',
-              databaseURL: 'https://fitphone-93ca4.firebaseio.com',
-            )
-          : const FirebaseOptions(
-              googleAppID: '1:81463391287:ios:04e19056661a789d',
-              apiKey: 'AIzaSyBIHZ4uB7-sZKwS1rMG4_1s8XpoTrItdyA',
-              databaseURL: 'https://fitphone-93ca4.firebaseio.com',
-            ),
-    );
-  }
 
-  Future<FirebaseResultCallback> loginUserWithEmailAndPassword(
-      String email, String password) async {
-    FirebaseResultCallback firebaseResultCallback =
-        new FirebaseResultCallback();
+  Future<FirebaseResultCallback> loginUserWithEmailAndPassword(String email, String password) async {
+    FirebaseResultCallback firebaseResultCallback = new FirebaseResultCallback();
 
-    await _firebaseAuth
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then((value) {
+    await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password).then((value) {
       if (value != null) {
         firebaseResultCallback.success = true;
         firebaseResultCallback.error = "";
@@ -66,19 +45,31 @@ class FirebaseUserAPI {
     return firebaseResultCallback;
   }
 
-  Future<FirebaseResultCallback> registerUserWithEmailAndPassword(
-      String name, String email, String password, String passcode) async {
+  Future<FirebaseResultCallback> registerUserWithEmailAndPassword(String name, String email, String password, String passcode) async {
     FirebaseResultCallback firebaseResultCallback = FirebaseResultCallback();
 
     if (passcode == Passcode().passcode) {
 
-      await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((user) {
-        if (user != null) {
+      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then((result) {
+        if (result != null) {
           firebaseResultCallback.success = true;
           firebaseResultCallback.error = "";
-          database.child("users").child(user.uid).child("profile").set(User.empty(name: name).toMap());
+          _firestore.collection("users").document(result.user.uid).setData(User.init(result.user.uid, name, DateTime.now().millisecondsSinceEpoch).toMap());
+          _firestore.collection(("users")).document((result.user.uid)).collection("settings").document("settings").setData(Settings.init().toMap());
+          _firestore.collection(("users")).document((result.user.uid)).collection("program_info").document("program_info").setData(ProgramInfo.init().toMap());
+          _firestore.collection(("users")).document((result.user.uid)).collection("account_info").document("account_info").setData(AccountInfo.init().toMap());
+
+
+          getLatestProgramOne().then((value){
+            for(var p in value.documents){
+              Program program = Program.fromMap(p.data);
+
+              addProgram(program.toMap(), result.user.uid);
+              updateProgramInfo(result.user.uid, {"primaryProgram": program.name});
+            }
+          });
+
+
         }
       }).catchError((error) {
         firebaseResultCallback.success = false;
@@ -92,17 +83,16 @@ class FirebaseUserAPI {
     return firebaseResultCallback;
   }
 
-  Stream<Event>getUserData(String id){
-    return database.child("users").child(id).child("profile").onValue;
+  Stream<DocumentSnapshot>getUserData(String id){
+    return _firestore.collection("users").document(id).snapshots();
   }
 
   Future<DataSnapshot> getUserDataOnce(String id){
-    return database.child("users").child(id).child("profile").once();
+    return null;
   }
 
-  updateUserProfile(Map<String,dynamic> data) async{
-    var userId = await getCurrentUser().then((user) => user.uid).catchError((error) => print(error?.toString()));
-    database.child("users").child(userId).child("profile").update(data);
+  updateUserData(Map<String,dynamic> data, String userId) async {
+    await _firestore.collection("users").document(userId).setData(data,merge: true);
   }
 
   Stream<FirebaseUser> checkLoginUser() {
@@ -142,93 +132,217 @@ class FirebaseUserAPI {
     var id = await getCurrentUser().then((user) => user.uid);
 
     if (id != null) {
-      StorageReference ref =
-          FirebaseStorage.instance.ref().child("Photos_$id/profileImage$id");
+      String path = "Photos_$id/profileImage$id";
+      StorageReference ref = FirebaseStorage.instance.ref().child(path);
       StorageUploadTask task = ref.putFile(file);
-
       StorageTaskSnapshot storageTaskSnapshot = await task.onComplete;
       String downloadUrl = await storageTaskSnapshot.ref
           .getDownloadURL()
           .catchError((error) => print);
 
-      var map = {"photoUrl": downloadUrl};
+      var map = {"photoUrl" : downloadUrl};
 
-      await database
-          .child("users")
-          .child(id)
-          .child("profile").update(map);
+      _firestore.collection("users").document(id).updateData(map);
+
     }
   }
 
   Future<Null> uploadSelfie(File file) async {
+
     var id = await getCurrentUser().then((user) => user.uid);
 
     String folderName = new DateFormat.yMMMd().format(new DateTime.now()).toString();
 
     if (id != null) {
-      StorageReference ref = FirebaseStorage.instance.ref().child("Photos_$id/$folderName/${id}image${DateFormat.HOUR24_MINUTE}");
+
+      String path = "Photos_$id/$folderName/${id}image${randomString(10)}";
+      StorageReference ref = FirebaseStorage.instance.ref().child(path);
       StorageUploadTask task = ref.putFile(file);
 
       StorageTaskSnapshot storageTaskSnapshot = await task.onComplete;
       String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
 
-      PhotoModel photoModel = PhotoModel(url: downloadUrl, date: DateFormat.yMMMd().format(new DateTime.now()).toString());
+      PhotoModel photoModel = PhotoModel(
+          url: downloadUrl,
+          date: DateTime.now().millisecondsSinceEpoch,
+          name: "",
+          path: path
+      );
 
-      var photoData = photoModel.toMap();
+      final photoData = photoModel.toMap();
 
-      await database
-          .child("users")
-          .child(id)
-          .child("photos")
-          .push()
-          .set(photoData);
+      _firestore.collection("users").document(id).collection("photos").add(photoData);
+
     }
   }
 
-
-  Stream<Event>getPhotos(String id){
-    return database.child("users").child(id).child("photos").onValue;
+  Future<void> updateSelfieFolder(String userId , String photosId,String folderName ) async{
+    await  _firestore.collection("users").document(userId).collection("photos").document(photosId).updateData({"folder" : folderName});
   }
 
-  addWeight(double weight) async {
-    var id = await getCurrentUser().then((user) => user.uid).catchError((error) => print(error?.toString()));
-    var date = DateFormat.yMMMd().format(new DateTime.now()).toString();
+  Future<void> updateSelfieName(String userId , String photosId,String name ) async{
+    await  _firestore.collection("users").document(userId).collection("photos").document(photosId).updateData({"name" : name});
+  }
+
+  Stream<QuerySnapshot>getSelfie(String id){
+    return _firestore.collection("users").document(id).collection("photos").where("folder",isEqualTo: "").snapshots();
+  }
+
+  int weekNumber(DateTime date) {
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    return ((dayOfYear - date.weekday + 10) / 7).floor();
+  }
+
+  addWeight(String id ,double weight) async {
+
+    var date = DateTime.now();
 
     if (id != null) {
       var weightData = {
         "weight": weight,
-        "date": date
+        "date": date.millisecondsSinceEpoch,
+        "day" : date.day,
+        "week" : weekNumber(date),
+        "month" : date.month,
+        "year" : date.year
       };
 
-      await database.child("users").child(id).child("weights").child(date).set(weightData);
+    await _firestore.collection("users").document(id).collection("weights").add(weightData);
     }
   }
 
-
-  Stream<Event> getWeights(String id){
-    return database.child("users").child(id).child("weights").onValue.handleError((error) => print(error?.toString()));
+  Stream<QuerySnapshot> getWeights(String id){
+    return  _firestore.collection("users").document(id).collection("weights").snapshots();
   }
 
-  Future<String> getWeightUnit() async{
-    
-    var userId = await getCurrentUser().then((user) => user.uid).catchError((error) => print(error?.toString()));
-    if(userId !=null){
-      Future<String> result = database.child("users").child(userId).child("profile").child("weightUnit").once().then((data) => data.value);
-      return result;
-    }
-    return Future.value("");
+  addNutritions(Map<String,dynamic> map) async{
+    var id = await getCurrentUser().then((user) => user.uid).catchError((error) => print(error?.toString()));
+    await _firestore.collection("users").document(id).collection("nutritions").document("nutritions").setData(map,merge: true);
   }
 
 
-  Future<DataSnapshot> getWorkout(String program, String programType, String workoutDay) async{
-    return await  database.child("programs").child(program).child(programType).child(workoutDay).once();
+  updateNutritions(Map<String,dynamic> map) async{
+    var id = await getCurrentUser().then((user) => user.uid).catchError((error) => print(error?.toString()));
+    await _firestore.collection("users").document(id).collection("nutritions").document("nutritions").updateData(map);
+  }
+  
+  setTheme(String theme , String userId) async{
+
+    var map = {"theme" : theme};
+
+    await _firestore.collection("users").document(userId).collection("settings").document("settings").updateData(map);
   }
 
-  Future<DataSnapshot> getWorkoutsDay(String program, String programType) async{
-    return await database.child("programs").child(program).child(programType).once();
+  setUnit(String unit , String userId) async{
+
+    var map = {"units" : unit};
+
+    await _firestore.collection("users").document(userId).collection("settings").document("settings").updateData(map);
   }
 
-  Future<DataSnapshot> getProgramsName(){
-    return database.child("programs").once();
+  addExercise(String userId ,String programID,Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("programs").document(programID).collection("exercises").add(map);
   }
+
+  Future<String>addProgram(Map<String,dynamic> map, String userId) async{
+    return await _firestore.collection("users").document(userId).collection("programs").add(map).then((ref) => ref.documentID);
+  }
+
+  addPhotosFolder(String userId, Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("folders").add(map);
+  }
+
+  updatePhotosFolder(String userId,String folderId, Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("folders").document(folderId).updateData(map);
+  }
+
+  updateProgramInfo(String userId, Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("program_info").document("program_info").updateData(map);
+  }
+
+  addFeedback(Map<String,dynamic> map) async{
+    await _firestore.collection("feedback").add(map);
+  }
+
+  Future<void> deleteWeight(String userId, String weightId) async{
+    await _firestore.collection("users").document(userId).collection("weights").document(weightId).delete();
+  }
+
+  Future<void> deletePhotoFolder(String userId, String folderId) async {
+    await _firestore.collection("users").document((userId)).collection("folders").document(folderId).delete();
+  }
+
+  Future<void> deletePhoto(String userId, String photoId, String photoPath) async {
+
+    StorageReference ref = FirebaseStorage.instance.ref().child(photoPath);
+    await ref.delete().then((_){
+      _firestore.collection("users").document((userId)).collection("photos").document(photoId).delete();
+    });
+  }
+
+  Stream<DocumentSnapshot> getNutritions(String id){
+    return  _firestore.collection("users").document(id).collection("nutritions").document("nutritions").snapshots();
+  }
+
+  Stream<DocumentSnapshot> getSettings(String id){
+    return  _firestore.collection("users").document(id).collection("settings").document("settings").snapshots();
+  }
+
+  Future<DocumentSnapshot> getSettingOnce(String id) async{
+   return await _firestore.collection("users").document(id).collection("settings").document("settings").get();
+  }
+
+  Stream<QuerySnapshot> getLatestProgram(){
+   return _firestore.collection("programs").orderBy("date",descending: true).limit(1).snapshots();
+  }
+
+  Future<QuerySnapshot> getLatestProgramOne(){
+    return _firestore.collection("programs").orderBy("date",descending: true).limit(1).getDocuments(source: Source.server);
+  }
+
+  Stream<QuerySnapshot> getPrograms(String userId) {
+    return _firestore.collection("users").document(userId).collection("programs").orderBy("date",descending: true).snapshots();
+  }
+
+  Stream<DocumentSnapshot> getProgramInfo(String userId){
+    return _firestore.collection("users").document(userId).collection("program_info").document("program_info").snapshots();
+  }
+
+
+  Stream<DocumentSnapshot> getAccountInfo(String userId){
+    return _firestore.collection("users").document(userId).collection("account_info").document("account_info").snapshots();
+  }
+  
+  Future<QuerySnapshot> getExercises(String userId,String programId,String intensity, String workout) async {
+    return await _firestore.collection("users").document(userId).collection("programs").document(programId).collection("exercises").orderBy("order").where("program intensity",isEqualTo: intensity,).where("workout name",isEqualTo: workout).getDocuments();
+  }
+
+
+  Future<QuerySnapshot> getGlobalExercises(String programId) async {
+    return await _firestore.collection("programs").document(programId).collection("exercises").getDocuments();
+  }
+
+  Stream<QuerySnapshot> getWeightFromWeek(String id ,int week, int year){
+    return  _firestore.collection("users").document(id).collection("weights").where("week" ,isEqualTo: week).where("year",isEqualTo: year).snapshots();
+  }
+
+  Stream<QuerySnapshot> getWeightFromMonth(String id ,int month,int year){
+    return  _firestore.collection("users").document(id).collection("weights").where("month" ,isEqualTo: month).where("year",isEqualTo: year).snapshots();
+  }
+
+  Stream<QuerySnapshot> getPhotoFolders(String userId){
+    return _firestore.collection("users").document(userId).collection("folders").snapshots();
+  }
+
+  Future<QuerySnapshot> getPhotosFromFolder(String userId,String folderName) async{
+    return await _firestore.collection("users").document(userId).collection("photos").where("folder",isEqualTo: folderName).getDocuments();
+  }
+
+  Future<QuerySnapshot> getFolderCoverPhoto(String userId,String folderName) async{
+    return await _firestore.collection("users").document(userId).collection("photos").where("folder",isEqualTo: folderName).limit(1).getDocuments();
+  }
+
+
+
+
 }

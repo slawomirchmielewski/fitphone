@@ -1,0 +1,4 @@
+enum ViewState{
+  Login,
+  Register
+}
