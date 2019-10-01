@@ -33,10 +33,8 @@ class ImagesHelper{
     if(imageFile != null){
       File croppedFile = await ImageCropper.cropImage(
           sourcePath: imageFile?.path,
-          ratioX: 1.0,
-          ratioY: 1.0,
           maxHeight: 512,
-          maxWidth: 512
+          maxWidth: 512,
       ).catchError((error) => print);
        file = croppedFile;
     }

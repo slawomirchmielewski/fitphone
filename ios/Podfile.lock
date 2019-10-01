@@ -151,9 +151,12 @@ PODS:
   - GTMSessionFetcher/Core (1.2.2)
   - image_cropper (0.0.1):
     - Flutter
-    - TOCropViewController (~> 2.5.0)
+    - TOCropViewController (~> 2.5.1)
   - image_picker (0.0.1):
     - Flutter
+  - keyboard_visibility (0.5.0):
+    - Flutter
+    - Reachability
   - leveldb-library (1.20)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
@@ -163,6 +166,7 @@ PODS:
   - path_provider (0.0.1):
     - Flutter
   - Protobuf (3.8.0)
+  - Reachability (3.2)
   - screentheme (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -170,7 +174,7 @@ PODS:
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
-  - TOCropViewController (2.5.0)
+  - TOCropViewController (2.5.1)
   - webview_flutter (0.0.1):
     - Flutter
 
@@ -185,6 +189,7 @@ DEPENDENCIES:
   - flutter_statusbarcolor (from `.symlinks/plugins/flutter_statusbarcolor/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - screentheme (from `.symlinks/plugins/screentheme/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -214,6 +219,7 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - Protobuf
+    - Reachability
     - TOCropViewController
 
 EXTERNAL SOURCES:
@@ -237,6 +243,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  keyboard_visibility:
+    :path: ".symlinks/plugins/keyboard_visibility/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   screentheme:
@@ -275,16 +283,18 @@ SPEC CHECKSUMS:
   "gRPC-C++": 98be881723177d8c4faf5fdffacb582c7b4971a2
   gRPC-Core: bd9472c8daa2e414b9f8038ba667bf56ce0e02b8
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
-  image_cropper: f25bdfbf1ef970c9a0a0f78306fb6a0aaac7229e
+  image_cropper: 966bf742cd9cee8d78010ec5c67dd9e7826e6b19
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
+  keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   Protobuf: 3f617b9a6e73605565086864c9bc26b2bf2dd5a3
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   screentheme: 793ba944a4784d243b2c9828098502ca08310f2d
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
-  TOCropViewController: d86078d3a57a70c116bf3db7c89c80046a0e5fdf
+  TOCropViewController: 00dc36c4e4a0f4a45efa91adbf22df8a4fae01d3
   webview_flutter: 1aa7604e6cdb451a9b7ed2c37d5454c0b440246b
 
 PODFILE CHECKSUM: d231b65d6bea6d24555f84ca7901720538b5791f

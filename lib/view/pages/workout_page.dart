@@ -1,9 +1,12 @@
 import 'dart:io' show Platform;
 import 'dart:math';
 import 'package:fitphone/model/exercise_model.dart';
+import 'package:fitphone/widget/fit_button.dart';
+import 'package:fitphone/widget/fit_coutdown_time.dart';
 import 'package:fitphone/widget/fit_set_tile_view.dart';
 import 'package:fitphone/widget/video_player_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 
 
@@ -32,6 +35,8 @@ class _WorkoutPageState extends State<WorkoutPage> {
   int doneSet;
   double liftedWeight;
 
+  bool keyboardVisible;
+
 
   @override
   void initState() {
@@ -40,6 +45,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
     pageController = PageController(initialPage: 0,viewportFraction: 1);
     currentPageIndex = pageController.initialPage;
 
+
     setState(() {
       doneSet = 0;
       liftedWeight = 0;
@@ -47,7 +53,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
 
     if(Platform.isAndroid){
       setState(() {
-        bottomSheetHeight = 60;
+        bottomSheetHeight = 80;
       });
 
     }
@@ -56,6 +62,15 @@ class _WorkoutPageState extends State<WorkoutPage> {
         bottomSheetHeight = 90;
       });
     }
+
+
+    KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        setState(() {
+          keyboardVisible = visible;
+        });
+      },
+    );
 
   }
 
@@ -73,7 +88,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
   }
 
 
-  finishSet(int maxSets){
+  _finishSet(int maxSets){
     if(pageController.hasClients && doneSet == maxSets && currentPageIndex != workout.length -1){
       pageController.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeIn);
       setState(() {
@@ -84,6 +99,43 @@ class _WorkoutPageState extends State<WorkoutPage> {
       print("Finish");
     }
 
+  }
+
+
+  _showCounter(BuildContext context,int time){
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16,vertical: 32),
+          children: <Widget>[
+            Container(
+               height: MediaQuery.of(context).size.height * 0.4,
+                width: MediaQuery.of(context).size.height * 0.85,
+                child: Center(
+                  child: CountDownTimer(
+                    time: time,
+                    onFinish: (finished){
+                      if(finished == true){
+                        Navigator.pop(context);
+                      }
+                    },
+                  )
+                ),
+            ),
+            SizedBox(
+              width: 100,
+              child: FitButton(
+                buttonText: "Skip timer",
+                onTap: (){
+                  Navigator.pop(context);
+                },
+              ),
+            )
+          ],);
+        }
+    );
   }
 
   @override
@@ -194,13 +246,16 @@ class _WorkoutPageState extends State<WorkoutPage> {
                         set: setIndex.toString(),
                         reps: workout[setIndex].reps,
                         weight: workout[setIndex].weights[setIndex],
-                        onDonePressed: () {
+                        onDonePressed: (weight) {
                           setState(() {
+                            if(workout[index].restTime != 0){
+                              _showCounter(context,workout[index].restTime);
+                            }
                             setState(() {
                               doneSet++;
+                              liftedWeight = liftedWeight + weight;
                             });
-                            print(doneSet);
-                            finishSet(workout[index].set);
+                            _finishSet(workout[index].set);
                           });
                         },
                       );
@@ -212,7 +267,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
             );
           }
       ),
-      bottomSheet: Container(
+      bottomSheet:keyboardVisible != true ? Container(
         height: bottomSheetHeight,
         width: MediaQuery.of(context).size.width,
         child: Column(
@@ -224,7 +279,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
             Text(getNextWorkoutName(),style: Theme.of(context).textTheme.subhead),
           ],
         )
-      ),
+      ) : null,
     );
   }
 }

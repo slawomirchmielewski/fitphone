@@ -12,15 +12,34 @@ class PhotosViewModel extends ChangeNotifier{
 
   String userId;
   String _tempFolderName;
-  String _tempFolderColor = "0xFFF5F5F5";
+
   String _tempPhotoName;
 
   List<PhotoModel> _photos = [];
   List<Folder> _folders = [];
 
 
+   List<int> _colors = [
+    0xFFF7D488,
+    0xFF00E8B5,
+    0xFFA47963,
+    0xFFA997DF,
+    0xFFDCCFEC,
+    0xFFFFE975,
+    0xFF28C8E8,
+    0XFFab1749,
+    0xFFec8248,
+    0xFF654bd6,
+    0xFF73ab5c,
+    0XFF7387b0
+  ];
+
+  String _tempFolderColor = "0xFFF7D488";
+
+
   List<PhotoModel> get photos => _photos;
   List<Folder> get folders => _folders;
+  List<int> get colors => _colors;
 
   String get tempFolderName => _tempFolderName;
   String get temFolderColor => _tempFolderColor;

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fitphone/view_model/nutrtion_view_model.dart';
 import 'package:fitphone/widget/base_widget/page.dart';
 import 'package:flutter/material.dart';
@@ -85,6 +87,7 @@ class _NutritionUpdaterScreenState extends State<NutritionUpdaterScreen> {
 
     return Page(
       automaticallyImplyLeading: true,
+      appBarTitle: Text("Daily nutrition intake"),
       actions: <Widget>[
         FlatButton(
           onPressed: (){
@@ -112,7 +115,9 @@ class _NutritionUpdaterScreenState extends State<NutritionUpdaterScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 36),
-              Text("Update your daily nutrition intake.",style: Theme.of(context).textTheme.title),
+              Text("Update your daily \nnutrition intake.",style: Theme.of(context).textTheme.headline.copyWith(
+                fontWeight: FontWeight.bold
+              ),maxLines: 2),
               SizedBox(height: 72),
               Container(
                   height: 120,

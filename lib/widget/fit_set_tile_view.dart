@@ -8,7 +8,7 @@ class FitSetListTile extends StatefulWidget {
   final String set;
   final double weight;
   final String reps;
-  final VoidCallback onDonePressed;
+  final Function(double) onDonePressed;
 
   FitSetListTile({
     @required this.set,
@@ -79,6 +79,7 @@ class _FitSetListTileState extends State<FitSetListTile> {
             width: 60,
             child: TextField(
               textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 hasFloatingPlaceholder: false,
@@ -104,7 +105,7 @@ class _FitSetListTileState extends State<FitSetListTile> {
               setState(() {
                 isMark = true;
               });
-              widget.onDonePressed();
+              widget.onDonePressed(weight);
             } ,
             child: Container(
               width: 60,
