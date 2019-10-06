@@ -84,11 +84,11 @@ class _PageState extends State<Page> {
               title: widget.appBarTitle,
               actions: widget.actions,
               floating: true,
-              forceElevated: widget.expandedHeight != null ? false : true,
+              forceElevated: false,
               flexibleSpace: widget.expandedHeight != null
                   ? FlexibleSpaceBar(
                       centerTitle: false,
-                      collapseMode: CollapseMode.none,
+                      collapseMode: CollapseMode.pin,
                       title: Text(
                         widget.pageName,
                         style: Theme.of(context).textTheme.headline.copyWith(

@@ -54,6 +54,7 @@ dependencies:
   transparent_image: ^1.0.0
   bubble_tab_indicator: ^0.1.4
   keyboard_visibility: ^0.5.6
+  confetti: ^0.1.1
 
 
 dev_dependencies:
@@ -100,6 +101,7 @@ flutter:
   - assets/program.png
   - assets/folder.png
   - assets/trophy_hand.png
+  - assets/trophy.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

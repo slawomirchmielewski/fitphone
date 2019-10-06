@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:fitphone/view/pages/home_page.dart';
 import 'package:fitphone/view/pages/photos_page.dart';
 import 'package:fitphone/view/pages/programs_page.dart';
@@ -62,24 +63,25 @@ class _MainScreenState extends State<MainScreen> {
         unselectedItemColor: Colors.grey,
         unselectedFontSize: 12,
         selectedFontSize: 12,
+        backgroundColor: Theme.of(context).cardColor,
         onTap: uiHelper.setBottomNavigationIndex,
         currentIndex: uiHelper.bottomNavigationIndex,
         items: [
           BottomNavigationBarItem(
             title: Text("Home"),
-            icon: Icon(Ionicons.ios_home)
+            icon: Platform.isIOS ? Icon(Ionicons.ios_home) : Icon(Icons.home)
           ),
           BottomNavigationBarItem(
               title: Text("Programs"),
-              icon: Icon(Ionicons.ios_paper)
+              icon: Platform.isIOS ? Icon(Ionicons.ios_paper) :Icon(Icons.filter_frames)
           ),
           BottomNavigationBarItem(
               title: Text("Progress"),
-              icon: Icon(Ionicons.ios_stats)
+              icon:  Platform.isIOS ? Icon(Ionicons.ios_stats) :Icon(Icons.insert_chart)
           ),
           BottomNavigationBarItem(
               title: Text("Gallery"),
-              icon: Icon(Ionicons.ios_albums)
+              icon:  Platform.isIOS ? Icon(Ionicons.ios_albums) : Icon(Icons.perm_media)
           )
         ],
       ));

@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 
 class Exercise{
-
+  String id;
   String workoutName;
   String programIntensity;
   String name;
@@ -13,6 +13,7 @@ class Exercise{
   String url;
 
   Exercise({
+    this.id,
     this.workoutName,
     this.programIntensity,
     this.name,
@@ -32,7 +33,7 @@ class Exercise{
       name: map["name"] ?? "",
       order: map["order"] ?? 0,
       set: map["sets"] ?? 0,
-      weights: map["weight"] ?? [],
+      weights: map["weights"]?.cast<double>() ?? [],
       reps: map["reps"] ?? "",
       url: map["video_url"] ?? "",
       restTime: map["rest time"] ?? 0
@@ -48,7 +49,7 @@ class Exercise{
       "order" : order,
       "sets" : set,
       "reps" : reps,
-      "weights" : weights,
+      "weights" : [],
       "video_url" : url,
       "rest time" : restTime
     };

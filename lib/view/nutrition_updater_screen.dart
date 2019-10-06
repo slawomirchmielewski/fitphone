@@ -115,7 +115,7 @@ class _NutritionUpdaterScreenState extends State<NutritionUpdaterScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 36),
-              Text("Update your daily \nnutrition intake.",style: Theme.of(context).textTheme.headline.copyWith(
+              Text("Update your daily nutrition intake.",style: Theme.of(context).textTheme.headline.copyWith(
                 fontWeight: FontWeight.bold
               ),maxLines: 2),
               SizedBox(height: 72),

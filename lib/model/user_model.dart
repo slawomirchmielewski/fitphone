@@ -96,7 +96,4 @@ class User {
     DateFormat dateFormat = DateFormat.yMMMd();
     return dateFormat.format(DateTime.fromMillisecondsSinceEpoch(registrationDate));
   }
-
-
-
 }

@@ -3,6 +3,7 @@ import 'package:fitphone/view_model/programs_view_model.dart';
 import 'package:fitphone/widget/base_widget/card_base.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 
 
@@ -15,9 +16,9 @@ class FitCompletedWorkoutsCard extends StatelessWidget {
     final ProgramsViewModel programsViewModel = Provider.of<ProgramsViewModel>(context);
 
     return CardBase(
-      icon: Icons.done,
+      icon: Ionicons.ios_trophy,
       title: "Workouts",
-      iconColor: Colors.pink,
+      iconColor: Colors.amber,
       onTap: (){
         showCupertinoModalPopup(context: context, builder: (context)=> WorkoutsActivityScreen());
       },

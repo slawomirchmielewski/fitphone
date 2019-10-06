@@ -1,5 +1,6 @@
 import 'package:fitphone/view_model/settings_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 
 
@@ -19,8 +20,6 @@ class FitSetListTile extends StatefulWidget {
 
   @override
   _FitSetListTileState createState() => _FitSetListTileState();
-
-
 }
 
 class _FitSetListTileState extends State<FitSetListTile> {
@@ -28,6 +27,9 @@ class _FitSetListTileState extends State<FitSetListTile> {
 
   bool isMark;
   double weight;
+
+
+  static const double iconSize = 32;
 
 
   @override
@@ -38,6 +40,16 @@ class _FitSetListTileState extends State<FitSetListTile> {
       weight = 0;
     });
 
+  }
+
+  onPressed(){
+    if(!isMark){
+      setState(() {
+        isMark = true;
+      });
+      widget.onDonePressed(weight);
+
+    }
   }
 
   @override
@@ -65,7 +77,6 @@ class _FitSetListTileState extends State<FitSetListTile> {
       height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        //color: Theme.of(context).cardColor,
       ),
       width: double.infinity,
       child: Row(
@@ -77,7 +88,7 @@ class _FitSetListTileState extends State<FitSetListTile> {
           ),
           Container(
             width: 60,
-            child: TextField(
+            child:  isMark != true ? TextField(
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
@@ -93,7 +104,7 @@ class _FitSetListTileState extends State<FitSetListTile> {
                   weight = double.tryParse(value);
                 });
               } ,
-            ),
+            ) : Text("${weight.toInt()} ${settingsManager.unitShortName}",textAlign: TextAlign.center,style: isMark == true ? _textStyleDone : _textStyle),
           ),
 
           Container(
@@ -102,14 +113,11 @@ class _FitSetListTileState extends State<FitSetListTile> {
           ),
           GestureDetector(
             onTap:(){
-              setState(() {
-                isMark = true;
-              });
-              widget.onDonePressed(weight);
+              onPressed();
             } ,
             child: Container(
               width: 60,
-              child: Icon(isMark == true ? Icons.done : Icons.radio_button_unchecked)
+              child: Icon(isMark == true ? Ionicons.ios_checkmark_circle : Ionicons.ios_radio_button_off,color:isMark == true ? Theme.of(context).primaryColor : Colors.grey,size: iconSize, )
             ),
           )
         ],

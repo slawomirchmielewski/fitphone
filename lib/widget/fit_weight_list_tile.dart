@@ -28,9 +28,11 @@ class FitWeightListTile extends StatelessWidget {
         textBaseline: TextBaseline.alphabetic,
         children: <Widget>[
           Text("${settingsManager.getConvertedWeight(weightModel.weight).round()}",style: Theme.of(context).textTheme.subhead.copyWith(
-            fontWeight: FontWeight.bold
+            fontWeight: FontWeight.w700
           ),),
-          Text("${settingsManager.unitShortName}"),
+          Text("${settingsManager.unitShortName}",style: Theme.of(context).textTheme.subtitle.copyWith(
+            fontSize: 10
+          ),),
         ],
       ),
       subtitle: Text(weightModel.getDate()),

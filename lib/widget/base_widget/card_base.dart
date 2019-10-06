@@ -45,7 +45,7 @@ class CardBase extends StatelessWidget{
       ),
       child: Material(
         type: MaterialType.card,
-        color:backgroundColor ?? Theme.of(context).cardColor,
+        color:backgroundColor ?? Theme.of(context).primaryColorLight,
         elevation: elevation ?? 0,
         borderOnForeground:true ,
         shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(borderRadius))),

@@ -3,6 +3,7 @@ import 'package:fitphone/view/login_screen.dart';
 import 'package:fitphone/view/main_screen.dart';
 import 'package:fitphone/view/setup_screen.dart';
 import 'package:fitphone/view/splash_screen.dart';
+import 'package:fitphone/view_model/done_workouts_view_model.dart';
 import 'package:fitphone/view_model/nutrtion_view_model.dart';
 import 'package:fitphone/view_model/photos_view_model.dart';
 import 'package:fitphone/view_model/session_manager.dart';
@@ -73,7 +74,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<SessionManager>(
@@ -103,6 +103,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<PhotosViewModel>(
           builder: (context)=> PhotosViewModel(),
         ),
+        ChangeNotifierProvider<DoneWorkoutsViewModel>(
+          builder: (context)=> DoneWorkoutsViewModel(),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

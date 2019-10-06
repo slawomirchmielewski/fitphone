@@ -45,10 +45,12 @@ class WorkoutsView extends StatelessWidget {
                   SizedBox(width: 16),
                   Text("Reps: ${exercises[index].reps}"),
                   SizedBox(width: 16),
-                  Text("Rest: ${exercises[index].restTime}"),
+                  Text("Rest: ${exercises[index].restTime}min"),
                 ],
               ),
-              title: Text(exercises[index].name),
+              title: Text(exercises[index].name,style: Theme.of(context).textTheme.subhead.copyWith(
+                fontWeight: FontWeight.w700
+              ),),
             )
         )
       ],

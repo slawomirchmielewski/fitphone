@@ -92,23 +92,19 @@ class ProfileScreen extends StatelessWidget{
                       fontWeight: FontWeight.w600
                   ),),),
               ),
-              Divider(),
               ListTile(leading: Icon(Ionicons.ios_heart,color: Theme.of(context).iconTheme.color),title: Text("Active since"),trailing: Text(userViewModel.user != null ? userViewModel.user.getReadableDate() : "",
                 style: Theme.of(context).textTheme.subhead.copyWith(
                     fontWeight: FontWeight.w600
                 ),),),
-              Divider(),
               ListTile(leading: Icon(Ionicons.ios_hourglass,color: Theme.of(context).iconTheme.color),title: Text("Day"),trailing: Text(userViewModel.day != null ? userViewModel.day.toString() : "",
                 style: Theme.of(context).textTheme.subhead.copyWith(
                     fontWeight: FontWeight.w600
                 ),),),
-              Divider(),
               ListTile(leading: Icon(Ionicons.ios_speedometer,color: Theme.of(context).iconTheme.color),title: Text("Start weight"),
                 trailing: Text(userViewModel.user != null ? "${settingsManager.getConvertedWeight(userViewModel.user.weight).round()} ${settingsManager.unitShortName}" : "",
                   style: Theme.of(context).textTheme.subhead.copyWith(
                       fontWeight: FontWeight.w600
                   ),),),
-              Divider(),
             ],
           ),
         )

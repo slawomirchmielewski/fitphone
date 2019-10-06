@@ -27,8 +27,8 @@ class FitProgressBarWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               CircularPercentIndicator(
-                radius: 100,
-                lineWidth: 8,
+                radius: MediaQuery.of(context).size.width * 0.4,
+                lineWidth: 14,
                 percent: userViewModel.user != null ? userViewModel.user.levelPercent : 0,
                 animation: true,
                 circularStrokeCap: CircularStrokeCap.values[1],
@@ -38,7 +38,7 @@ class FitProgressBarWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(userViewModel.user != null ? "Level ${userViewModel.user.level}": "",style: Theme.of(context).textTheme.title.copyWith(
+                    Text(userViewModel.user != null ? "Level ${userViewModel.user.level}": "",style: Theme.of(context).textTheme.subhead.copyWith(
                         fontWeight: FontWeight.bold
                     ),),
                     Text(userViewModel.user != null ? "XP ${userViewModel.user.xp.round()} / ${userViewModel.user.maxXp.round()} " :" ",

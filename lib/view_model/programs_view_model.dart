@@ -29,12 +29,9 @@ class ProgramsViewModel extends ChangeNotifier{
   CopyState _copyState = CopyState.idle;
 
 
+
+
   Program _tempProgram;
-
-
-  //TODO delete temp program id
-  String _programId = "IZ4iYf6r0XFdUWKDW7ct";
-
 
   ProgramInfo get programInfo => _programInfo;
   AccountInfo get accountInfo => _accountInfo;
@@ -43,6 +40,7 @@ class ProgramsViewModel extends ChangeNotifier{
 
 
   List<Program> get programs => _programs;
+
 
   List<Exercise> get workout3A => _workout3A;
   List<Exercise> get workout3B => _workout3B;
@@ -119,7 +117,6 @@ class ProgramsViewModel extends ChangeNotifier{
 
     Program program = _programs.where((e) => e.name == _programInfo.primaryProgram).first;
 
-
     print("Program Id : ${program.id}");
 
     if(_programInfo.primaryWorkout == "3d"){
@@ -156,6 +153,12 @@ class ProgramsViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  incrementCompletedExercises(){
+
+    var count = programInfo.completedExercises  + 1;
+    FirebaseAPI().updateProgramInfo(_userId, {"completedExercises" : count});
+
+  }
 
   Future<List<Exercise>> _fetchExercises(String programId,String programIntensity, String workoutName) async {
 
@@ -165,6 +168,7 @@ class ProgramsViewModel extends ChangeNotifier{
         if(snapshot != null){
           for(var s in snapshot.documents){
             Exercise exercise = Exercise.fromMap(s.data);
+            exercise.id = s.documentID;
             exercisesList.add(exercise);
           }
         }
@@ -201,6 +205,15 @@ class ProgramsViewModel extends ChangeNotifier{
 
     });
   }
+
+
+  updateWeightList(List<double> weights,exerciseId) async{
+
+    Program program = _programs.where((e) => e.name == _programInfo.primaryProgram).first;
+
+    await FirebaseAPI().updateExerciseWeight(_userId, program.id, exerciseId, {"weights" : weights});
+  }
+
 
   downloadPrograms() async{
 
@@ -239,4 +252,5 @@ class ProgramsViewModel extends ChangeNotifier{
        notifyListeners();
      }
   }
+
 }

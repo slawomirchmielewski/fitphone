@@ -147,7 +147,7 @@ class FirebaseAPI {
     }
   }
 
-  Future<Null> uploadSelfie(File file) async {
+  Future<void> uploadSelfie(File file) async {
 
     var id = await getCurrentUser().then((user) => user.uid);
 
@@ -174,6 +174,8 @@ class FirebaseAPI {
       _firestore.collection("users").document(id).collection("photos").add(photoData);
 
     }
+
+    return "";
   }
 
   Future<void> updateSelfieFolder(String userId , String photosId,String folderName ) async{
@@ -260,9 +262,18 @@ class FirebaseAPI {
     await _firestore.collection("users").document(userId).collection("program_info").document("program_info").updateData(map);
   }
 
+  updateExerciseWeight(String userId,String programId,String exerciseId, Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("programs").document(programId).collection("exercises").document(exerciseId).setData(map,merge: true);
+  }
+
   addFeedback(Map<String,dynamic> map) async{
     await _firestore.collection("feedback").add(map);
   }
+
+  addDoneWorkout(String userId, Map<String,dynamic> map ) async{
+    await _firestore.collection("users").document(userId).collection("done_workouts").add(map);
+  }
+
 
   Future<void> deleteWeight(String userId, String weightId) async{
     await _firestore.collection("users").document(userId).collection("weights").document(weightId).delete();
@@ -308,7 +319,6 @@ class FirebaseAPI {
     return _firestore.collection("users").document(userId).collection("program_info").document("program_info").snapshots();
   }
 
-
   Stream<DocumentSnapshot> getAccountInfo(String userId){
     return _firestore.collection("users").document(userId).collection("account_info").document("account_info").snapshots();
   }
@@ -316,7 +326,6 @@ class FirebaseAPI {
   Future<QuerySnapshot> getExercises(String userId,String programId,String intensity, String workout) async {
     return await _firestore.collection("users").document(userId).collection("programs").document(programId).collection("exercises").orderBy("order").where("program intensity",isEqualTo: intensity,).where("workout name",isEqualTo: workout).getDocuments();
   }
-
 
   Future<QuerySnapshot> getGlobalExercises(String programId) async {
     return await _firestore.collection("programs").document(programId).collection("exercises").getDocuments();
@@ -342,7 +351,7 @@ class FirebaseAPI {
     return await _firestore.collection("users").document(userId).collection("photos").where("folder",isEqualTo: folderName).limit(1).getDocuments();
   }
 
-
-
-
+  Stream<QuerySnapshot> getDoneWorkouts(String userId){
+   return _firestore.collection("users").document(userId).collection("done_workouts").limit(20).snapshots();
+  }
 }

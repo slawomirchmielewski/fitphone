@@ -1,5 +1,5 @@
-import 'package:fitphone/widget/fit_chip_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 
 class FitProgramListTile<T> extends StatelessWidget {
@@ -18,6 +18,9 @@ class FitProgramListTile<T> extends StatelessWidget {
     this.onChange
   });
 
+
+  static const double iconSize = 38;
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -25,13 +28,10 @@ class FitProgramListTile<T> extends StatelessWidget {
         fontWeight: FontWeight.w600
       ),),
       subtitle: subtitle != null ? Text(subtitle) : null,
-      trailing: value != groupValue ? FitChipButton(
-        label: "Set primary",
-        onTap: onChange != null ? () {onChange(value);} : null,
-      ) : Text("PRIMARY",style: Theme.of(context).textTheme.subhead.copyWith(
-        color: Theme.of(context).primaryColor,
-        fontWeight: FontWeight.w700
-      ),)
+      trailing: value != groupValue ? GestureDetector(
+        child: Icon(Ionicons.ios_radio_button_off,size: iconSize,color: Colors.grey[300],),
+        onTap: () => onChange != null ? onChange(value) : null
+      ) : Icon(Ionicons.ios_checkmark_circle,size: iconSize,color: Theme.of(context).primaryColor)
     );
   }
 

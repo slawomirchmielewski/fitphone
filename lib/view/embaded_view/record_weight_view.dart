@@ -23,6 +23,7 @@ class RecordWeightView extends StatelessWidget {
 
     return Page(
       automaticallyImplyLeading: true,
+      appBarTitle: Text("Add weight"),
       pageName: pageName,
       actions: <Widget>[
         Consumer<WeightViewModel>(

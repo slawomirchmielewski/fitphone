@@ -29,8 +29,8 @@ class HomePage extends StatelessWidget {
 
     return Page(
     pageName: pageName,
-      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground : Theme.of(context).scaffoldBackgroundColor,
-      appBarColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground  : Theme.of(context).scaffoldBackgroundColor,
+     // backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground : Theme.of(context).scaffoldBackgroundColor,
+     // appBarColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground  : Theme.of(context).scaffoldBackgroundColor,
       expandedHeight: 100,
       centerTitle: true,
       actions: <Widget>[

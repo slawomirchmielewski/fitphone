@@ -28,6 +28,7 @@ class AllFoldersView extends StatelessWidget {
       children: <Widget>[
         ListView.builder(
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
             itemCount: photosViewModel.folders.length,
             itemBuilder: (context,index) => ListTile(

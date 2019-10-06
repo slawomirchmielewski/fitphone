@@ -112,8 +112,6 @@ class ProgramsPage extends StatelessWidget {
 
     return Page(
       expandedHeight: expandedHeight,
-      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground : Theme.of(context).scaffoldBackgroundColor,
-      appBarColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground  : Theme.of(context).scaffoldBackgroundColor,
       pageName: pageName,
       actions: <Widget>[
         GestureDetector(

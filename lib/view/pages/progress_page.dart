@@ -12,8 +12,6 @@ class ProgressPage extends StatelessWidget {
     final String pageName = "Progress";
 
     return Page(
-      backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground : Theme.of(context).scaffoldBackgroundColor,
-      appBarColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground  : Theme.of(context).scaffoldBackgroundColor,
       expandedHeight: 100,
       pageName: pageName,
       children: <Widget>[
@@ -24,7 +22,7 @@ class ProgressPage extends StatelessWidget {
          height: 200,
          decoration: BoxDecoration(
            borderRadius: BorderRadius.circular(10),
-           color: Theme.of(context).cardColor
+           color: Theme.of(context).primaryColorLight
          ),
          width: double.infinity,
          child: FitYearWeightChart(),
