@@ -48,6 +48,9 @@ class FinishedWorkoutView extends StatelessWidget {
     final SettingsManager settingsManager = Provider.of<SettingsManager>(context);
     final DoneWorkoutsViewModel doneWorkoutsViewModel = Provider.of<DoneWorkoutsViewModel>(context);
 
+
+
+
     return FitOnBackPress(
       child: FitConfettiWidget(
         child: Page(
@@ -128,6 +131,7 @@ class FinishedWorkoutView extends StatelessWidget {
                           time,
                           workoutName
                       );
+                      programsViewModel.updateDoneWorkouts(true, workoutName);
                       userViewModel.addPoints(10);
                       programsViewModel.incrementCompletedExercises();
                       Navigator.of(context).popUntil((rout) => rout.isFirst);

@@ -78,7 +78,7 @@ class _PageState extends State<Page> {
             slivers: <Widget>[
             SliverAppBar(
               bottom: widget.bottom,
-              backgroundColor: isShrink ? Theme.of(context).canvasColor : getAppBarColor(context),
+              backgroundColor: isShrink ? Theme.of(context).scaffoldBackgroundColor : getAppBarColor(context),
               automaticallyImplyLeading:
                   widget.automaticallyImplyLeading ?? false,
               title: widget.appBarTitle,

@@ -70,6 +70,7 @@ class ProgramsViewModel extends ChangeNotifier{
         _fetchProgramInfo();
         _fetchPrograms();
         _getLatestProgram();
+        _resetDoneWorkouts();
       }
     }).onError((error) => print);
   }
@@ -207,6 +208,38 @@ class ProgramsViewModel extends ChangeNotifier{
   }
 
 
+  updateDoneWorkouts(bool value , String workoutName) async{
+
+    var key = "";
+
+    switch(workoutName){
+      case "Workout 3A":
+        key = "is3AWorkoutDone";
+        break;
+      case "Workout 3B":
+        key = "is3BWorkoutDone";
+        break;
+      case "Workout 3C":
+        key = "is3CWorkoutDone";
+        break;
+      case "Workout 4A":
+        key = "is4AWorkoutDone";
+        break;
+      case "Workout 4A1":
+        key = "is4A1WorkoutDone";
+        break;
+      case "Workout 4B":
+        key = "is4BWorkoutDone";
+        break;
+      case "Workout 4B1":
+        key = "is4B1WorkoutDone";
+        break;
+    }
+
+    await FirebaseAPI().updateProgramInfo(_userId, {key : value});
+  }
+
+
   updateWeightList(List<double> weights,exerciseId) async{
 
     Program program = _programs.where((e) => e.name == _programInfo.primaryProgram).first;
@@ -251,6 +284,24 @@ class ProgramsViewModel extends ChangeNotifier{
        _copyState = CopyState.finish;
        notifyListeners();
      }
+  }
+
+  _resetDoneWorkouts() async{
+
+    if(DateTime.now().weekday == 1){
+
+     var map = {
+       "is3AWorkoutDone" : false,
+       "is3BWorkoutDone" : false,
+       "is3CWorkoutDone" : false,
+       "is4AWorkoutDone" : false,
+       "is4A1WorkoutDone" : false,
+       "is4BWorkoutDone" : false,
+       "is4B1WorkoutDone" : false,
+      };
+
+      await FirebaseAPI().updateProgramInfo(_userId, map);
+    }
   }
 
 }

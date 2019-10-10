@@ -18,6 +18,22 @@ class CountDownTimer extends StatefulWidget {
 class _CountDownTimerState extends State<CountDownTimer> with TickerProviderStateMixin {
   AnimationController controller;
 
+
+
+  TextStyle _getFontStyle(BuildContext context){
+    double width = MediaQuery.of(context).size.width;
+
+    if(width <= 640 ){
+      return Theme.of(context).textTheme.display3.copyWith(
+        fontWeight: FontWeight.bold
+      );
+    }
+
+    return Theme.of(context).textTheme.display4.copyWith(
+        fontWeight: FontWeight.bold
+    );
+  }
+
   String get timerString {
     Duration duration = controller.duration * controller.value;
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
@@ -57,9 +73,7 @@ class _CountDownTimerState extends State<CountDownTimer> with TickerProviderStat
         builder: (context,child) => Center(
           child: Text(
             timerString,
-            style: Theme.of(context).textTheme.display4.copyWith(
-              fontWeight: FontWeight.bold
-            ))
+            style: _getFontStyle(context))
         ),
       ),
     );

@@ -15,42 +15,42 @@ class WorkoutSelectionView extends StatelessWidget {
     List<Widget> treeButtons = [FitButton(
       buttonText: "Workout A",
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3A,workoutName: "Workout A")));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3A,workoutName: "Workout 3A")));
       },
     ),
       SizedBox(height: 16),
       FitButton(
         buttonText: "Workout B",
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3B,workoutName: "Workout B")));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3B,workoutName: "Workout 3B")));
         },
       ),
       SizedBox(height: 16),
       FitButton(
         buttonText: "Workout C",
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3C,workoutName: "Workout C")));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3C,workoutName: "Workout C3")));
         },
       )];
 
     List<Widget> fourButtons = [FitButton(
       buttonText: "Workout A",
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4A,workoutName: "Workout A")));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4A,workoutName: "Workout 4A")));
       },
     ),
       SizedBox(height: 16),
       FitButton(
         buttonText: "Workout A1",
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4A1,workoutName: "Workout A1")));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4A1,workoutName: "Workout 4A1")));
         },
       ),
       SizedBox(height: 16),
       FitButton(
         buttonText: "Workout B",
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4B,workoutName: "Workout B")));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4B,workoutName: "Workout 4B")));
         },
 
       ),
@@ -58,7 +58,7 @@ class WorkoutSelectionView extends StatelessWidget {
       FitButton(
         buttonText: "Workout B1",
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4B1,workoutName: "Workout B1")));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4B1,workoutName: "Workout 4B1")));
         },
 
       )];

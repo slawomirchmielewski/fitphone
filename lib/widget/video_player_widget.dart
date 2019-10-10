@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-
-class VideoPlayer extends StatelessWidget {
+class VideoPlayer extends StatefulWidget {
 
 
   final String url;
@@ -16,17 +15,38 @@ class VideoPlayer extends StatelessWidget {
     this.height
   });
 
+  @override
+  _VideoPlayerState createState() => _VideoPlayerState();
+}
+
+class _VideoPlayerState extends State<VideoPlayer> {
+
+
+  YoutubePlayerController _controller = YoutubePlayerController();
+
+  @override
+  void deactivate() {
+    _controller.pause();
+    super.deactivate();
+  }
+
+
+  @override
+  void dispose() {
+    _controller.pause();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    final String id = YoutubePlayer.convertUrlToId(url);
+    final String id = YoutubePlayer.convertUrlToId(widget.url);
 
     Widget youtubePlayer = YoutubePlayer(
         context: context,
         videoId: id,
         flags: YoutubePlayerFlags(
-          hideControls: hideControls,
+          hideControls: widget.hideControls,
           autoPlay: false,
           showVideoProgressIndicator: true
         ),
@@ -36,10 +56,14 @@ class VideoPlayer extends StatelessWidget {
           handleColor: Theme.of(context).primaryColor
         ),
         onPlayerInitialized: (controller) {
-          var size = Size(width,height);
-          controller.setSize(size);
+          var size = Size(widget.width,widget.height);
+          _controller = controller;
+          _controller.setSize(size);
+
         }
     );
+
+
 
     return youtubePlayer;
 

@@ -31,7 +31,7 @@ dependencies:
   firebase_storage: ^3.0.6
   firebase_messaging: ^5.1.6
   firebase_database: ^3.0.7
-  cloud_firestore: ^0.12.9+4
+  cloud_firestore: ^0.12.9+5
   image_picker: ^0.6.1+4
   fcharts: ^0.0.11
   cached_network_image: ^1.1.1
