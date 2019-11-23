@@ -17,15 +17,15 @@ class FitFeedbackButton extends StatelessWidget {
     return GestureDetector(
       onTap: onChange != null ? () {onChange(value);} : null,
       child: Container(
-        width: 100,
+        width: 80,
         child: Column(
           children: <Widget>[
             Opacity(
                 opacity: value == groupValue ? 1 : 0.3 ,
-                child: Image.asset(imageUri,height: 50,width: 50,fit: BoxFit.cover,)),
+                child: Image.asset(imageUri,height: 40,width: 40,fit: BoxFit.cover,)),
             SizedBox(height: 8),
             Text(name,style: Theme.of(context).textTheme.subtitle.copyWith(
-              fontSize: 12,
+              fontSize: 10,
             ))
           ],
         ),

@@ -16,6 +16,7 @@ class FitProgressBarWidget extends StatelessWidget {
     return Consumer<UserViewModel>(
       builder: (context,userViewModel,_) =>
       CardBase(
+        //backgroundColor: Color(0xFFF5F7FB),
         iconColor:Colors.deepPurpleAccent,
         icon: Icons.trip_origin,
         title: "Account activity",

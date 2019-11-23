@@ -27,9 +27,9 @@ class CardBase extends StatelessWidget{
     this.haveAction = true
   });
 
-  static const double borderRadius = 10;
-  static const double leftPadding = 8;
-  static const double rightPadding = 8;
+  static const double borderRadius = 20;
+  static const double leftPadding = 16;
+  static const double rightPadding = 16;
   static const double topPadding = 4;
   static const double bottomPadding = 4;
 
@@ -45,8 +45,8 @@ class CardBase extends StatelessWidget{
       ),
       child: Material(
         type: MaterialType.card,
-        color:backgroundColor ?? Theme.of(context).primaryColorLight,
-        elevation: elevation ?? 0,
+        color: Colors.transparent,
+        elevation: 0,
         borderOnForeground:true ,
         shape: RoundedRectangleBorder(borderRadius:BorderRadius.all(Radius.circular(borderRadius))),
         child: InkWell(
@@ -54,25 +54,7 @@ class CardBase extends StatelessWidget{
           child: Container(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      if(icon != null)Icon(icon,color: iconColor),
-                      if(title !=null && icon !=null ) SizedBox(width: 16),
-                      if(title != null) Text(title.toUpperCase(),style: Theme.of(context).textTheme.subtitle.copyWith(
-                        color: Colors.grey[700]
-                      ),),
-                      if(title !=null && icon !=null ) Spacer(),
-                      if(haveAction)
-                      action != null ? action  : Icon(Icons.arrow_forward_ios,color: Colors.grey[700],size: 16,)
-                    ],
-                  ),
-                  if(title !=null && icon !=null )SizedBox(height: 16),
-                  child,
-                ],
-              ),
+              child: child
             ),
           ),
         ),

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:fitphone/model/done_workout_model.dart';
 import 'package:fitphone/repository/firebase_api.dart';
 import 'package:fitphone/utils/date_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-class DoneWorkoutsViewModel extends ChangeNotifier{
+class DoneWorkoutsViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
   String _userId;
@@ -14,6 +17,10 @@ class DoneWorkoutsViewModel extends ChangeNotifier{
   String get comment => _comment;
 
 
+  StreamSubscription _userStream;
+  StreamSubscription _doneWorkoutsStream;
+
+
   setComment(String value){
     _comment = value;
     notifyListeners();
@@ -21,20 +28,21 @@ class DoneWorkoutsViewModel extends ChangeNotifier{
 
 
   DoneWorkoutsViewModel(){
+    WidgetsBinding.instance.addObserver(this);
     getUserStream();
   }
 
   getUserStream() async{
-    FirebaseAPI().checkLoginUser().listen((firebaseUser){
+   _userStream =  FirebaseAPI().checkLoginUser().listen((firebaseUser){
       if(firebaseUser != null){
         _userId = firebaseUser.uid;
         fetchDoneWorkouts();
       }
-    }).onError((error) => print);
+    });
   }
 
  fetchDoneWorkouts(){
-    FirebaseAPI().getDoneWorkouts(_userId).listen((snapshot){
+  _doneWorkoutsStream = FirebaseAPI().getDoneWorkouts(_userId).listen((snapshot){
 
       _doneWorkouts = [];
 
@@ -63,5 +71,25 @@ class DoneWorkoutsViewModel extends ChangeNotifier{
 
    await FirebaseAPI().addDoneWorkout(_userId,doneWorkout.toMap());
  }
+
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.paused){
+      _userStream.pause();
+      _doneWorkoutsStream.pause();
+    }
+    else if(state == AppLifecycleState.resumed){
+      _userStream.resume();
+      _doneWorkoutsStream.resume();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
 
 }

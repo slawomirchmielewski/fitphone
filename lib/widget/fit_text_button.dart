@@ -24,12 +24,12 @@ class FitTextButton extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
          color: isSelected ? Colors.black : Colors.transparent,
-          border: Border.all(color: Colors.black,width: 1.5),
+          border: Border.all(color: Theme.of(context).primaryColor,width: 1.5),
           borderRadius: BorderRadius.circular(10)
         ),
         child: Center(
           child: Text(text,style: Theme.of(context).textTheme.subtitle.copyWith(
-            color: isSelected ? Colors.white: Colors.black
+            color: isSelected ? Colors.white: Theme.of(context).textTheme.title.color
           ),
           textAlign: TextAlign.center),
         ),

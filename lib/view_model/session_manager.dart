@@ -4,8 +4,9 @@ import 'package:fitphone/utils/firebase_result.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'package:fitphone/repository/firebase_api.dart';
+import 'package:flutter/material.dart';
 
-class SessionManager with ChangeNotifier {
+class SessionManager extends ChangeNotifier with WidgetsBindingObserver {
 
   SessionState _sessionState = SessionState.Uninitialized;
   ViewState _viewState = ViewState.Login;
@@ -37,6 +38,9 @@ class SessionManager with ChangeNotifier {
   get passcode => _passcode;
   get loginPasswordVisible => _loginPasswordVisible;
   get registrationPasswordVisible => _registrationPasswordVisible;
+
+
+  StreamSubscription _userStream;
 
   _clearTextFields(){
     _name = "";
@@ -110,7 +114,8 @@ class SessionManager with ChangeNotifier {
 
 
   SessionManager(){
-    FirebaseAPI().checkLoginUser().listen((firebaseUser) => _onAuthStateChanged(firebaseUser));
+    WidgetsBinding.instance.addObserver(this);
+   _userStream = FirebaseAPI().checkLoginUser().listen((firebaseUser) => _onAuthStateChanged(firebaseUser));
   }
 
 
@@ -187,5 +192,24 @@ class SessionManager with ChangeNotifier {
     }
     return massage;
   }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.paused){
+      _userStream.pause();
+    }
+    else if(state == AppLifecycleState.resumed){
+      _userStream.resume();
+    }
+
+  }
+
+  @override
+  void dispose() {
+    _userStream.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
 
 }

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:fitphone/model/account_info_model.dart';
 import 'package:fitphone/model/exercise_model.dart';
 import 'package:fitphone/model/program_model.dart';
 import 'package:fitphone/model/programs_info_model.dart';
 import 'package:fitphone/repository/firebase_api.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 
 enum CopyState{
@@ -12,11 +15,12 @@ enum CopyState{
   finish,
 }
 
-class ProgramsViewModel extends ChangeNotifier{
+class ProgramsViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   ProgramInfo _programInfo;
   AccountInfo _accountInfo;
   List<Program> _programs;
+  List<Exercise> _exercisesList = [];
   List<Exercise> _workout3A = [];
   List<Exercise> _workout3B = [];
   List<Exercise> _workout3C = [];
@@ -27,9 +31,6 @@ class ProgramsViewModel extends ChangeNotifier{
   String _userId;
   bool _newPrograms = false;
   CopyState _copyState = CopyState.idle;
-
-
-
 
   Program _tempProgram;
 
@@ -51,7 +52,15 @@ class ProgramsViewModel extends ChangeNotifier{
   List<Exercise> get workout4B1 => _workout4B1;
 
 
+  StreamSubscription _userStream;
+  StreamSubscription _programInfoStream;
+  StreamSubscription _accountInfoStream;
+  StreamSubscription _programsStream;
+  StreamSubscription _exercisesStream;
+  StreamSubscription _latestProgramsStream;
+
   ProgramsViewModel(){
+    WidgetsBinding.instance.addObserver(this);
     getUserStream();
   }
 
@@ -63,33 +72,33 @@ class ProgramsViewModel extends ChangeNotifier{
   }
 
   getUserStream() async{
-    FirebaseAPI().checkLoginUser().listen((firebaseUser){
+   _userStream = FirebaseAPI().checkLoginUser().listen((firebaseUser){
       if(firebaseUser != null){
         _userId = firebaseUser.uid;
         _fetchAccountInfo();
-        _fetchProgramInfo();
         _fetchPrograms();
-        _getLatestProgram();
-        _resetDoneWorkouts();
+        _fetchProgramInfo();
       }
-    }).onError((error) => print);
+    });
   }
 
   _fetchProgramInfo(){
-     FirebaseAPI().getProgramInfo(_userId).listen((snapshot){
+    _programInfoStream = FirebaseAPI().getProgramInfo(_userId).listen((snapshot){
       if(snapshot.data != null){
         ProgramInfo programInfo = ProgramInfo.fromMap(snapshot.data);
         _programInfo = programInfo;
+        _fetchExercises();
         notifyListeners();
       }
     });
   }
 
  _fetchAccountInfo(){
-    FirebaseAPI().getAccountInfo(_userId).listen((snapshot){
+    _accountInfoStream =  FirebaseAPI().getAccountInfo(_userId).listen((snapshot){
       if(snapshot.data != null){
         AccountInfo accountInfo = AccountInfo.fromMap(snapshot.data);
         _accountInfo = accountInfo;
+        _getLatestProgram();
         notifyListeners();
       }
     });
@@ -97,7 +106,7 @@ class ProgramsViewModel extends ChangeNotifier{
 
   _fetchPrograms() {
 
-    FirebaseAPI().getPrograms(_userId).listen((value) {
+   _programsStream = FirebaseAPI().getPrograms(_userId).listen((value) {
 
       _programs = [];
 
@@ -109,43 +118,19 @@ class ProgramsViewModel extends ChangeNotifier{
 
       }
       print("getting programs ${_programs.length}");
-      _getWorkouts();
       notifyListeners();
     });
   }
 
-   Future<void> _getWorkouts() async{
-
-    Program program = _programs.where((e) => e.name == _programInfo.primaryProgram).first;
-
-    print("Program Id : ${program.id}");
-
-    if(_programInfo.primaryWorkout == "3d"){
-
-      _workout3A =  await _fetchExercises(program.id,"3d", "Workout A");
-      _workout3B =  await _fetchExercises(program.id,"3d", "Workout B");
-      _workout3C =  await _fetchExercises(program.id,"3d", "Workout C");
-      print("Fetching 3d");
-    }
-    else if(_programInfo.primaryWorkout == "4d"){
-      _workout4A =  await _fetchExercises(program.id,"4d", "Workout A");
-      _workout4A1 =  await _fetchExercises(program.id,"4d", "Workout A1");
-      _workout4B =  await _fetchExercises(program.id,"4d", "Workout B");
-      _workout4B1 =  await _fetchExercises(program.id,"4d", "Workout B1");
-      print("Fetching 4d");
-    }
-  }
 
 
   setPrimaryProgram(String programId) async{
     await FirebaseAPI().updateProgramInfo(_userId, {"primaryProgram" : programId});
-    _getWorkouts();
     notifyListeners();
   }
 
   setPrimaryWorkout(String workout) async{
     await FirebaseAPI().updateProgramInfo(_userId, {"primaryWorkout" : workout});
-    _getWorkouts();
     notifyListeners();
   }
 
@@ -155,33 +140,63 @@ class ProgramsViewModel extends ChangeNotifier{
   }
 
   incrementCompletedExercises(){
-
     var count = programInfo.completedExercises  + 1;
     FirebaseAPI().updateProgramInfo(_userId, {"completedExercises" : count});
 
   }
 
-  Future<List<Exercise>> _fetchExercises(String programId,String programIntensity, String workoutName) async {
+  _fetchExercises(){
 
-     List<Exercise> exercisesList =[];
+    Program program = _programs.where((e) => e.name == _programInfo.primaryProgram).first;
 
-     await FirebaseAPI().getExercises(_userId,programId, programIntensity, workoutName).then((snapshot){
+    _exercisesStream = FirebaseAPI().getExercises(_userId,program.id).listen((snapshot){
+
+       _exercisesList =[];
+
         if(snapshot != null){
           for(var s in snapshot.documents){
             Exercise exercise = Exercise.fromMap(s.data);
             exercise.id = s.documentID;
-            exercisesList.add(exercise);
+            _exercisesList.add(exercise);
           }
         }
-      }).catchError((error) => print(error));
-      print("Fetching exercises ");
-      return exercisesList;
+
+        print(("List : ${_exercisesList.length}"));
+
+        _getPrograms(_exercisesList);
+      });
     }
 
 
- _getLatestProgram(){
+   _getPrograms(List<Exercise> ex){
 
-    FirebaseAPI().getLatestProgram().listen((snapshot) {
+       _clearList();
+
+       _workout3A = ex.where((e) => e.workoutName == "Workout A" && e.programIntensity == "3d").toList();
+       _workout3B = ex.where((e) => e.workoutName == "Workout B" && e.programIntensity == "3d").toList();
+       _workout3C = ex.where((e) => e.workoutName == "Workout C" && e.programIntensity == "3d").toList();
+
+       _workout4A = ex.where((e) => e.workoutName == "Workout A" && e.programIntensity == "4d").toList();
+       _workout4A1 = ex.where((e) => e.workoutName == "Workout A1" && e.programIntensity == "4d").toList();
+       _workout4B = ex.where((e) => e.workoutName == "Workout B" && e.programIntensity == "4d").toList();
+       _workout4B1 = ex.where((e) => e.workoutName == "Workout B1" && e.programIntensity == "4d").toList();
+   }
+
+
+   _clearList(){
+    _workout3A = [];
+    _workout3B = [];
+    _workout3C = [];
+    _workout4A = [];
+    _workout4A1 = [];
+    _workout4B = [];
+    _workout4B1 = [];
+   }
+
+
+  _getLatestProgram(){
+
+  _latestProgramsStream = FirebaseAPI().getLatestProgram().listen((snapshot) {
       if(_userId != null){
         if(_accountInfo.accountStatus == "Active" && _newPrograms == false){
           for(var s in snapshot.documents){
@@ -240,11 +255,22 @@ class ProgramsViewModel extends ChangeNotifier{
   }
 
 
-  updateWeightList(List<double> weights,exerciseId) async{
+  updateExercise(List<double> weights,List<int> doneReps,exerciseId) async{
 
     Program program = _programs.where((e) => e.name == _programInfo.primaryProgram).first;
 
-    await FirebaseAPI().updateExerciseWeight(_userId, program.id, exerciseId, {"weights" : weights});
+    await FirebaseAPI().updateExercise(_userId, program.id, exerciseId, {
+      "weights" : weights,
+      "done reps" : doneReps
+    });
+  }
+
+  updatesNotes(List<String> notes,exerciseId) async{
+    Program program = _programs.where((e) => e.name == _programInfo.primaryProgram).first;
+
+    await FirebaseAPI().updateExercise(_userId, program.id, exerciseId, {
+      "notes" : notes,
+    });
   }
 
 
@@ -260,8 +286,6 @@ class ProgramsViewModel extends ChangeNotifier{
 
 
        FirebaseAPI().addProgram(_tempProgram.toMap(),_userId).then((programId){
-
-         print("Path $programId");
 
          FirebaseAPI().getGlobalExercises(_tempProgram.referenceId).then((snapshot){
 
@@ -286,22 +310,38 @@ class ProgramsViewModel extends ChangeNotifier{
      }
   }
 
-  _resetDoneWorkouts() async{
 
-    if(DateTime.now().weekday == 1){
-
-     var map = {
-       "is3AWorkoutDone" : false,
-       "is3BWorkoutDone" : false,
-       "is3CWorkoutDone" : false,
-       "is4AWorkoutDone" : false,
-       "is4A1WorkoutDone" : false,
-       "is4BWorkoutDone" : false,
-       "is4B1WorkoutDone" : false,
-      };
-
-      await FirebaseAPI().updateProgramInfo(_userId, map);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.paused){
+      _userStream.pause();
+      _programInfoStream.pause();
+      _accountInfoStream.pause();
+      _programsStream.pause();
+      _exercisesStream.pause();
+      _latestProgramsStream.pause();
+    }
+    else if(state == AppLifecycleState.resumed){
+      _userStream.resume();
+      _programInfoStream.resume();
+      _accountInfoStream.resume();
+      _programsStream.resume();
+      _exercisesStream.resume();
+      _latestProgramsStream.resume();
     }
   }
+
+  @override
+  void dispose() {
+    _userStream.cancel();
+    _programInfoStream.cancel();
+    _accountInfoStream.cancel();
+    _programsStream.cancel();
+    _exercisesStream.cancel();
+    _latestProgramsStream.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
 
 }

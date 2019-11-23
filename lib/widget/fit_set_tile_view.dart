@@ -1,19 +1,31 @@
+import 'package:fitphone/model/exercise_model.dart';
 import 'package:fitphone/view_model/settings_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 
 
+class ExerciseReturnObject{
+  double weight;
+  int rep;
+
+
+  ExerciseReturnObject({this.weight,this.rep});
+
+}
+
 class FitSetListTile extends StatefulWidget {
 
   final String set;
   final double weight;
+  final int doneReps;
   final String reps;
-  final Function(double) onDonePressed;
+  final Function(ExerciseReturnObject) onDonePressed;
 
   FitSetListTile({
     @required this.set,
     @required this.weight,
+    @required this.doneReps,
     @required this.reps,
     @required this.onDonePressed
   });
@@ -22,10 +34,13 @@ class FitSetListTile extends StatefulWidget {
   _FitSetListTileState createState() => _FitSetListTileState();
 }
 
+
+
 class _FitSetListTileState extends State<FitSetListTile> {
 
 
   bool isMark;
+  int doneRep;
   double weight;
 
 
@@ -37,7 +52,8 @@ class _FitSetListTileState extends State<FitSetListTile> {
     super.initState();
     setState(() {
       isMark = false;
-      weight = 0;
+      weight = 0.0;
+      doneRep = 0;
     });
 
   }
@@ -47,8 +63,10 @@ class _FitSetListTileState extends State<FitSetListTile> {
       setState(() {
         isMark = true;
       });
-      widget.onDonePressed(weight);
 
+      ExerciseReturnObject exerciseReturnObject = ExerciseReturnObject(weight: weight,rep: doneRep);
+
+      widget.onDonePressed(exerciseReturnObject);
     }
   }
 
@@ -79,47 +97,88 @@ class _FitSetListTileState extends State<FitSetListTile> {
         borderRadius: BorderRadius.circular(5),
       ),
       width: double.infinity,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: ListView(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
         children: <Widget>[
           Container(
-            width: 60,
-            child: Text(widget.set,textAlign: TextAlign.center,style:isMark == true ? _textStyleDone : _textStyle,),
-          ),
-          Container(
-            width: 60,
-            child:  isMark != true ? TextField(
-              textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                hasFloatingPlaceholder: false,
-                filled: false,
-                hintText: ("${settingsManager.getConvertedWeight(widget.weight).toInt()} ${settingsManager.unitShortName}"),
-                hintStyle: _textHint,
-                hintMaxLines: 1,
-              ),
-              onChanged: (value){
-                setState(() {
-                  weight = double.tryParse(value);
-                });
-              } ,
-            ) : Text("${weight.toInt()} ${settingsManager.unitShortName}",textAlign: TextAlign.center,style: isMark == true ? _textStyleDone : _textStyle),
-          ),
+            width: MediaQuery.of(context).size.width - 32,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Container(
+                  width: 38,
+                  child: Text(widget.set,textAlign: TextAlign.center,style:isMark == true ? _textStyleDone : _textStyle,),
+                ),
+                Container(
+                  width: 70,
+                  child: Text("${settingsManager.getConvertedWeight(widget.weight).toInt()} ${settingsManager.unitShortName} x ${widget.doneReps}",textAlign: TextAlign.center,style:isMark == true ? _textStyleDone : _textStyle,),
+                ),
+                Container(
+                  width: 60,
+                  child:  isMark != true ? TextField(
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hasFloatingPlaceholder: false,
+                      fillColor: Theme.of(context).primaryColorLight,
+                      filled: false,
+                      hintText: ("${settingsManager.getConvertedWeight(widget.weight).toInt()}"),
+                      hintStyle: _textHint,
+                      hintMaxLines: 1,
+                    ),
+                    onChanged: (value){
+                      setState(() {
+                        weight = double.tryParse(value);
+                      });
+                    } ,
+                  ) : Text("${weight.toInt()}",textAlign: TextAlign.center,style: isMark == true ? _textStyleDone : _textStyle),
+                ),
 
-          Container(
-            width: 60,
-            child: Text(widget.reps,textAlign: TextAlign.center,style: isMark == true ? _textStyleDone : _textStyle),
-          ),
-          GestureDetector(
-            onTap:(){
-              onPressed();
-            } ,
-            child: Container(
-              width: 60,
-              child: Icon(isMark == true ? Ionicons.ios_checkmark_circle : Ionicons.ios_radio_button_off,color:isMark == true ? Theme.of(context).primaryColor : Colors.grey,size: iconSize, )
+                Container(
+                  width: 80,
+                  child:  isMark != true ? TextField(
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      fillColor: Theme.of(context).primaryColorLight,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hasFloatingPlaceholder: false,
+                      filled: false,
+                      hintText: widget.reps,
+                      hintStyle: _textHint,
+                      hintMaxLines:1,
+                    ),
+                    onChanged: (value){
+                      setState(() {
+                        doneRep = int.parse(value);
+                      });
+                    } ,
+                  ) : Text(doneRep.toString(),textAlign: TextAlign.center,maxLines: 2,style: isMark == true ? _textStyleDone : _textStyle),
+                ),
+                GestureDetector(
+                  onTap:(){
+                    onPressed();
+                  } ,
+                  child: Container(
+                    width: 38,
+                    child: Icon(isMark == true ? Ionicons.ios_checkmark_circle : Ionicons.ios_radio_button_off,color:isMark == true ? Theme.of(context).primaryColor : Colors.grey,size: iconSize, )
+                  ),
+                )
+              ],
             ),
-          )
+          ),
         ],
       ),
     );

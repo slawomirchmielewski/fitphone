@@ -20,26 +20,25 @@ class FitImage extends StatelessWidget {
     @required this.imageUrl
   }) : assert(imageUrl != null);
 
-
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
-      child: Container(
+      child: AnimatedContainer(
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 100),
         height: height,
         width: width,
-        color: background ?? Theme.of(context).primaryColorLight,
+        color: background ?? Theme.of(context).canvasColor,
         child: FadeInImage.memoryNetwork(
           fadeInDuration: const Duration(milliseconds: 50),
           fit: boxFit,
           width: width,
-          height: height,
+          height:height,
           placeholder: kTransparentImage,
           image: imageUrl,
         ),
       ),
     );
   }
-
-  
 }

@@ -28,7 +28,7 @@ class AddFeedbackScreen extends StatelessWidget {
               padding: const EdgeInsets.only(right: 16,left: 16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: 36),
                   Text("How do you like FitPhone ?",style: Theme.of(context).textTheme.title),
@@ -40,9 +40,9 @@ class AddFeedbackScreen extends StatelessWidget {
                       children: <Widget>[
                         FitFeedbackButton(imageUri: "assets/happy.png",name: "It's great !",value: 1,groupValue: feedbackViewModel.feedbackPoints,
                         onChange:(value) => feedbackViewModel.setFeedbacPoints(value)),
-                        FitFeedbackButton(imageUri: "assets/neutral.png",name: "Do the job.",value: 2,groupValue: feedbackViewModel.feedbackPoints,
+                        FitFeedbackButton(imageUri: "assets/neutral.png",name: "Do the job",value: 2,groupValue: feedbackViewModel.feedbackPoints,
                             onChange:(value) => feedbackViewModel.setFeedbacPoints(value)),
-                        FitFeedbackButton(imageUri: "assets/sad.png",name: "I'm disappointed.",value: 3,groupValue: feedbackViewModel.feedbackPoints,
+                        FitFeedbackButton(imageUri: "assets/sad.png",name: "Disappointing",value: 3,groupValue: feedbackViewModel.feedbackPoints,
                             onChange:(value) => feedbackViewModel.setFeedbacPoints(value)),
                       ],
                     ),

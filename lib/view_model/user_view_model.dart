@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fitphone/model/user_model.dart';
 import 'package:fitphone/utils/images_helper.dart';
 import 'package:flutter/foundation.dart';
@@ -7,7 +9,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 
-class UserViewModel with ChangeNotifier {
+class UserViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
 
   User _user;
@@ -19,6 +21,10 @@ class UserViewModel with ChangeNotifier {
   bool get newLevelAvailable=> _newLevelAvailable;
 
 
+  StreamSubscription _userStream;
+  StreamSubscription _userDateStream;
+
+
   setNewLevelAvailable(bool value){
     _newLevelAvailable = value;
     notifyListeners();
@@ -26,23 +32,24 @@ class UserViewModel with ChangeNotifier {
 
 
   UserViewModel() {
+    WidgetsBinding.instance.addObserver(this);
     getUserStream();
   }
 
   getUserStream() async{
-    FirebaseAPI().checkLoginUser().listen((firebaseUser){
+   _userStream =  FirebaseAPI().checkLoginUser().listen((firebaseUser){
 
       if(firebaseUser != null){
         getUserInfo(firebaseUser?.uid);
       }
-    }).onError((error) => print);
+    });
   }
 
 
   getUserInfo(String userId) async{
     if(userId != null){
 
-       FirebaseAPI().getUserData(userId).listen((snapshot) {
+      _userDateStream = FirebaseAPI().getUserData(userId).listen((snapshot) {
 
          if(snapshot.exists){
            User user = User.fromMap(snapshot.data);
@@ -53,7 +60,7 @@ class UserViewModel with ChangeNotifier {
              notifyListeners();
            }
          }
-      }).onError((error)=>print);
+      });
     }
   }
 
@@ -118,6 +125,26 @@ class UserViewModel with ChangeNotifier {
      });
    }
 
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.paused){
+      _userStream.pause();
+      _userDateStream.pause();
+    }
+    else if(state == AppLifecycleState.resumed){
+      _userStream.resume();
+      _userDateStream.resume();
+    }
+  }
+
+  @override
+  void dispose() {
+    _userStream.cancel();
+    _userDateStream.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
 
 }

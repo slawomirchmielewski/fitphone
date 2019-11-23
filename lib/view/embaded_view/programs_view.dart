@@ -15,23 +15,21 @@ class ProgramsView extends StatelessWidget {
     return Page(
       appBarTitle: Text("Programs"),
       automaticallyImplyLeading: true,
-      children: <Widget>[
-        ListView.builder(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
-          itemCount: programsViewModel.programs.length,
-          itemBuilder: (context,index) => ListTile(
+      child: ListView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
+        itemCount: programsViewModel.programs.length,
+        itemBuilder: (context,index) => ListTile(
             title: FitProgramListTile(
-              title: programsViewModel.programs[index].name,
-              subtitle: programsViewModel.programs[index].getDate(),
-              value: programsViewModel.programs[index].name,
-              groupValue: programsViewModel.programInfo.primaryProgram,
-            onChange: programsViewModel.setPrimaryProgram
+                title: programsViewModel.programs[index].name,
+                subtitle: programsViewModel.programs[index].getDate(),
+                value: programsViewModel.programs[index].name,
+                groupValue: programsViewModel.programInfo.primaryProgram,
+                onChange: programsViewModel.setPrimaryProgram
             )
-          ),
-        )
-      ],
+        ),
+      ),
     );
   }
 }

@@ -42,7 +42,7 @@ class WeekWeightChart extends StatelessWidget {
                 color: Colors.grey[700]
               ),
               context: context,
-              color: color ?? Colors.redAccent,
+              color: color ?? Theme.of(context).primaryColor,
               maxValueData: settingsManager.units == Unit.Pounds ? 400 : 200
 
           ),

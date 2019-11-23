@@ -3,7 +3,9 @@ import 'package:fitphone/view/login_screen.dart';
 import 'package:fitphone/view/main_screen.dart';
 import 'package:fitphone/view/setup_screen.dart';
 import 'package:fitphone/view/splash_screen.dart';
+import 'package:fitphone/view_model/date_view_model.dart';
 import 'package:fitphone/view_model/done_workouts_view_model.dart';
+import 'package:fitphone/view_model/measurements_view_model.dart';
 import 'package:fitphone/view_model/nutrtion_view_model.dart';
 import 'package:fitphone/view_model/photos_view_model.dart';
 import 'package:fitphone/view_model/session_manager.dart';
@@ -19,13 +21,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'enums/session_states.dart';
-import 'dart:io';
 
 
 void main() {
-
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
   runApp(
     MyApp()
   );
@@ -45,6 +43,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+
 
     _firebaseMessaging.autoInitEnabled();
 
@@ -70,6 +69,12 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,41 +110,33 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider<DoneWorkoutsViewModel>(
           builder: (context)=> DoneWorkoutsViewModel(),
+        ),
+        ChangeNotifierProvider<DateViewModel>(
+          builder: (context)=> DateViewModel(),
+        ),
+        ChangeNotifierProvider<MeasurementsViewModel>(
+          builder:  (context)=> MeasurementsViewModel(),
         )
+
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: MyApp.appName,
-        darkTheme: ThemeData(
-          iconTheme: Theme.of(context).iconTheme.copyWith(
-              color: kFitPrimaryLight
-          ),
-            primaryColor: kFitPrimaryLight,
-            scaffoldBackgroundColor: kFitDarkScaffoldBackground,
-            accentColor: kFitPrimaryLight,
-            backgroundColor: kFitDarkScaffoldBackground,
-            brightness: Brightness.dark,
-            primaryColorLight: kFitGreyDark,
-            cardColor: kFitDarkCard,
-            bottomAppBarColor: kFitDarkCard,
+        darkTheme: ThemeData.dark().copyWith(
+            primaryColor: kFitPrimary,
+            accentColor: kFitPrimary,
+            applyElevationOverlayColor: true,
+            indicatorColor: kFitPrimary,
+            cursorColor: kFitPrimary,
+            textSelectionHandleColor: kFitPrimary,
             toggleableActiveColor: kFitPrimary,
-            canvasColor: kFitDarkCard,
+            scaffoldBackgroundColor: Color(0xFF161616),
             dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))) )
 
 
         ),
-        theme: ThemeData(
-          iconTheme: Theme.of(context).iconTheme.copyWith(
-              color: kFitPrimary
-          ),
+        theme: ThemeData.light().copyWith(
           primaryColor: kFitPrimary,
-          scaffoldBackgroundColor: kFitScaffoldBackground,
-          accentColor: kFitPrimary,
-          toggleableActiveColor: kFitPrimary,
-          brightness: Brightness.light,
-          primaryColorLight: kFitGreyLight,
-          cardColor:kFitCard,
-          bottomAppBarColor: kFitCard,
           dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))) )
 
         ),
@@ -151,11 +148,11 @@ class _MyAppState extends State<MyApp> {
           child: Consumer(
               builder: (context,SessionManager sessionManager,_) {
 
-
+                SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
                 SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
                     statusBarColor: Colors.transparent,
-                    systemNavigationBarColor: Theme.of(context).canvasColor
+                    systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor
                 ));
 
 

@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:fitphone/model/settings_model.dart';
 import 'package:fitphone/repository/firebase_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fitphone/enums/setup_enums.dart';
 import 'package:fitphone/utils/unit_converter.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class SettingsManager extends ChangeNotifier {
+class SettingsManager extends ChangeNotifier with WidgetsBindingObserver {
 
   String _theme;
   String _units;
@@ -13,6 +17,10 @@ class SettingsManager extends ChangeNotifier {
   Unit get units => _getUnits();
   String get unitShortName => _getUnitShortName();
   String get themeName => _getThemeName();
+
+
+  StreamSubscription _userStream;
+  StreamSubscription _settingsStream;
 
   ThemeState _getTheme(){
 
@@ -32,6 +40,7 @@ class SettingsManager extends ChangeNotifier {
 
 
   SettingsManager(){
+    WidgetsBinding.instance.addObserver(this);
     getUserStream();
   }
 
@@ -64,13 +73,13 @@ class SettingsManager extends ChangeNotifier {
 
 
   getUserStream(){
-    FirebaseAPI().checkLoginUser().listen((firebaseUser){
+   _userStream = FirebaseAPI().checkLoginUser().listen((firebaseUser){
       getSettings(firebaseUser?.uid);
-    }).onError((error) => print);
+    });
   }
 
   getSettings(String id){
-    FirebaseAPI().getSettings(id).listen((snapshot){
+  _settingsStream = FirebaseAPI().getSettings(id).listen((snapshot){
 
       if(snapshot.data != null){
         Settings settings = Settings.fromMap(snapshot.data);
@@ -161,4 +170,26 @@ class SettingsManager extends ChangeNotifier {
  String _getThemeName() {
     return _theme;
   }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.paused){
+      _settingsStream.pause();
+      _userStream.pause();
+
+    }else if(state == AppLifecycleState.resumed){
+      _userStream.resume();
+      _settingsStream.resume();
+    }
+  }
+
+  @override
+  void dispose() {
+    _userStream.cancel();
+    _settingsStream.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+
 }

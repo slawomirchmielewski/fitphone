@@ -27,7 +27,7 @@ class FitCircularButton extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: Theme.of(context).primaryColor,width: 1)
           ),
-          child: Icon(Icons.arrow_forward,color: Theme.of(context).iconTheme.color),
+          child: Icon(Icons.arrow_forward,color: Theme.of(context).primaryColor),
 
         ),
       ),

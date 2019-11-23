@@ -17,6 +17,9 @@ class FitCustomWeightChart extends CustomPainter{
   double bottomPadding = 0.0;
   double leftPadding = 0.0;
 
+  static const double barRadius = 2;
+
+
 
 
   FitCustomWeightChart({
@@ -44,8 +47,9 @@ class FitCustomWeightChart extends CustomPainter{
   //  drawDashedLines(canvas, size, 0 + leftPadding, size.height/1.7 + 5,Colors.grey[100]);
     drawXLabels(canvas,size,coordinates);
     drawYLabels(canvas,size,coordinates);
+    drawBackgroundBar(canvas,size,coordinates);
     drawBar(canvas,size,coordinates);
-    drawLines(canvas,size,coordinates);
+   // drawLines(canvas,size,coordinates);
   }
 
   @override
@@ -85,6 +89,17 @@ class FitCustomWeightChart extends CustomPainter{
 
   void drawBar(Canvas canvas, Size size, List<Offset> coordinates) {
 
+
+    var multiply;
+
+    if(coordinates.length > 12){
+      multiply = 0.01;
+    }
+    else
+    {
+      multiply = 0.014;
+    }
+
     Paint paint = Paint()
         ..color = color
         ..style = PaintingStyle.fill
@@ -92,7 +107,7 @@ class FitCustomWeightChart extends CustomPainter{
 
     for(var index = 0 ; index < coordinates.length;index++){
 
-       double barWidthMargin = (size.width * 0.01);
+       double barWidthMargin = (size.width * multiply);
 
        Offset offset = coordinates[index];
        double left = offset.dx - barWidthMargin;
@@ -102,13 +117,16 @@ class FitCustomWeightChart extends CustomPainter{
 
        Path path = Path();
 
+
+
        path.addRRect(
           // RRect.fromRectAndRadius(Rect.fromLTRB(left, top, right, bottom), Radius.elliptical(15, 15))
          RRect.fromRectAndCorners(Rect.fromLTRB(left, top, right, bottom),
-             topLeft: Radius.circular(15),
-             topRight: Radius.circular(15) ,
-             bottomRight:Radius.circular(15),
-             bottomLeft: Radius.circular(15))
+             topLeft: Radius.circular(barRadius),
+             topRight: Radius.circular(barRadius) ,
+             bottomRight:Radius.circular(barRadius),
+             bottomLeft: Radius.circular(barRadius)
+         ),
        );
        // canvas.drawRect(rect, paint);
        canvas.drawPath(path, paint);
@@ -117,30 +135,100 @@ class FitCustomWeightChart extends CustomPainter{
     }
   }
 
+  void drawBackgroundBar(Canvas canvas, Size size, List<Offset> coordinates) {
+
+    var multiply;
+
+    if(coordinates.length > 12){
+      multiply = 0.01;
+    }
+    else
+    {
+      multiply = 0.014;
+    }
+
+    Paint paint = Paint()
+      ..color = Colors.grey.withOpacity(0.2)
+      ..style = PaintingStyle.fill
+      ..strokeCap = StrokeCap.round;
+
+    for(var index = 0 ; index < coordinates.length;index++){
+
+      double barWidthMargin = (size.width * multiply);
+
+      Offset offset = coordinates[index];
+      double left = offset.dx - barWidthMargin;
+      double right = offset.dx + barWidthMargin;
+      double top =  size.height / size.height;
+      double bottom = size.height - bottomPadding;
+
+      Path path = Path();
+
+
+
+      path.addRRect(
+        // RRect.fromRectAndRadius(Rect.fromLTRB(left, top, right, bottom), Radius.elliptical(15, 15))
+        RRect.fromRectAndCorners(Rect.fromLTRB(left, top, right, bottom),
+            topLeft: Radius.circular(barRadius),
+            topRight: Radius.circular(barRadius) ,
+            bottomRight:Radius.circular(barRadius),
+            bottomLeft: Radius.circular(barRadius)
+        ),
+      );
+      // canvas.drawRect(rect, paint);
+      canvas.drawPath(path, paint);
+
+
+    }
+  }
+
   void drawXLabels(Canvas canvas, Size size, List<Offset> coordinates) {
     for(int index = 0 ; index < labels.length;index++){
 
-      TextSpan span = TextSpan(
-        style: textStyle.copyWith(
-          textBaseline: TextBaseline.alphabetic,
-          color: currentValue == (index + 1)  ? color :  textStyle.color,
-          fontWeight: currentValue == (index + 1)  ? FontWeight.bold :  textStyle.fontWeight,
-        ),
-        text: labels[index]);
+      if(labels.length > 12){
 
-      TextPainter textPainter = TextPainter(text: span, textDirection: TextDirection.ltr);
-      textPainter.layout();
+         if(index % 4 == 0){
+           TextSpan span = TextSpan(
+               style: textStyle.copyWith(
+                 textBaseline: TextBaseline.alphabetic,
+                 color: currentValue == (index + 1)  ? color :  textStyle.color,
+                 fontWeight: currentValue == (index + 1)  ? FontWeight.bold :  textStyle.fontWeight,
+               ),
+               text: labels[index]);
 
-      Offset offset = coordinates[index];
-      double dx = offset.dx - textPainter.size.width * 0.5;
-      double dy = size.height - textPainter.height;
-      
-      textPainter.paint(canvas, Offset(dx,dy));
-      
+           TextPainter textPainter = TextPainter(text: span, textDirection: TextDirection.ltr);
+           textPainter.layout();
+
+           Offset offset = coordinates[index];
+           double dx = offset.dx - textPainter.size.width * 0.5;
+           double dy = size.height - textPainter.height;
+
+           textPainter.paint(canvas, Offset(dx,dy));
+         }
+
+      }
+
+      else if(labels.length <= 12){
+        TextSpan span = TextSpan(
+            style: textStyle.copyWith(
+              textBaseline: TextBaseline.alphabetic,
+              color: currentValue == (index + 1)  ? color :  textStyle.color,
+              fontWeight: currentValue == (index + 1)  ? FontWeight.bold :  textStyle.fontWeight,
+            ),
+            text: labels[index]);
+
+        TextPainter textPainter = TextPainter(text: span, textDirection: TextDirection.ltr);
+        textPainter.layout();
+
+        Offset offset = coordinates[index];
+        double dx = offset.dx - textPainter.size.width * 0.5;
+        double dy = size.height - textPainter.height;
+
+        textPainter.paint(canvas, Offset(dx,dy));
+      }
+
     }
-    
-   
-    
+
   }
 
   double calculateFontSize(String label, Size size, {bool xAxis}) {

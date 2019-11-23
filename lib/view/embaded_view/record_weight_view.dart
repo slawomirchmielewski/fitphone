@@ -17,7 +17,7 @@ class RecordWeightView extends StatelessWidget {
 
     var theme = Theme.of(context);
 
-    TextStyle style = theme.textTheme.subtitle.copyWith(
+    TextStyle style = theme.textTheme.subhead.copyWith(
       color: theme.primaryColor
     );
 
@@ -40,22 +40,25 @@ class RecordWeightView extends StatelessWidget {
           ),
         )
       ],
-      children: <Widget>[
-        SizedBox(height: 72),
-        Center(child: Text(DateFormat.yMMMd().format(DateTime.now()),style: Theme.of(context).textTheme.headline)),
-        Image.asset("assets/weight.png",height: 200,fit: BoxFit.fitHeight,),
-        SizedBox(height: 16),
-        Consumer<WeightViewModel>(
-            builder: (context, weightViewModel,_) => Container(
-              height: 220,
-              child: FitWeightSlider(
-                value: weightViewModel.weight,
-                onDragging: (value) => weightViewModel.setWeight(value),
-                onDragCompleted: (value) {},
-              ),
-            )
-        )
-      ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: 72),
+          Center(child: Text(DateFormat.yMMMd().format(DateTime.now()),style: Theme.of(context).textTheme.headline)),
+          Center(child: Image.asset("assets/weight.png",height: 200,fit: BoxFit.fitHeight,)),
+          SizedBox(height: 16),
+          Consumer<WeightViewModel>(
+              builder: (context, weightViewModel,_) => Container(
+                height: 220,
+                child: FitWeightSlider(
+                  value: weightViewModel.weight,
+                  onDragging: (value) => weightViewModel.setWeight(value),
+                  onDragCompleted: (value) {},
+                ),
+              )
+          )
+        ],
+      ),
     );
   }
 }

@@ -11,6 +11,9 @@ class NewProgramsScreen extends StatelessWidget {
   static const Color backgroundColor = Color(0xFFFFDFDB);
   static const Color textColor = Colors.black;
 
+
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -45,6 +48,7 @@ class NewProgramsScreen extends StatelessWidget {
                 buttonText: "Get Programs",
                 onTap: (){
                 programsViewModel.downloadPrograms();
+                Navigator.pop(context);
             }),
             SizedBox(height: 16),
             FlatButton(child: Text("DISMISS",style: Theme.of(context).textTheme.subtitle.copyWith(

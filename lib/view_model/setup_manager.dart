@@ -3,7 +3,6 @@ import 'package:fitphone/repository/firebase_api.dart';
 import 'package:fitphone/utils/nutrition_calculator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fitphone/enums/setup_enums.dart';
-import 'package:fitphone/utils/unit_converter.dart';
 
 class SetupManager extends ChangeNotifier{
 
@@ -44,23 +43,6 @@ class SetupManager extends ChangeNotifier{
     return unit;
   }
 
-
-  /*Future<double> _setWeight(double weight) async {
-
-    double w = 0.0;
-
-    await getUnit().then((value){
-      if(value == "Kilograms"){
-        w = unitConverter.convertToLbs(weight);
-      }
-      else {
-        w = weight;
-      }
-    });
-
-    return w;
-
-  }*/
 
   setWeight(double weight){
     _weight = weight;

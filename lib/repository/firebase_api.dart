@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fitphone/model/account_info_model.dart';
+import 'package:fitphone/model/exercise_model.dart';
 import 'package:fitphone/model/photo_model.dart';
 import 'package:fitphone/model/program_model.dart';
 import 'package:fitphone/model/programs_info_model.dart';
 import 'package:fitphone/model/settings_model.dart';
 import 'package:fitphone/model/user_model.dart';
+import 'package:fitphone/utils/date_helper.dart';
 import 'package:fitphone/utils/firebase_result.dart';
 import 'package:fitphone/utils/passcode.dart';
 import 'package:intl/intl.dart';
@@ -58,13 +60,24 @@ class FirebaseAPI {
           _firestore.collection(("users")).document((result.user.uid)).collection("settings").document("settings").setData(Settings.init().toMap());
           _firestore.collection(("users")).document((result.user.uid)).collection("program_info").document("program_info").setData(ProgramInfo.init().toMap());
           _firestore.collection(("users")).document((result.user.uid)).collection("account_info").document("account_info").setData(AccountInfo.init().toMap());
-
+          _initializeDate(result.user.uid);
 
           getLatestProgramOne().then((value){
             for(var p in value.documents){
               Program program = Program.fromMap(p.data);
+              program.referenceId = p.documentID;
 
-              addProgram(program.toMap(), result.user.uid);
+              addProgram(program.toMap(), result.user.uid).then((id){
+                getGlobalExercises(p.documentID).then((snapshot){
+                  for(var s in snapshot.documents){
+
+                    Exercise exercise = Exercise.fromMap(s.data);
+
+                    addExercise(result.user.uid,id, exercise.toMap());
+
+                  }
+                });
+              });
               updateProgramInfo(result.user.uid, {"primaryProgram": program.name});
             }
           });
@@ -81,6 +94,19 @@ class FirebaseAPI {
     }
 
     return firebaseResultCallback;
+  }
+
+
+
+  _initializeDate(String userId){
+
+    var map = {
+      "week" : DateHelper.getWeekNumber(DateTime.now()),
+      "month" : DateTime.now().month,
+      "year" : DateTime.now().year
+    };
+
+    addDate(userId, map);
   }
 
   Stream<DocumentSnapshot>getUserData(String id){
@@ -165,7 +191,7 @@ class FirebaseAPI {
       PhotoModel photoModel = PhotoModel(
           url: downloadUrl,
           date: DateTime.now().millisecondsSinceEpoch,
-          name: "",
+          name: "New photo",
           path: path
       );
 
@@ -187,7 +213,7 @@ class FirebaseAPI {
   }
 
   Stream<QuerySnapshot>getSelfie(String id){
-    return _firestore.collection("users").document(id).collection("photos").where("folder",isEqualTo: "").snapshots();
+    return _firestore.collection("users").document(id).collection("photos").orderBy("date").snapshots();
   }
 
   int weekNumber(DateTime date) {
@@ -242,8 +268,22 @@ class FirebaseAPI {
     await _firestore.collection("users").document(userId).collection("settings").document("settings").updateData(map);
   }
 
+  addDate(String userId,Map<String,dynamic> map) async {
+    await _firestore.collection("users").document(userId).collection("date").document("date").setData(map);
+  }
+
+  updateDate(String userId,Map<String,dynamic> map) async {
+    await _firestore.collection("users").document(userId).collection("date").document("date").updateData(map);
+  }
+
+
   addExercise(String userId ,String programID,Map<String,dynamic> map) async{
     await _firestore.collection("users").document(userId).collection("programs").document(programID).collection("exercises").add(map);
+  }
+
+
+  addMeasurements(String userId, Map<String,dynamic> map) async{
+    await  _firestore.collection("users").document(userId).collection("measurements").add(map);
   }
 
   Future<String>addProgram(Map<String,dynamic> map, String userId) async{
@@ -262,7 +302,7 @@ class FirebaseAPI {
     await _firestore.collection("users").document(userId).collection("program_info").document("program_info").updateData(map);
   }
 
-  updateExerciseWeight(String userId,String programId,String exerciseId, Map<String,dynamic> map) async{
+  updateExercise(String userId,String programId,String exerciseId, Map<String,dynamic> map) async{
     await _firestore.collection("users").document(userId).collection("programs").document(programId).collection("exercises").document(exerciseId).setData(map,merge: true);
   }
 
@@ -274,7 +314,23 @@ class FirebaseAPI {
     await _firestore.collection("users").document(userId).collection("done_workouts").add(map);
   }
 
+  addMonthlyAvgWeight(String userId,Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("month_avg_weight").add(map);
+  }
 
+  updateMonthlyAvgWeight(String userId,String documentId, Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("month_avg_weight").document(documentId).updateData(map);
+  }
+
+
+  addMonthlyAvgMeasurements(String userId,Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("month_avg_measurement").add(map);
+  }
+
+  updateMonthlyAvgMeasurements(String userId,String documentId, Map<String,dynamic> map) async{
+    await _firestore.collection("users").document(userId).collection("month_avg_measurement").document(documentId).updateData(map);
+  }
+  
   Future<void> deleteWeight(String userId, String weightId) async{
     await _firestore.collection("users").document(userId).collection("weights").document(weightId).delete();
   }
@@ -323,8 +379,8 @@ class FirebaseAPI {
     return _firestore.collection("users").document(userId).collection("account_info").document("account_info").snapshots();
   }
   
-  Future<QuerySnapshot> getExercises(String userId,String programId,String intensity, String workout) async {
-    return await _firestore.collection("users").document(userId).collection("programs").document(programId).collection("exercises").orderBy("order").where("program intensity",isEqualTo: intensity,).where("workout name",isEqualTo: workout).getDocuments();
+  Stream<QuerySnapshot> getExercises(String userId,String programId){
+    return _firestore.collection("users").document(userId).collection("programs").document(programId).collection("exercises").orderBy("order").snapshots();
   }
 
   Future<QuerySnapshot> getGlobalExercises(String programId) async {
@@ -339,6 +395,10 @@ class FirebaseAPI {
     return  _firestore.collection("users").document(id).collection("weights").where("month" ,isEqualTo: month).where("year",isEqualTo: year).snapshots();
   }
 
+  Future<QuerySnapshot> getWeightFromMonthOne(String id ,int month,int year) async{
+    return await _firestore.collection("users").document(id).collection("weights").where("month" ,isEqualTo: month).where("year",isEqualTo: year).getDocuments();
+  }
+
   Stream<QuerySnapshot> getPhotoFolders(String userId){
     return _firestore.collection("users").document(userId).collection("folders").snapshots();
   }
@@ -347,11 +407,35 @@ class FirebaseAPI {
     return await _firestore.collection("users").document(userId).collection("photos").where("folder",isEqualTo: folderName).getDocuments();
   }
 
-  Future<QuerySnapshot> getFolderCoverPhoto(String userId,String folderName) async{
-    return await _firestore.collection("users").document(userId).collection("photos").where("folder",isEqualTo: folderName).limit(1).getDocuments();
-  }
 
   Stream<QuerySnapshot> getDoneWorkouts(String userId){
-   return _firestore.collection("users").document(userId).collection("done_workouts").limit(20).snapshots();
+   return _firestore.collection("users").document(userId).collection("done_workouts").orderBy("date",descending: true).snapshots();
+  }
+
+  Stream<DocumentSnapshot> getDate(String userId){
+    return _firestore.collection("users").document(userId).collection("date").document("date").snapshots();
+  }
+  
+  Stream<QuerySnapshot> getMonthlyAvgWeight(String userId, int year) {
+    return _firestore.collection("users").document(userId).collection("month_avg_weight").where("year",isEqualTo: year).snapshots();
+  }
+
+  Stream<QuerySnapshot> getCurrentWeight(String userId){
+    return _firestore.collection("users").document(userId).collection("weights").orderBy("date",descending: true).limit(1).snapshots();
+  }
+
+  Stream<QuerySnapshot> getMeasurementsFromWeek(String userId,int week,int year){
+    return _firestore.collection("users").document(userId).collection("measurements").where("week",isEqualTo: week).where("year",isEqualTo: year).snapshots();
+
+  }
+
+  Stream<QuerySnapshot> getMeasurementsFromMonth(String userId,int month,int year){
+    return _firestore.collection("users").document(userId).collection("measurements").where("month",isEqualTo: month).where("year",isEqualTo: year).snapshots();
+
+  }
+
+  Stream<QuerySnapshot> getMeasurementsFromYear(String userId,int year){
+    return _firestore.collection("users").document(userId).collection("month_avg_weight").where("year",isEqualTo: year).snapshots();
+
   }
 }

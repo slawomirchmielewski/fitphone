@@ -1,6 +1,7 @@
 import 'package:fitphone/view/add_feedback_screen.dart';
 import 'package:fitphone/view_model/session_manager.dart';
 import 'package:fitphone/view_model/settings_manager.dart';
+import 'package:fitphone/widget/fit_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +33,7 @@ class SettingsScreen extends StatelessWidget {
           children: <Widget>[
              ListTile(title: Text("Unit of weight",style: titleStyle,),subtitle: Text(settingsManager.unitShortName),onTap: (){
                showRoundedModalBottomSheet(
-                   color: Theme.of(context).cardColor,
+                   color: Theme.of(context).canvasColor,
                    radius: 15,
                    context: context,
                    builder: (context) => Container(
@@ -40,20 +41,24 @@ class SettingsScreen extends StatelessWidget {
                      child: Column(
                        mainAxisSize: MainAxisSize.min,
                        children: <Widget>[
-                         ListTile(
-                             title: Text("Kilograms"),
-                             leading: Icon(MaterialCommunityIcons.weight_kilogram,color:iconsColor),
-                             onTap: (){
-                           settingsManager.setUnits(Unit.Kilograms);
-                           Navigator.pop(context);
-                         }),
-                         ListTile(
-                             title: Text("Pounds"),
-                             leading: Icon(MaterialCommunityIcons.weight_pound,color: iconsColor),
-                             onTap: (){
-                           settingsManager.setUnits(Unit.Pounds);
-                           Navigator.pop(context);
-                         })
+                         RadioListTile(
+                           groupValue: settingsManager.units,
+                           value: Unit.Kilograms,
+                           title: Text("Kilogram"),
+                           onChanged: (value) {
+                             settingsManager.setUnits(Unit.Kilograms);
+                             Navigator.pop(context);
+                           },
+                         ),
+                         RadioListTile(
+                           groupValue: settingsManager.units,
+                           value: Unit.Pounds,
+                           title: Text("Pounds"),
+                           onChanged: (value) {
+                             settingsManager.setUnits(Unit.Pounds);
+                             Navigator.pop(context);
+                           },
+                         ),
                        ],
                      ),
                    ));
@@ -65,8 +70,27 @@ class SettingsScreen extends StatelessWidget {
                color: Colors.red
              )),
                onTap: () {
-                 Navigator.of(context).popUntil((route) => route.isFirst);
-                 sessionManager.logoutUser();
+                 showDialog(
+                     context: context,
+                     builder: (context) => FitAlertDialog(
+                       title: Text(""),
+                       content: Text("Are you sure you want to logout? "),
+                       actions: <Widget>[
+                         FlatButton(
+                           child: Text("Cancel"),
+                           onPressed: () => Navigator.pop(context),
+                         ),
+                         FlatButton(
+                           child: Text("Logout"),
+                           onPressed: () {
+                             Navigator.of(context).popUntil((route) => route.isFirst);
+                             sessionManager.logoutUser();
+                           },
+                         )
+
+                       ],
+                     )
+                 );
                })
           ],
         ),

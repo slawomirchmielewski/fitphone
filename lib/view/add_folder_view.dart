@@ -30,7 +30,8 @@ class AddFolderView extends StatelessWidget {
           },
         )
       ],
-      children: <Widget>[
+      child: Column(
+        children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -39,17 +40,17 @@ class AddFolderView extends StatelessWidget {
                 TextField(
                   onChanged:(text) => photosViewModel.setTempFolderName(text) ,
                   decoration: InputDecoration(
-                    hintText: "Add a title",
-                    hintStyle: Theme.of(context).textTheme.title
+                      hintText: "Add a title",
+                      hintStyle: Theme.of(context).textTheme.title
                   ),
                 ),
                 SizedBox(height: 32),
                 Text("Select color",style: Theme.of(context).textTheme.subhead.copyWith(
-                  fontWeight: FontWeight.w700
+                    fontWeight: FontWeight.w700
                 ),),
                 SizedBox(height: 16),
                 GridView.count(
-                  shrinkWrap: true,
+                    shrinkWrap: true,
                     physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
                     mainAxisSpacing: 6,
                     crossAxisSpacing: 6,
@@ -59,12 +60,13 @@ class AddFolderView extends StatelessWidget {
                       groupValue: int.parse(photosViewModel.temFolderColor),
                       onChange:(value) => photosViewModel.setTempFolderColor(value.toString()),
                     )
-                  )
+                    )
                 )
               ],
             ),
           )
-      ],
+        ],
+      ),
     );
   }
 }

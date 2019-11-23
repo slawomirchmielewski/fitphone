@@ -7,6 +7,7 @@ class UIHelper extends ChangeNotifier{
   int _bottomNavigationIndex = 0;
   int _setupPageIndex = 0;
   int _progressTabIndex = 0;
+  int _weightChartTabIndex = 0;
   bool _isWelcomeButtonVisible = false;
   bool _isWeightButtonVisible = false;
   bool _isUnitsButtonVisible = false;
@@ -19,6 +20,7 @@ class UIHelper extends ChangeNotifier{
   int get bottomNavigationIndex => _bottomNavigationIndex;
   int get setupPageIndex => _setupPageIndex;
   int get progressTabIndex => _progressTabIndex;
+  int get weightChartTabIndex => _weightChartTabIndex;
   bool get isWelcomeButtonVisible => _isWelcomeButtonVisible;
   bool get isWeightButtonVisible => _isWeightButtonVisible;
   bool get isUnitsButtonVisible => _isUnitsButtonVisible;
@@ -40,6 +42,11 @@ class UIHelper extends ChangeNotifier{
 
   setWeightButtonVisibility(bool visibility){
     _isWeightButtonVisible = visibility;
+    notifyListeners();
+  }
+
+  setWeightChartTabIndex(int index){
+    _weightChartTabIndex = index;
     notifyListeners();
   }
 
@@ -83,10 +90,4 @@ class UIHelper extends ChangeNotifier{
     _progressTabIndex = index;
     notifyListeners();
   }
-  
-  
-  
-
-
-
 }

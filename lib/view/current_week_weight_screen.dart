@@ -1,4 +1,3 @@
-import 'package:fitphone/enums/setup_enums.dart';
 import 'package:fitphone/view/embaded_view/record_weight_view.dart';
 import 'package:fitphone/view_model/settings_manager.dart';
 import 'package:fitphone/view_model/weight_view_model.dart';
@@ -22,6 +21,7 @@ class CurrentWeekWeightScreen extends StatelessWidget {
     String pageName = "Weight activity";
 
     final WeightViewModel weightViewModel = Provider.of<WeightViewModel>(context);
+    final SettingsManager settingsManager = Provider.of<SettingsManager>(context);
     const double padding = 16;
 
     return Page(
@@ -36,48 +36,53 @@ class CurrentWeekWeightScreen extends StatelessWidget {
           }
         )
       ],
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: padding,right: padding),
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 32),
-              Center(child: Text("${DateFormat.yMMMd().format(weightViewModel.weekDates.first)} to ${DateFormat.yMMMd().format(weightViewModel.weekDates.last)}",style: Theme.of(context).textTheme.subtitle)),
-              SizedBox(height: 32),
-              Container(
-                 padding: EdgeInsets.all(16),
-                 decoration: BoxDecoration( 
-                   borderRadius: BorderRadius.circular(15),
-                   color: Theme.of(context).primaryColorLight
-                 ),
-                  child: WeekWeightChart(
-                    color: Theme.of(context).primaryColor,
-                  )
-              ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
-                  itemCount: weightViewModel.weekWeightList.length,
-                  itemBuilder: (context,index) {
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Center(child: Text("${DateFormat.yMMMd().format(weightViewModel.weekDates.first)} to ${DateFormat.yMMMd().format(weightViewModel.weekDates.last)}",style: Theme.of(context).textTheme.subtitle)),
+            SizedBox(height: 32),
+            Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                   // color: Theme.of(context).primaryColorLight
+                ),
+                child: WeekWeightChart(
+                  color: Theme.of(context).primaryColor,
+                )
+            ),
+            SizedBox(height: 32),
+            Text("Average weight this week ${settingsManager.getConvertedWeight(weightViewModel.weeklyAvg)?.round()} ${settingsManager.unitShortName}",
+              style: Theme.of(context).textTheme.subtitle,),
+            SizedBox(height: 16),
+            Divider(),
+            ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
+                itemCount: weightViewModel.weekWeightList.length,
+                itemBuilder: (context,index) {
 
-                    weightViewModel.weekWeightList.sort((a,b) => a.date.compareTo(b.date));
+                  weightViewModel.weekWeightList.sort((a,b) => a.date.compareTo(b.date));
 
-                    return FitWeightListTile(
-                      weightViewModel.weekWeightList[index],
-                      onLongPress: () {
-                        showRoundedModalBottomSheet(
-                            color: Theme.of(context).primaryColorLight,
-                            radius: 15,
-                            context: context,
-                            builder: (context) => Container(
-                              padding: EdgeInsets.only(top: 8,bottom: 8),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ListTile(
-                                    leading: Icon(SimpleLineIcons.trash),
-                                    title: Text("Delete weight"),
-                                    onTap: (){
+                  return FitWeightListTile(
+                    weightViewModel.weekWeightList[index],
+                    onLongPress: () {
+                      showRoundedModalBottomSheet(
+                          color: Theme.of(context).primaryColorLight,
+                          radius: 15,
+                          context: context,
+                          builder: (context) => Container(
+                            padding: EdgeInsets.only(top: 8,bottom: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  leading: Icon(SimpleLineIcons.trash),
+                                  title: Text("Delete weight"),
+                                  onTap: (){
                                     weightViewModel.deleteWeight(weightViewModel.weekWeightList[index].id).then((_){
 
                                     }).catchError((error){
@@ -85,19 +90,18 @@ class CurrentWeekWeightScreen extends StatelessWidget {
                                     });
                                     Navigator.pop(context);
                                   },),
-                                  ListTile(leading: Icon(SimpleLineIcons.pencil),title: Text("Update weight"),onTap: (){
-                                    Navigator.pop(context);
-                                  },),
-                                ],
-                              ),
-                            ));
-                      },
-                    );}
-              ),
-            ],
-          ),
-        )
-      ],
+                                ListTile(leading: Icon(SimpleLineIcons.pencil),title: Text("Update weight"),onTap: (){
+                                  Navigator.pop(context);
+                                },),
+                              ],
+                            ),
+                          ));
+                    },
+                  );}
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

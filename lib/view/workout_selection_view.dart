@@ -13,77 +13,63 @@ class WorkoutSelectionView extends StatelessWidget {
     final ProgramsViewModel programsViewModel = Provider.of<ProgramsViewModel>(context);
 
     List<Widget> treeButtons = [FitButton(
-      buttonText: "Workout A",
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3A,workoutName: "Workout 3A")));
-      },
+      buttonText:"Workout A",
+      onTap:  programsViewModel.workout3A.length > 0 ? () => Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3A,workoutName: "Workout 3A"))) : null
     ),
       SizedBox(height: 16),
       FitButton(
-        buttonText: "Workout B",
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3B,workoutName: "Workout 3B")));
-        },
+        buttonText:"Workout B",
+        onTap:  programsViewModel.workout3B.length > 0 ? () => Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3B,workoutName: "Workout 3B"))):null
       ),
       SizedBox(height: 16),
       FitButton(
-        buttonText: "Workout C",
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3C,workoutName: "Workout C3")));
-        },
+        buttonText:"Workout C",
+        onTap:  programsViewModel.workout3C.length > 0 ?  () =>Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout3C,workoutName: "Workout C3"))) : null
       )];
 
     List<Widget> fourButtons = [FitButton(
-      buttonText: "Workout A",
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4A,workoutName: "Workout 4A")));
-      },
+      buttonText:"Workout  A",
+      onTap:  programsViewModel.workout4A.length > 0 ? () =>Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4A,workoutName: "Workout 4A"))) : null
     ),
       SizedBox(height: 16),
       FitButton(
-        buttonText: "Workout A1",
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4A1,workoutName: "Workout 4A1")));
-        },
+        buttonText:"Workout  A1",
+        onTap:  programsViewModel.workout4A1.length > 0 ? () => Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4A1,workoutName: "Workout 4A1"))) : null
       ),
       SizedBox(height: 16),
       FitButton(
-        buttonText: "Workout B",
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4B,workoutName: "Workout 4B")));
-        },
-
+        buttonText:"Workout  B",
+        onTap:programsViewModel.workout4B.length > 0 ? () => Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4B,workoutName: "Workout 4B"))) : null
       ),
       SizedBox(height: 16),
       FitButton(
-        buttonText: "Workout B1",
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4B1,workoutName: "Workout 4B1")));
-        },
-
+        buttonText:"Workout  B1",
+        onTap: programsViewModel.workout4B1.length > 0 ? ()=> Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkoutPage(workout: programsViewModel.workout4B1,workoutName: "Workout 4B1"))) :null
       )];
 
     return Page(
       automaticallyImplyLeading: true,
       appBarTitle: Text("Select workout"),
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 72),
-              Text("With workout you would like to start ?",style: Theme.of(context).textTheme.display1.copyWith(
-                color: Theme.of(context).textTheme.title.color,
-                fontWeight: FontWeight.bold
-              )),
-              SizedBox(height: 140),
-              if(programsViewModel.programInfo.primaryWorkout == "3d") ...treeButtons,
-              if(programsViewModel.programInfo.primaryWorkout == "4d") ...fourButtons,
+      child: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 72),
+                Text("With workout would you like to start ?",style: Theme.of(context).textTheme.display1.copyWith(
+                    color: Theme.of(context).textTheme.title.color,
+                    fontWeight: FontWeight.bold
+                )),
+                SizedBox(height: 140),
+                if(programsViewModel.programInfo.primaryWorkout == "3d") ...treeButtons,
+                if(programsViewModel.programInfo.primaryWorkout == "4d") ...fourButtons,
 
-            ],
-          ),
-        )
-      ],
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

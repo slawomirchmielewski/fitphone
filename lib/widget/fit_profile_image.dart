@@ -8,8 +8,9 @@ import 'package:provider/provider.dart';
 
 class FitProfileImage extends StatelessWidget {
   final double radius;
+  final VoidCallback onTap;
 
-  FitProfileImage({Key key, this.radius}) : super(key: key);
+  FitProfileImage({Key key, this.radius,this.onTap}) : super(key: key);
 
   static const double _radius = 24;
   static const double _padding = 16;
@@ -20,9 +21,7 @@ class FitProfileImage extends StatelessWidget {
     final UserViewModel userViewModel = Provider.of<UserViewModel>(context);
 
     return GestureDetector(
-      onTap: (){
-       showCupertinoModalPopup(context: context, builder: (context) => ProfileScreen());
-      },
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.only(left: _padding, right: _padding),
         child: Column(
@@ -37,7 +36,7 @@ class FitProfileImage extends StatelessWidget {
                         ? CachedNetworkImageProvider(userViewModel.user.photoUrl)
                         : AssetImage("assets/placeholder_face.png"))
                 : CircleAvatar(
-                    backgroundColor: Theme.of(context).primaryColorLight,
+                    backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
                     radius: radius,
                   ),
           ],

@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 
 class Exercise{
   String id;
@@ -8,9 +7,12 @@ class Exercise{
   int order;
   int set;
   List<double> weights;
+  List<int> doneReps;
+  List<String> notes;
   int restTime;
   String reps;
   String url;
+  String coverUrl;
 
   Exercise({
     this.id,
@@ -20,7 +22,10 @@ class Exercise{
     this.order,
     this.set,
     this.url,
+    this.coverUrl,
     this.weights,
+    this.doneReps,
+    this.notes,
     this.reps,
     this.restTime
   });
@@ -34,8 +39,11 @@ class Exercise{
       order: map["order"] ?? 0,
       set: map["sets"] ?? 0,
       weights: map["weights"]?.cast<double>() ?? [],
+      doneReps: map["done reps"]?.cast<int>() ?? [],
+      notes: map["notes"]?.cast<String>() ?? [],
       reps: map["reps"] ?? "",
       url: map["video_url"] ?? "",
+      coverUrl: map["image_url"] ?? "",
       restTime: map["rest time"] ?? 0
     );
   }
@@ -48,9 +56,12 @@ class Exercise{
       "name" : name,
       "order" : order,
       "sets" : set,
+      "notes" : notes,
       "reps" : reps,
       "weights" : [],
+      "done reps" : [],
       "video_url" : url,
+      "image_url" : coverUrl,
       "rest time" : restTime
     };
   }

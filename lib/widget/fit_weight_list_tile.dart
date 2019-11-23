@@ -23,18 +23,7 @@ class FitWeightListTile extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColorLight,
         child: Text(weightModel.getDayName(),style: Theme.of(context).textTheme.subtitle,),
       ),
-      title: Row(
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
-        children: <Widget>[
-          Text("${settingsManager.getConvertedWeight(weightModel.weight).round()}",style: Theme.of(context).textTheme.subhead.copyWith(
-            fontWeight: FontWeight.w700
-          ),),
-          Text("${settingsManager.unitShortName}",style: Theme.of(context).textTheme.subtitle.copyWith(
-            fontSize: 10
-          ),),
-        ],
-      ),
+      title: Text("${settingsManager.getConvertedWeight(weightModel.weight).round()} ${settingsManager.unitShortName}"),
       subtitle: Text(weightModel.getDate()),
 
     );

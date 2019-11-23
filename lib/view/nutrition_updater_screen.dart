@@ -42,6 +42,7 @@ class _NutritionUpdaterScreenState extends State<NutritionUpdaterScreen> {
 
    final nutritionViewModel = Provider.of<NutritionViewModel>(context);
 
+
    const double padding  = 16;
 
     Widget _buildUpdateRow(String name, String units , int vale,VoidCallback onMinusPress, VoidCallback onPlusPress){
@@ -49,34 +50,35 @@ class _NutritionUpdaterScreenState extends State<NutritionUpdaterScreen> {
         padding: const EdgeInsets.only(left: 8,right: 8),
         height: 80,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text(name,style: Theme.of(context).textTheme.subhead.copyWith(
-              fontWeight: FontWeight.normal
-            ),),
-            Spacer(
-              flex: 3,
-            ),
             IconButton(icon: Icon(SimpleLineIcons.minus),onPressed: onMinusPress),
             SizedBox(width: 8),
-            Container(
-                width: 80,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: <Widget>[
-                      Text(vale.toString(),style: Theme.of(context).textTheme.subhead.copyWith(
-                        fontWeight: FontWeight.bold
-                      ),),
-                      Text(units,style: Theme.of(context).textTheme.subtitle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10
-                      ),),
-                    ],
-                  ))
-            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                    width: 80,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: <Widget>[
+                          Text(vale.toString(),style: Theme.of(context).textTheme.subhead.copyWith(
+                            fontWeight: FontWeight.bold
+                          ),),
+                          Text(units,style: Theme.of(context).textTheme.subtitle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10
+                          ),),
+                        ],
+                      ))
+                ),
+                Text(name,style: Theme.of(context).textTheme.body1)
+            ]),
             SizedBox(width: 8),
             IconButton(icon: Icon(SimpleLineIcons.plus),onPressed: onPlusPress),
           ],
@@ -87,7 +89,7 @@ class _NutritionUpdaterScreenState extends State<NutritionUpdaterScreen> {
 
     return Page(
       automaticallyImplyLeading: true,
-      appBarTitle: Text("Daily nutrition intake"),
+      appBarTitle: Text("Nutrition"),
       actions: <Widget>[
         FlatButton(
           onPressed: (){
@@ -99,76 +101,75 @@ class _NutritionUpdaterScreenState extends State<NutritionUpdaterScreen> {
               "protein" : protein
             };
 
-            nutritionViewModel.updateNutrition(map).then((_) => Toast.show("Update saved", context))
-                .catchError((error) => Toast.show(error, context));
+            nutritionViewModel.updateNutrition(map);
+            Toast.show("Update saved", context);
+            Navigator.pop(context);
+
           },
-          child: Text("Save",style: Theme.of(context).textTheme.subtitle.copyWith(
+          child: Text("Save",style: Theme.of(context).textTheme.subhead.copyWith(
             color: Theme.of(context).primaryColor
           ),),
         ),
       ],
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: padding,right: padding),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 36),
-              Text("Update your daily nutrition intake.",style: Theme.of(context).textTheme.headline.copyWith(
-                fontWeight: FontWeight.bold
-              ),maxLines: 2),
-              SizedBox(height: 72),
-              Container(
-                  height: 120,
-                  child: Align(
-                      alignment: Alignment.center,
-                      child: Image.asset("assets/nutrition_image.png",fit: BoxFit.fitWidth,)
-                  )
-              ),
-              SizedBox(height: 16),
-              _buildUpdateRow("Calories","kcal",calories, () {
-                setState(() {
-                  calories--;
-                });
-              }, () {
-                setState(() {
-                  calories++;
-                });
-              }),
-              _buildUpdateRow("Protein","g",protein, () {
-                setState(() {
-                  protein--;
-                });
-              }, () {
-                setState(() {
-                  protein++;
-                });
-              }),
-              _buildUpdateRow("Carbs","g",carbs, () {
-                setState(() {
-                  carbs--;
-                });
-              }, () {
-                setState(() {
-                  carbs++;
-                });
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(
+            height: 150,
+            width: MediaQuery.of(context).size.width,
+            child: Image.asset("assets/nutrition_cover_image.png",fit: BoxFit.cover)),
+          Padding(
+            padding: const EdgeInsets.only(left: padding,right: padding),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 36),
+                Text("Update your daily nutrition intake",style: Theme.of(context).textTheme.headline,maxLines: 2),
+                SizedBox(height: 72),
+                _buildUpdateRow("Calories","kcal",calories, () {
+                  setState(() {
+                    calories--;
+                  });
+                }, () {
+                  setState(() {
+                    calories++;
+                  });
+                }),
+                _buildUpdateRow("Protein","g",protein, () {
+                  setState(() {
+                    protein--;
+                  });
+                }, () {
+                  setState(() {
+                    protein++;
+                  });
+                }),
+                _buildUpdateRow("Carbs","g",carbs, () {
+                  setState(() {
+                    carbs--;
+                  });
+                }, () {
+                  setState(() {
+                    carbs++;
+                  });
 
-              }),
-              _buildUpdateRow("Fat","g",fat, () {
-                setState(() {
-                  fat--;
-                });
-              }, () {
-                setState(() {
-                  fat++;
-                });
-              })
-            ],
-          ),
-        )
+                }),
+                _buildUpdateRow("Fat","g",fat, () {
+                  setState(() {
+                    fat--;
+                  });
+                }, () {
+                  setState(() {
+                    fat++;
+                  });
+                })
+              ],
+            ),
+          )
+        ],
+      ),
 
-      ],
 
     );
   }

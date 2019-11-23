@@ -24,73 +24,80 @@ class ProgramsPage extends StatelessWidget {
       FitWorkoutCard(
           title: "Workout A",
           subtitle:" ${programsViewModel.workout3A.length} exercises",
-          iconColor: Colors.red,
+          isDone: programsViewModel.programInfo.is3AWorkoutDone,
           onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsView(
               exercises: programsViewModel.workout3A,
               workoutName: "Workout A",
+              isDone: programsViewModel.programInfo.is3AWorkoutDone,
             )));
           }),
       FitWorkoutCard(
           title: "Workout B",
+          isDone: programsViewModel.programInfo.is3BWorkoutDone,
           subtitle:" ${programsViewModel.workout3B.length} exercises",
-          iconColor: Colors.indigoAccent,
           onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsView(
               exercises: programsViewModel.workout3B,
               workoutName: "Workout B",
+              isDone: programsViewModel.programInfo.is3BWorkoutDone,
             )));
           }),
       FitWorkoutCard(
           title: "Workout C",
+          isDone: programsViewModel.programInfo.is3CWorkoutDone,
           subtitle:" ${programsViewModel.workout3C.length} exercises",
-          iconColor: Colors.green,
           onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsView(
               exercises: programsViewModel.workout3C,
               workoutName: "Workout C",
+              isDone: programsViewModel.programInfo.is3CWorkoutDone,
             )));
           })
     ];
     final List<FitWorkoutCard> fourDays = [
       FitWorkoutCard(
           title: "Workout A",
+          isDone: programsViewModel.programInfo.is4AWorkoutDone,
           subtitle:" ${programsViewModel.workout4A.length} exercises",
-          iconColor: Colors.red,
           onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsView(
               exercises: programsViewModel.workout4A,
               workoutName: "Workout A",
+              isDone: programsViewModel.programInfo.is4AWorkoutDone,
             )));
           }),
       FitWorkoutCard(
           title: "Workout A1",
           subtitle:" ${programsViewModel.workout4A1.length} exercises",
-          iconColor: Colors.indigoAccent,
+          isDone: programsViewModel.programInfo.is4A1WorkoutDone,
           onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsView(
               exercises: programsViewModel.workout4A1,
               workoutName: "Workout A1",
+              isDone: programsViewModel.programInfo.is4A1WorkoutDone,
             )));
           }),
       FitWorkoutCard(
           title: "Workout B",
           subtitle:" ${programsViewModel.workout4B.length} exercises",
-          iconColor: Colors.green,
+          isDone: programsViewModel.programInfo.is4BWorkoutDone,
           onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsView(
               exercises: programsViewModel.workout4B,
               workoutName: "Workout B",
+              isDone: programsViewModel.programInfo.is4BWorkoutDone,
             )));
           }),
       FitWorkoutCard(
           title: "Workout B1",
           subtitle:" ${programsViewModel.workout4B1.length} exercises",
-          iconColor: Colors.orangeAccent,
+          isDone: programsViewModel.programInfo.is4B1WorkoutDone,
           onTap: (){
             Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutsView(
               exercises: programsViewModel.workout4B1,
               workoutName: "Workout B1",
+              isDone: programsViewModel.programInfo.is4B1WorkoutDone ,
             )));
           })
     ];
@@ -111,56 +118,70 @@ class ProgramsPage extends StatelessWidget {
     }
 
     return Page(
-      expandedHeight: expandedHeight,
+      haveTitle: true,
       pageName: pageName,
-      actions: <Widget>[
-        GestureDetector(
-          onTap: (){
-            showRoundedModalBottomSheet(
-                color: Theme.of(context).cardColor,
-                context: context,
-                builder: (context)=> Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      RadioListTile(title: Text("3 days per week"),value: "3d",groupValue: programsViewModel.programInfo.primaryWorkout,
-                        onChanged:(value) {
-                        programsViewModel.setPrimaryWorkout(value);
-                        Navigator.pop(context);
-                      }),
-                      RadioListTile(title: Text("4 days per week"),value: "4d",groupValue: programsViewModel.programInfo.primaryWorkout,
-                        onChanged: (value){
-                         programsViewModel.setPrimaryWorkout(value);
-                         Navigator.pop(context);
-                        })
-                    ],
+      appBarTitle: Text(pageName),
+      child: Column(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              FitProgramCard(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Divider(),
+              ),
+              SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GestureDetector(
+                  onTap: ()=> showRoundedModalBottomSheet(
+                      color: Theme.of(context).cardColor,
+                      context: context,
+                      builder: (context)=> Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            RadioListTile(title: Text("3 days per week"),value: "3d",groupValue: programsViewModel.programInfo.primaryWorkout,
+                                onChanged:(value) {
+                                  programsViewModel.setPrimaryWorkout(value);
+                                  Navigator.pop(context);
+                                }),
+                            RadioListTile(title: Text("4 days per week"),value: "4d",groupValue: programsViewModel.programInfo.primaryWorkout,
+                                onChanged: (value){
+                                  programsViewModel.setPrimaryWorkout(value);
+                                  Navigator.pop(context);
+                                })
+                          ],
+                      ),
+                  )),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
+                      borderRadius: BorderRadius.circular(5)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(getProgramText()),
+                          SizedBox(width: 4),
+                          Icon(Icons.keyboard_arrow_down)
+                        ],
+                      ),
+                    ),
                   ),
-                ));
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Row(
-              children: <Widget>[
-                Text(getProgramText()),
-                Icon(Icons.arrow_drop_down)
-              ],
-            ),
-          ),
-        )
-      ],
-      centerTitle: false,
-      children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            FitProgramCard(),
-            FitDoneWorkoutsCard(),
-            if(programsViewModel.programInfo.primaryWorkout == "3d") ...treeDays,
-            if(programsViewModel.programInfo.primaryWorkout == "4d") ...fourDays,
+                ),
+              ),
+              SizedBox(height: 16),
+              if(programsViewModel.programInfo.primaryWorkout == "3d") ...treeDays,
+              if(programsViewModel.programInfo.primaryWorkout == "4d") ...fourDays,
 
-          ],
-        )
-      ],
+            ],
+          )
+        ],
+      ),
     );
   }
 }

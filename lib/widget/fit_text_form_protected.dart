@@ -34,7 +34,7 @@ class FitTextFormProtected extends StatelessWidget {
         hintText: hint,
         hasFloatingPlaceholder: false,
         filled: true,
-        fillColor: Theme.of(context).primaryColorLight,
+        fillColor: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
         border: OutlineInputBorder(
           borderSide: BorderSide.none,
           borderRadius: BorderRadius.circular(10),

@@ -8,7 +8,7 @@ class FitButton extends StatelessWidget {
   final VoidCallback onTap;
   final Color backgroundColor;
 
-  FitButton({this.buttonText,this.onTap,this.backgroundColor });
+  FitButton({this.buttonText,this.onTap,this.backgroundColor});
 
 
   @override
@@ -19,14 +19,18 @@ class FitButton extends StatelessWidget {
       child: ButtonTheme(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
         textTheme: ButtonTextTheme.primary,
+        disabledColor: Colors.grey,
         buttonColor: backgroundColor ?? Theme.of(context).primaryColor,
         child: RaisedButton(
+          disabledTextColor: Colors.grey,
+          disabledColor: Colors.grey,
           highlightElevation: 0,
           elevation: 0,
           onPressed: onTap,
           child: Text(buttonText,style: Theme.of(context).textTheme.subtitle.copyWith(
             color: Colors.white
-          ),)
+          ),
+          softWrap: true,)
         ),
       ),
     );

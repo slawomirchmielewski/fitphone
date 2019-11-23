@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:fitphone/enums/setup_enums.dart';
 import 'package:fitphone/view_model/settings_manager.dart';
+import 'package:fitphone/view_model/weight_view_model.dart';
 import 'package:fitphone/widget/fit_custom_weight_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,19 +15,23 @@ class FitYearWeightChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    //final WeightViewModel weightViewModel = Provider.of<WeightViewModel>(context);
+    final WeightViewModel weightViewModel = Provider.of<WeightViewModel>(context);
     final SettingsManager settingsManager = Provider.of<SettingsManager>(context);
 
-    final List<double> points = [100,89,78,78,120,78,89,87,0,0,0,0];
+    final List<double> points = [];
     final List<String> labels = ["Jun","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-   /* for(var i = 0 ; i < labels.length;i++){
-      for(var y = 0 ; y < weightViewModel.weekWeightList.length ;y++){
-        if(weightViewModel.weekWeightList[y].getDayName() == labels[i]){
-          points[i] = settingsManager.getConvertedWeight(weightViewModel.weekWeightList[y].weight);
+    for(int i = 0 ; i <labels.length ; i++){
+      points.add(0);
+    }
+
+    for(var i = 0 ; i < labels.length;i++){
+      for(var y = 0 ; y < weightViewModel.yearWeightList.length ;y++){
+        if(weightViewModel.yearWeightList[y].month == i + 1){
+          points[i] = settingsManager.getConvertedWeight(weightViewModel.yearWeightList[y].weight);
         }
       }
-    }*/
+    }
 
     return Container(
         child: CustomPaint(

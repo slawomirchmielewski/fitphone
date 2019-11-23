@@ -1,6 +1,7 @@
 import 'package:fitphone/view/nutrition_updater_screen.dart';
 import 'package:fitphone/view_model/nutrtion_view_model.dart';
 import 'package:fitphone/widget/base_widget/card_base.dart';
+import 'package:fitphone/widget/base_widget/image_card_base.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,14 +17,15 @@ class FitNutritionWidget extends CardBase {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: <Widget>[
-            Text(value,style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold)),
-            Text(unit,style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: 12)),
+            Text(value,style: Theme.of(context).textTheme.subtitle.copyWith(
+              fontWeight: FontWeight.bold
+            )),
+            Text(unit,style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: 10)),
           ],
         ),
         SizedBox(height: 4),
-        Text(name,style: Theme.of(context).textTheme.subtitle.copyWith(
+        Text(name,style: Theme.of(context).textTheme.body1.copyWith(
             fontSize: 12,
-            color: Colors.grey
         ))
       ],
     );
@@ -34,8 +36,9 @@ class FitNutritionWidget extends CardBase {
   Widget build(BuildContext context) {
 
     return Consumer<NutritionViewModel>(
-      builder: (context,nutritionViewModel,_) => CardBase(
-        icon: Icons.category,
+      builder: (context,nutritionViewModel,_) => ImageCardBase(
+        title: "Nutrition",
+        imagePath: "assets/nutrition_cover_image.png",
         onTap: (){
           showCupertinoModalPopup(context: context, builder: (context) => NutritionUpdaterScreen(
             calories: nutritionViewModel.nutrition.calories,
@@ -44,8 +47,6 @@ class FitNutritionWidget extends CardBase {
             fat: nutritionViewModel.nutrition.fat,
           ));
         },
-        iconColor: Colors.orangeAccent,
-        title: "Daily nutrition intake",
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[

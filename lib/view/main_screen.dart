@@ -1,11 +1,11 @@
-import 'dart:io';
+import 'package:fitphone/utils/navigation_icon_icons.dart';
 import 'package:fitphone/view/pages/home_page.dart';
-import 'package:fitphone/view/pages/photos_page.dart';
 import 'package:fitphone/view/pages/programs_page.dart';
 import 'package:fitphone/view/pages/progress_page.dart';
 import 'package:fitphone/view/workout_selection_view.dart';
 import 'package:fitphone/view_model/ui_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -16,8 +16,17 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.resumed){
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +43,6 @@ class _MainScreenState extends State<MainScreen> {
           break;
         case 2:
           return ProgressPage();
-          break;
-        case 3:
-          return PhotosPage();
           break;
         default:
           return HomePage();
@@ -59,31 +65,41 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
+       // selectedItemColor: Theme.of(context).primaryColor,
+       // unselectedItemColor: Colors.grey[600],
         unselectedFontSize: 12,
         selectedFontSize: 12,
-        backgroundColor: Theme.of(context).cardColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         onTap: uiHelper.setBottomNavigationIndex,
         currentIndex: uiHelper.bottomNavigationIndex,
         items: [
           BottomNavigationBarItem(
             title: Text("Home"),
-            icon: Platform.isIOS ? Icon(Ionicons.ios_home) : Icon(Icons.home)
+            icon: Icon(NavigationIcon.home_variant_outline__1_)
           ),
           BottomNavigationBarItem(
               title: Text("Programs"),
-              icon: Platform.isIOS ? Icon(Ionicons.ios_paper) :Icon(Icons.filter_frames)
+              icon: Icon(NavigationIcon.format_list_bulleted)
           ),
           BottomNavigationBarItem(
               title: Text("Progress"),
-              icon:  Platform.isIOS ? Icon(Ionicons.ios_stats) :Icon(Icons.insert_chart)
+              icon:  Icon(NavigationIcon.chart_timeline_variant)
           ),
-          BottomNavigationBarItem(
-              title: Text("Gallery"),
-              icon:  Platform.isIOS ? Icon(Ionicons.ios_albums) : Icon(Icons.perm_media)
-          )
         ],
       ));
     }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+
 }

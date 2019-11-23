@@ -1,14 +1,22 @@
+import 'dart:async';
 import 'dart:io';
-
-import 'package:charts_flutter/flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:ui';
 import 'package:fitphone/model/folder_model.dart';
 import 'package:fitphone/model/photo_model.dart';
 import 'package:fitphone/repository/firebase_api.dart';
 import 'package:fitphone/utils/images_helper.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-class PhotosViewModel extends ChangeNotifier{
+
+enum PhotosView{
+  Grid,
+  List
+}
+
+
+
+class PhotosViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   String userId;
   String _tempFolderName;
@@ -19,7 +27,14 @@ class PhotosViewModel extends ChangeNotifier{
   List<Folder> _folders = [];
 
 
-   List<int> _colors = [
+  bool sortDescending = false;
+
+  PhotosView _photosView  = PhotosView.Grid;
+
+  PhotosView get photoView => _photosView;
+
+
+  List<int> _colors = [
     0xFFF7D488,
     0xFF00E8B5,
     0xFFA47963,
@@ -38,143 +53,148 @@ class PhotosViewModel extends ChangeNotifier{
 
 
   List<PhotoModel> get photos => _photos;
+
   List<Folder> get folders => _folders;
+
   List<int> get colors => _colors;
 
   String get tempFolderName => _tempFolderName;
+
   String get temFolderColor => _tempFolderColor;
+
   String get tempPhotoName => _tempPhotoName;
 
 
-  setTempFolderName(String name){
+  StreamSubscription _userStream;
+  StreamSubscription _selfiStream;
+  StreamSubscription _foldersStream;
+
+  setPhotoView(PhotosView photosView){
+    _photosView = photosView;
+    notifyListeners();
+  }
+
+
+  setTempFolderName(String name) {
     _tempFolderName = name;
     notifyListeners();
   }
 
-  setTempFolderColor(String  color){
+  setTempFolderColor(String color) {
     _tempFolderColor = color;
     notifyListeners();
   }
 
-  setTempPhotoName(String name){
+  setTempPhotoName(String name) {
     _tempPhotoName = name;
     notifyListeners();
   }
 
 
-
-  PhotosViewModel(){
+  PhotosViewModel() {
+    WidgetsBinding.instance.addObserver(this);
     getUserStream();
   }
 
-  getUserStream() async{
-    FirebaseAPI().checkLoginUser().listen((firebaseUser){
-
-      if(firebaseUser != null){
+  getUserStream() async {
+    _userStream = FirebaseAPI().checkLoginUser().listen((firebaseUser) {
+      if (firebaseUser != null) {
         userId = firebaseUser.uid;
         getPhotos();
         getFolders();
       }
-    }).onError((error) => print);
-  }
-
-
-  getPhotos(){
-    FirebaseAPI().getSelfie(userId).listen((snapshot){
-
-      _photos = [];
-
-       if(snapshot.documents != null){
-         for(var photo in snapshot.documents){
-           PhotoModel photoModel = PhotoModel.fromMap(photo.data);
-           photoModel.id = photo.documentID;
-           _photos.add(photoModel);
-         }
-
-         print(_photos.length);
-
-         notifyListeners();
-       }
     });
   }
 
 
-   Future<List<PhotoModel>> getPhotoFromFolder(Folder folder) async {
+  getPhotos() {
+    _selfiStream = FirebaseAPI().getSelfie(userId).listen((snapshot) {
+      _photos = [];
 
+      if (snapshot.documents != null) {
+        for (var photo in snapshot.documents) {
+          PhotoModel photoModel = PhotoModel.fromMap(photo.data);
+          photoModel.id = photo.documentID;
+          _photos.add(photoModel);
+        }
+
+        print(_photos.length);
+
+        notifyListeners();
+      }
+    });
+  }
+
+
+  Future<List<PhotoModel>> getPhotoFromFolder(Folder folder) async {
     List<PhotoModel> photosList = [];
 
-     await FirebaseAPI().getPhotosFromFolder(userId, folder.name).then((snapshot){
-
-        if(snapshot.documents != null){
-          for(var photo in snapshot.documents){
-            PhotoModel photoModel = PhotoModel.fromMap(photo.data);
-            photoModel.id = photo.documentID;
-            photosList.add(photoModel);
-          }
+    await FirebaseAPI().getPhotosFromFolder(userId, folder.name).then((
+        snapshot) {
+      if (snapshot.documents != null) {
+        for (var photo in snapshot.documents) {
+          PhotoModel photoModel = PhotoModel.fromMap(photo.data);
+          photoModel.id = photo.documentID;
+          photosList.add(photoModel);
         }
-      });
+      }
+    });
 
     print("Get photos");
 
     return photosList;
   }
 
-  getFolders(){
-    FirebaseAPI().getPhotoFolders(userId).listen((snapshot){
-
+  getFolders() {
+    _foldersStream = FirebaseAPI().getPhotoFolders(userId).listen((snapshot) {
       _folders = [];
 
-      if(snapshot.documents != null){
-       for(var f in snapshot.documents){
-         Folder folder = Folder.fromMap(f.data);
-         folder.id = f.documentID;
-         _folders.add(folder);
-       }
-       notifyListeners();
-
+      if (snapshot.documents != null) {
+        for (var f in snapshot.documents) {
+          Folder folder = Folder.fromMap(f.data);
+          folder.id = f.documentID;
+          _folders.add(folder);
+        }
+        notifyListeners();
       }
     });
   }
 
 
-  Future<void> addFolder() async{
+  Future<void> addFolder() async {
+    Map<String, dynamic> map = {};
 
-    Map<String,dynamic> map = {};
-
-    if(_tempFolderName == null){
+    if (_tempFolderName == null) {
       map = {
-        "name" : "New Folder",
-        "color" : _tempFolderColor,
+        "name": "New Folder",
+        "color": _tempFolderColor,
       };
     }
 
-    if(_tempFolderColor == null){
+    if (_tempFolderColor == null) {
       map = {
-        "name" : _tempFolderName,
-        "color" : 0xFF5F5F5F,
+        "name": _tempFolderName,
+        "color": 0xFF5F5F5F,
       };
     }
-    else{
+    else {
       map = {
-        "name" : _tempFolderName,
-        "color" : _tempFolderColor
+        "name": _tempFolderName,
+        "color": _tempFolderColor
       };
-
     }
 
     await FirebaseAPI().addPhotosFolder(userId, map);
   }
 
-  Future<void> deleteFolder(Folder folder) async{
-
+  Future<void> deleteFolder(Folder folder) async {
     List<PhotoModel> photos = await getPhotoFromFolder(folder);
 
-    for(var photo in  photos){
+    for (var photo in photos) {
       deletePhoto(photo);
     }
     await FirebaseAPI().deletePhotoFolder(userId, folder.id);
   }
-
 
 
   Future<void> deletePhoto(PhotoModel photo) async {
@@ -183,14 +203,16 @@ class PhotosViewModel extends ChangeNotifier{
   }
 
 
-  Future<void> addToFolder(PhotoModel photoModel , Folder folder) async{
+  Future<void> addToFolder(PhotoModel photoModel, Folder folder) async {
     await FirebaseAPI().updateSelfieFolder(userId, photoModel.id, folder.name);
   }
 
 
-  Future<void> updateName(PhotoModel photo) async{
-    if(_tempPhotoName != null){
-      await FirebaseAPI().updateSelfieName(userId, photo.id, _tempPhotoName).then((_){
+  Future<void> updateName(PhotoModel photo) async {
+    if (_tempPhotoName != null) {
+      await FirebaseAPI()
+          .updateSelfieName(userId, photo.id, _tempPhotoName)
+          .then((_) {
         _tempPhotoName = null;
         notifyListeners();
       });
@@ -198,22 +220,57 @@ class PhotosViewModel extends ChangeNotifier{
   }
 
 
-  uploadFile(File file) async{
+  uploadFile(File file) async {
     await FirebaseAPI().uploadSelfie(file).then((_) => notifyListeners());
   }
 
-  takePhoto(){
-    ImagesHelper.getBigImageFromCamera().then((file){
-      uploadFile(file).catchError((error) => print);
-    });
-
-  }
-
-  getPhoto(){
-    ImagesHelper.getBigImageFromGallery().then((file){
+  takePhoto() {
+    ImagesHelper.getBigImageFromCamera().then((file) {
       uploadFile(file).catchError((error) => print);
     });
   }
 
+  getPhoto() {
+    ImagesHelper.getBigImageFromGallery().then((file) {
+      uploadFile(file).catchError((error) => print);
+    });
+  }
+
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _userStream.pause();
+      _selfiStream.pause();
+      _foldersStream.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      _userStream.resume();
+      _selfiStream.resume();
+      _foldersStream.resume();
+    }
+  }
+
+  @override
+  void dispose() {
+    _userStream.cancel();
+    _selfiStream.cancel();
+    _foldersStream.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+
+  void sortPhotosList() {
+
+    sortDescending = !sortDescending;
+
+    if (sortDescending == true) {
+      photos.sort((a, b) => b.date.compareTo(a.date));
+    }
+    else {
+      photos.sort((a, b) => a.date.compareTo(b.date));
+    }
+    notifyListeners();
+  }
 
 }

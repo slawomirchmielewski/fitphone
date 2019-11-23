@@ -6,11 +6,12 @@ class Page extends StatefulWidget {
   final String pageName;
   final Widget appBarTitle;
   final List<Widget> actions;
-  final List<Widget> children;
-  final double expandedHeight;
+  final Widget child;
   final bool centerTitle;
   final bool automaticallyImplyLeading;
   final bool scrollable;
+  final bool haveTitle;
+  final Widget titleTriling;
   final PreferredSizeWidget bottom;
 
   Page({
@@ -19,10 +20,11 @@ class Page extends StatefulWidget {
     this.actions,
     this.appBarColor,
     this.appBarTitle,
-    this.automaticallyImplyLeading,
-    @required this.children,
-    this.expandedHeight,
+    this.haveTitle,
+    this.automaticallyImplyLeading = false,
+    @required this.child,
     this.centerTitle,
+    this.titleTriling,
     this.scrollable = true,
     this.bottom,
   }) : super();
@@ -61,12 +63,17 @@ class _PageState extends State<Page> {
     _scrollController.removeListener(_scrollListener);
     super.dispose();
   }
-  
-  Color getAppBarColor(BuildContext context){
-    if(widget.appBarColor != null){
-      return widget.appBarColor;
+
+
+  Widget _getTitle(){
+    if(widget.haveTitle == true && isShrink == true){
+      return widget.appBarTitle;
     }
-    return Theme.of(context).scaffoldBackgroundColor;
+    else if(widget.haveTitle == true && isShrink == false){
+      return null;
+    }
+
+    return widget.appBarTitle;
   }
 
   @override
@@ -78,37 +85,40 @@ class _PageState extends State<Page> {
             slivers: <Widget>[
             SliverAppBar(
               bottom: widget.bottom,
-              backgroundColor: isShrink ? Theme.of(context).scaffoldBackgroundColor : getAppBarColor(context),
-              automaticallyImplyLeading:
-                  widget.automaticallyImplyLeading ?? false,
-              title: widget.appBarTitle,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              automaticallyImplyLeading: widget.automaticallyImplyLeading,
+              title: _getTitle(),
               actions: widget.actions,
               floating: true,
               forceElevated: false,
-              flexibleSpace: widget.expandedHeight != null
-                  ? FlexibleSpaceBar(
-                      centerTitle: false,
-                      collapseMode: CollapseMode.pin,
-                      title: Text(
-                        widget.pageName,
-                        style: Theme.of(context).textTheme.headline.copyWith(
-                            color: Theme.of(context).textTheme.title.color,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      titlePadding: EdgeInsets.only(left: 16, bottom: 12),
-                    )
-                  : null,
               actionsIconTheme: Theme.of(context).iconTheme,
               textTheme: Theme.of(context).textTheme,
               elevation: 1,
               centerTitle: widget.centerTitle,
-              expandedHeight: widget.expandedHeight,
               brightness: Theme.of(context).brightness,
               pinned: true,
               iconTheme: Theme.of(context).iconTheme,
           ),
-              SliverList(delegate: SliverChildListDelegate(widget.children))
-        ]
+              SliverList(delegate: SliverChildListDelegate([
+                if(widget.haveTitle == true)Padding(
+                  padding:const EdgeInsets.only(left: 16,top: 8,bottom: 16,right: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(widget.pageName,style: Theme.of(context).textTheme.display1.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).textTheme.title.color
+                      ),),
+                      Container(child: widget.titleTriling)
+                    ],
+                  ),
+                ),
+                widget.child
+              ]),)
+          ]
         )
     );
   }

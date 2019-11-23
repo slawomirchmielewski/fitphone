@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 class CountDownTimer extends StatefulWidget {
 
   final int time;
+  final double screenSize;
   final ValueChanged<bool> onFinish;
 
 
-  CountDownTimer({this.time,this.onFinish});
+  CountDownTimer({this.time,this.onFinish,this.screenSize});
 
   @override
   _CountDownTimerState createState() => _CountDownTimerState();
@@ -18,20 +19,21 @@ class CountDownTimer extends StatefulWidget {
 class _CountDownTimerState extends State<CountDownTimer> with TickerProviderStateMixin {
   AnimationController controller;
 
-
-
   TextStyle _getFontStyle(BuildContext context){
-    double width = MediaQuery.of(context).size.width;
 
-    if(width <= 640 ){
+    print(widget.screenSize);
+
+    if(widget.screenSize < 640 ){
       return Theme.of(context).textTheme.display3.copyWith(
         fontWeight: FontWeight.bold
       );
     }
+    else
+    {
+      return Theme.of(context).textTheme.display4.copyWith(
+          fontWeight: FontWeight.bold);
+    }
 
-    return Theme.of(context).textTheme.display4.copyWith(
-        fontWeight: FontWeight.bold
-    );
   }
 
   String get timerString {

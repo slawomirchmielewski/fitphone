@@ -27,6 +27,18 @@ class WeightModel{
     );
    }
 
+   Map<String,dynamic> toMap(){
+    return {
+      "id" : this.id,
+      "weight" : this.weight,
+      "date"   : this.date,
+      "day"    : this.day,
+      "week"   : this.week,
+      "month"  : this.month,
+      "year"   : this.year
+    };
+   }
+
 
    String getDayName(){
     String name = "";

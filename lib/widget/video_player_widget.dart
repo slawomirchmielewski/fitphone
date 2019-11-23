@@ -21,51 +21,28 @@ class VideoPlayer extends StatefulWidget {
 
 class _VideoPlayerState extends State<VideoPlayer> {
 
-
-  YoutubePlayerController _controller = YoutubePlayerController();
-
-  @override
-  void deactivate() {
-    _controller.pause();
-    super.deactivate();
-  }
+  YoutubePlayerController youtubePlayerController;
 
 
   @override
-  void dispose() {
-    _controller.pause();
-    super.dispose();
+  void initState() {
+    super.initState();
+
+    youtubePlayerController = YoutubePlayerController(
+      initialVideoId: YoutubePlayer.convertUrlToId(widget.url),
+      flags:  YoutubePlayerFlags(
+        autoPlay: false,
+        hideControls: false
+      ));
   }
+
 
   @override
   Widget build(BuildContext context) {
-
-    final String id = YoutubePlayer.convertUrlToId(widget.url);
-
     Widget youtubePlayer = YoutubePlayer(
-        context: context,
-        videoId: id,
-        flags: YoutubePlayerFlags(
-          hideControls: widget.hideControls,
-          autoPlay: false,
-          showVideoProgressIndicator: true
-        ),
-        videoProgressIndicatorColor: Theme.of(context).primaryColor,
-        progressColors: ProgressColors(
-          playedColor:Theme.of(context).primaryColor,
-          handleColor: Theme.of(context).primaryColor
-        ),
-        onPlayerInitialized: (controller) {
-          var size = Size(widget.width,widget.height);
-          _controller = controller;
-          _controller.setSize(size);
-
-        }
+      controller: youtubePlayerController,
+      showVideoProgressIndicator: true,
     );
-
-
-
     return youtubePlayer;
-
   }
 }

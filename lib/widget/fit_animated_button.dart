@@ -1,8 +1,9 @@
 import 'package:fitphone/enums/session_states.dart';
 import 'package:fitphone/view_model/session_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'dart:io';
 
 
 class FitAnimatedButton extends StatelessWidget {
@@ -27,11 +28,10 @@ class FitAnimatedButton extends StatelessWidget {
             highlightElevation: 0,
             elevation: 0,
             onPressed: onTap,
-            child: sessionManager.sessionState != SessionState.Authenticating ? Text(buttonText) : SizedBox(
-                child: SpinKitCubeGrid(
-                  color: Colors.white,
-                  size: 18.0,
-                ),
+            child: sessionManager.sessionState != SessionState.Authenticating ? Text(buttonText,style: Theme.of(context).textTheme.subtitle.copyWith(
+              color: Colors.white
+            ),) : SizedBox(
+                child: Platform.isIOS == true ? CupertinoActivityIndicator() : CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.white)),
                 width: 20,
                 height: 20,
             ),

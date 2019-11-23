@@ -1,11 +1,10 @@
-import 'package:fitphone/utils/colors.dart';
 import 'package:fitphone/view/new_level_screen.dart';
+import 'package:fitphone/view/profile_screen.dart';
 import 'package:fitphone/view_model/user_view_model.dart';
 import 'package:fitphone/widget/fit_completed_workouts_card.dart';
 import 'package:fitphone/widget/base_widget/page.dart';
 import 'package:fitphone/widget/fit_nutrition_widget.dart';
 import 'package:fitphone/widget/fit_profile_image.dart';
-import 'package:fitphone/widget/fit_progress_bar_widget.dart';
 import 'package:fitphone/widget/fit_weight_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,20 +28,21 @@ class HomePage extends StatelessWidget {
 
     return Page(
     pageName: pageName,
-     // backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground : Theme.of(context).scaffoldBackgroundColor,
-     // appBarColor: MediaQuery.of(context).platformBrightness == Brightness.light ? greyBackground  : Theme.of(context).scaffoldBackgroundColor,
-      expandedHeight: 100,
-      centerTitle: true,
+      haveTitle: true,
+      titleTriling: FitProfileImage(
+          radius: 20,
+          onTap:() => showCupertinoModalPopup(context: context, builder: (context) => ProfileScreen())),
+      appBarTitle: Text(pageName),
       actions: <Widget>[
-        FitProfileImage(radius: 18,)
-      ],
-      children: <Widget>[
-        FitNutritionWidget(),
-        FitProgressBarWidget(),
-        FitCompletedWorkoutsCard(),
-        FitWeightWidget(),
 
       ],
+      child: Column(
+        children: <Widget>[
+          FitNutritionWidget(),
+          FitWeightWidget(),
+          FitCompletedWorkoutsCard(),
+        ],
+      ),
     );
   }
 }
