@@ -196,17 +196,17 @@ class SessionManager extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.paused){
-      _userStream.pause();
+      _userStream?.pause();
     }
     else if(state == AppLifecycleState.resumed){
-      _userStream.resume();
+      _userStream?.resume();
     }
 
   }
 
   @override
   void dispose() {
-    _userStream.cancel();
+    _userStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

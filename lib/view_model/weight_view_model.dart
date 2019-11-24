@@ -277,16 +277,16 @@ class WeightViewModel extends ChangeNotifier with WidgetsBindingObserver{
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
      if(state == AppLifecycleState.paused){
-       monthlyWeightStream.pause();
-       weeklyWeightStream.pause();
-       yearlyWeightStream.pause();
-       currentWeightStream.pause();
+       monthlyWeightStream?.pause();
+       weeklyWeightStream?.pause();
+       yearlyWeightStream?.pause();
+       currentWeightStream?.pause();
      }
      else if(state == AppLifecycleState.resumed){
-       monthlyWeightStream.resume();
-       weeklyWeightStream.resume();
-       yearlyWeightStream.resume();
-       currentWeightStream.resume();
+       monthlyWeightStream?.resume();
+       weeklyWeightStream?.resume();
+       yearlyWeightStream?.resume();
+       currentWeightStream?.resume();
 
      }
   }
@@ -295,10 +295,10 @@ class WeightViewModel extends ChangeNotifier with WidgetsBindingObserver{
   @override
   void dispose() {
     userStream.cancel();
-    monthlyWeightStream.cancel();
-    currentWeightStream.cancel();
-    weeklyWeightStream.cancel();
-    yearlyWeightStream.cancel();
+    monthlyWeightStream?.cancel();
+    currentWeightStream?.cancel();
+    weeklyWeightStream?.cancel();
+    yearlyWeightStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

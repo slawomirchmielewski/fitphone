@@ -174,19 +174,19 @@ class SettingsManager extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.paused){
-      _settingsStream.pause();
-      _userStream.pause();
+      _settingsStream?.pause();
+      _userStream?.pause();
 
     }else if(state == AppLifecycleState.resumed){
-      _userStream.resume();
-      _settingsStream.resume();
+      _userStream?.resume();
+      _settingsStream?.resume();
     }
   }
 
   @override
   void dispose() {
-    _userStream.cancel();
-    _settingsStream.cancel();
+    _userStream?.cancel();
+    _settingsStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

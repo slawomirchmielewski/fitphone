@@ -1,3 +1,4 @@
+import 'package:fitphone/widget/fit_measurement_card.dart';
 import 'package:flutter/material.dart';
 
 
@@ -7,21 +8,35 @@ class MeasurementView extends StatelessWidget {
     return Container(
       child: Column(
         children: <Widget>[
-          ListTile(
-            title: Text("Hips"),
-            trailing: Text("86cm"),
+
+          Row(
+            children: <Widget>[
+              FitMeasurementCard(
+                name: "Hips",
+                vale: 67,
+                onTap: (){},
+              ),
+              FitMeasurementCard(
+                name: "Chest",
+                vale: 67,
+                onTap: (){},
+              ),
+            ],
           ),
-          ListTile(
-            title: Text("Chest"),
-            trailing: Text("123cm"),
-          ),
-          ListTile(
-            title: Text("Waist"),
-            trailing: Text("86cm"),
-          ),
-          ListTile(
-            title: Text("Arm"),
-            trailing: Text("35cm"),
+          SizedBox(height: 36),
+          Row(
+            children: <Widget>[
+              FitMeasurementCard(
+                name: "Waist",
+                vale: 67,
+                onTap: (){},
+              ),
+              FitMeasurementCard(
+                name: "Arm",
+                vale: 67,
+                onTap: (){},
+              ),
+            ],
           )
         ],
       ),

@@ -12,7 +12,7 @@ class Page extends StatefulWidget {
   final bool scrollable;
   final bool haveTitle;
   final Widget titleTriling;
-  final PreferredSizeWidget bottom;
+  final Widget bottom;
 
   Page({
     this.backgroundColor,
@@ -84,7 +84,6 @@ class _PageState extends State<Page> {
             controller: _scrollController,
             slivers: <Widget>[
             SliverAppBar(
-              bottom: widget.bottom,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               automaticallyImplyLeading: widget.automaticallyImplyLeading,
               title: _getTitle(),
@@ -119,7 +118,8 @@ class _PageState extends State<Page> {
                 widget.child
               ]),)
           ]
-        )
+        ),
+      bottomSheet: widget.bottom ,
     );
   }
 }

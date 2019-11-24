@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 
 class MeasurementsViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
+
+  List<Measurements> _currentMeasurements = List();
   List<Measurements> _weekMeasurements = List();
   List<Measurements> _monthMeasurements = List();
   List<Measurements> _yearMeasurements = List();
@@ -17,6 +19,7 @@ class MeasurementsViewModel extends ChangeNotifier with WidgetsBindingObserver{
   List<Measurements> get yearMeasurements => _yearMeasurements;
 
   StreamSubscription _userStream;
+  StreamSubscription _lastMeasurementStream;
   StreamSubscription _weekMeasurementStream;
   StreamSubscription _monthMeasurementStream;
   StreamSubscription _yearMeasurementStream;
@@ -37,9 +40,22 @@ class MeasurementsViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _userStream =  FirebaseAPI().checkLoginUser().listen((firebaseUser){
       if(firebaseUser != null){
         _userId = firebaseUser.uid;
+        _getCurrentMeasurements();
         _getMeasurementsFromWeek();
         _getMeasurementsFromMonth();
         _getMeasurementsFromYear();
+      }
+    });
+  }
+
+  _getCurrentMeasurements(){
+    _lastMeasurementStream = FirebaseAPI().getCurrentMeasurements(_userId).listen((snapshot){
+      if(snapshot.documents != null){
+        for(var m in snapshot.documents){
+          Measurements measurements = Measurements.fromMap(m.data);
+          _currentMeasurements.add(measurements);
+        }
+        notifyListeners();
       }
     });
   }
@@ -155,18 +171,20 @@ class MeasurementsViewModel extends ChangeNotifier with WidgetsBindingObserver{
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.paused){
 
-      _userStream.pause();
-      _weekMeasurementStream.pause();
-      _monthMeasurementStream.pause();
-      _yearMeasurementStream.pause();
+      _userStream?.pause();
+      _lastMeasurementStream?.pause();
+      _weekMeasurementStream?.pause();
+      _monthMeasurementStream?.pause();
+      _yearMeasurementStream?.pause();
 
 
     }else if(state == AppLifecycleState.resumed){
 
-      _userStream.resume();
-      _weekMeasurementStream.resume();
-      _monthMeasurementStream.resume();
-      _yearMeasurementStream.resume();
+      _userStream?.resume();
+      _lastMeasurementStream?.resume();
+      _weekMeasurementStream?.resume();
+      _monthMeasurementStream?.resume();
+      _yearMeasurementStream?.resume();
 
     }
   }
@@ -174,9 +192,10 @@ class MeasurementsViewModel extends ChangeNotifier with WidgetsBindingObserver{
   @override
   void dispose() {
     _userStream.cancel();
-    _weekMeasurementStream.cancel();
-    _monthMeasurementStream.cancel();
-    _yearMeasurementStream.cancel();
+    _lastMeasurementStream?.cancel();
+    _weekMeasurementStream?.cancel();
+    _monthMeasurementStream?.cancel();
+    _yearMeasurementStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

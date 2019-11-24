@@ -424,6 +424,10 @@ class FirebaseAPI {
     return _firestore.collection("users").document(userId).collection("weights").orderBy("date",descending: true).limit(1).snapshots();
   }
 
+  Stream<QuerySnapshot> getCurrentMeasurements(String userId){
+    return _firestore.collection("users").document(userId).collection("measurements").orderBy("date",descending: true).limit(1).snapshots();
+  }
+
   Stream<QuerySnapshot> getMeasurementsFromWeek(String userId,int week,int year){
     return _firestore.collection("users").document(userId).collection("measurements").where("week",isEqualTo: week).where("year",isEqualTo: year).snapshots();
 

@@ -55,18 +55,18 @@ class NutritionViewModel extends ChangeNotifier  with WidgetsBindingObserver{
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.paused){
-      _userStream.pause();
-      _nutritionStream.pause();
+      _userStream?.pause();
+      _nutritionStream?.pause();
     }else if(state == AppLifecycleState.resumed){
-      _userStream.resume();
-      _nutritionStream.resume();;
+      _userStream?.resume();
+      _nutritionStream?.resume();
     }
   }
 
   @override
   void dispose() {
-    _userStream.cancel();
-    _nutritionStream.cancel();
+    _userStream?.cancel();
+    _nutritionStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

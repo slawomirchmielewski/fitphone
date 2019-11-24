@@ -68,7 +68,6 @@ class ProgramsViewModel extends ChangeNotifier with WidgetsBindingObserver{
   setNewProgramsValue(bool value){
     _newPrograms = value;
     notifyListeners();
-
   }
 
   getUserStream() async{
@@ -86,10 +85,11 @@ class ProgramsViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _programInfoStream = FirebaseAPI().getProgramInfo(_userId).listen((snapshot){
       if(snapshot.data != null){
         ProgramInfo programInfo = ProgramInfo.fromMap(snapshot.data);
+
         _programInfo = programInfo;
         _fetchExercises();
-        notifyListeners();
       }
+      notifyListeners();
     });
   }
 
@@ -117,7 +117,6 @@ class ProgramsViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
       }
-      print("getting programs ${_programs.length}");
       notifyListeners();
     });
   }
@@ -134,7 +133,7 @@ class ProgramsViewModel extends ChangeNotifier with WidgetsBindingObserver{
     notifyListeners();
   }
 
-  setProgramAvailability(bool value)async{
+  setProgramAvailability(bool value) async{
     await FirebaseAPI().updateProgramInfo(_userId, {"isNewProgramAvailable" : value});
     notifyListeners();
   }
@@ -160,9 +159,6 @@ class ProgramsViewModel extends ChangeNotifier with WidgetsBindingObserver{
             _exercisesList.add(exercise);
           }
         }
-
-        print(("List : ${_exercisesList.length}"));
-
         _getPrograms(_exercisesList);
       });
     }
@@ -314,31 +310,31 @@ class ProgramsViewModel extends ChangeNotifier with WidgetsBindingObserver{
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.paused){
-      _userStream.pause();
-      _programInfoStream.pause();
-      _accountInfoStream.pause();
-      _programsStream.pause();
-      _exercisesStream.pause();
-      _latestProgramsStream.pause();
+      _userStream?.pause();
+      _programInfoStream?.pause();
+      _accountInfoStream?.pause();
+      _programsStream?.pause();
+      _exercisesStream?.pause();
+      _latestProgramsStream?.pause();
     }
     else if(state == AppLifecycleState.resumed){
-      _userStream.resume();
-      _programInfoStream.resume();
-      _accountInfoStream.resume();
-      _programsStream.resume();
-      _exercisesStream.resume();
-      _latestProgramsStream.resume();
+      _userStream?.resume();
+      _programInfoStream?.resume();
+      _accountInfoStream?.resume();
+      _programsStream?.resume();
+      _exercisesStream?.resume();
+      _latestProgramsStream?.resume();
     }
   }
 
   @override
   void dispose() {
-    _userStream.cancel();
-    _programInfoStream.cancel();
-    _accountInfoStream.cancel();
-    _programsStream.cancel();
-    _exercisesStream.cancel();
-    _latestProgramsStream.cancel();
+    _userStream?.cancel();
+    _programInfoStream?.cancel();
+    _accountInfoStream?.cancel();
+    _programsStream?.cancel();
+    _exercisesStream?.cancel();
+    _latestProgramsStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

@@ -240,21 +240,21 @@ class PhotosViewModel extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      _userStream.pause();
-      _selfiStream.pause();
-      _foldersStream.pause();
+      _userStream?.pause();
+      _selfiStream?.pause();
+      _foldersStream?.pause();
     } else if (state == AppLifecycleState.resumed) {
-      _userStream.resume();
-      _selfiStream.resume();
-      _foldersStream.resume();
+      _userStream?.resume();
+      _selfiStream?.resume();
+      _foldersStream?.resume();
     }
   }
 
   @override
   void dispose() {
-    _userStream.cancel();
-    _selfiStream.cancel();
-    _foldersStream.cancel();
+    _userStream?.cancel();
+    _selfiStream?.cancel();
+    _foldersStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

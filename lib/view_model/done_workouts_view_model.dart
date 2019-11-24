@@ -76,12 +76,12 @@ class DoneWorkoutsViewModel extends ChangeNotifier with WidgetsBindingObserver{
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.paused){
-      _userStream.pause();
-      _doneWorkoutsStream.pause();
+      _userStream?.pause();
+      _doneWorkoutsStream?.pause();
     }
     else if(state == AppLifecycleState.resumed){
-      _userStream.resume();
-      _doneWorkoutsStream.resume();
+      _userStream?.resume();
+      _doneWorkoutsStream?.resume();
     }
   }
 

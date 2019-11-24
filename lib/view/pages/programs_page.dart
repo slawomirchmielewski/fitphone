@@ -1,9 +1,8 @@
-import 'package:fitphone/utils/colors.dart';
 import 'package:fitphone/view/embaded_view/workouts_view.dart';
 import 'package:fitphone/view/new_programs_screen.dart';
 import 'package:fitphone/view_model/programs_view_model.dart';
 import 'package:fitphone/widget/base_widget/page.dart';
-import 'package:fitphone/widget/fit_done_workouts_card.dart';
+import 'package:fitphone/widget/fit_new_program_card.dart';
 import 'package:fitphone/widget/fit_program_card.dart';
 import 'package:fitphone/widget/fit_workout_card.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +16,6 @@ class ProgramsPage extends StatelessWidget {
 
     final ProgramsViewModel programsViewModel = Provider.of<ProgramsViewModel>(context);
     final pageName = "Programs";
-    final double expandedHeight = 100;
-
 
     final List<FitWorkoutCard> treeDays = [
       FitWorkoutCard(
@@ -126,6 +123,7 @@ class ProgramsPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              FitNewProgramCard(),
               FitProgramCard(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -128,6 +128,7 @@ class _MyAppState extends State<MyApp> {
             applyElevationOverlayColor: true,
             indicatorColor: kFitPrimary,
             cursorColor: kFitPrimary,
+            cardColor: Colors.grey[900],
             textSelectionHandleColor: kFitPrimary,
             toggleableActiveColor: kFitPrimary,
             scaffoldBackgroundColor: Color(0xFF161616),

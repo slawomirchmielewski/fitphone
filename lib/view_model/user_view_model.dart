@@ -38,7 +38,6 @@ class UserViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   getUserStream() async{
    _userStream =  FirebaseAPI().checkLoginUser().listen((firebaseUser){
-
       if(firebaseUser != null){
         getUserInfo(firebaseUser?.uid);
       }
@@ -57,9 +56,9 @@ class UserViewModel extends ChangeNotifier with WidgetsBindingObserver {
              _user = user;
              _checkForLevelUpdate();
              _calculateDate();
-             notifyListeners();
            }
          }
+         notifyListeners();
       });
     }
   }
@@ -128,20 +127,26 @@ class UserViewModel extends ChangeNotifier with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if(state == AppLifecycleState.paused){
-      _userStream.pause();
-      _userDateStream.pause();
-    }
-    else if(state == AppLifecycleState.resumed){
-      _userStream.resume();
-      _userDateStream.resume();
+    switch (state) {
+      case AppLifecycleState.resumed:
+          _userStream?.resume();
+          _userDateStream?.resume();
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.paused:
+        _userStream?.pause();
+        _userDateStream?.pause();
+        break;
+      case AppLifecycleState.suspending:
+        break;
     }
   }
 
   @override
   void dispose() {
-    _userStream.cancel();
-    _userDateStream.cancel();
+    _userStream?.cancel();
+    _userDateStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
