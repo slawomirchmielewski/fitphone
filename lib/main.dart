@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fitphone/utils/colors.dart';
 import 'package:fitphone/view/login_screen.dart';
 import 'package:fitphone/view/main_screen.dart';
@@ -40,7 +39,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   @override
   void initState() {
