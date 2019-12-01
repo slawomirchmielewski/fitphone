@@ -52,7 +52,7 @@ dependencies:
   date_util: ^0.1.4
   transparent_image: ^1.0.0
   bubble_tab_indicator: ^0.1.4
-  keyboard_visibility: ^0.5.6
+  flutter_keyboard_visibility: ^0.7.0
   confetti: ^0.3.0
   sliding_up_panel: ^0.3.6
   flutter_staggered_grid_view: ^0.3.0

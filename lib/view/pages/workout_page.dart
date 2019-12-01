@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Platform;
+
 import 'package:fitphone/model/exercise_model.dart';
 import 'package:fitphone/view/finished_workout_view.dart';
 import 'package:fitphone/view_model/programs_view_model.dart';
@@ -7,12 +8,12 @@ import 'package:fitphone/view_model/settings_manager.dart';
 import 'package:fitphone/widget/fit_alert_dialog.dart';
 import 'package:fitphone/widget/fit_button.dart';
 import 'package:fitphone/widget/fit_coutdown_time.dart';
+import 'package:fitphone/widget/fit_on_back_press.dart';
 import 'package:fitphone/widget/fit_set_tile_view.dart';
 import 'package:fitphone/widget/video_player_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
-import 'package:fitphone/widget/fit_on_back_press.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
