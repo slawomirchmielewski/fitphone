@@ -23,6 +23,8 @@ class SummaryView extends StatelessWidget {
     if(setupManager.calculationFinished == false)
     setupManager.calculateNutrition();
 
+    String imageURI = MediaQuery.of(context).platformBrightness == Brightness.light ? 'assets/summary_light.png' : 'assets/summary_dark.png';
+
 
     Widget nutritionText(String value,String unit ,String name){
       return Column(
@@ -88,7 +90,7 @@ class SummaryView extends StatelessWidget {
                     height: 120,
                     child: Align(
                         alignment: Alignment.center,
-                        child: Image.asset("assets/summary_image.png",fit: BoxFit.fitWidth,)
+                        child: Image.asset(imageURI,fit: BoxFit.fitWidth,)
                     )
                 ),
               ),

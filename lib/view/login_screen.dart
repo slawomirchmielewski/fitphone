@@ -1,5 +1,6 @@
 import 'package:fitphone/enums/view_states.dart';
 import 'package:fitphone/view/password_reset_screen.dart';
+import 'package:fitphone/view/setup_screen.dart';
 import 'package:fitphone/view_model/session_manager.dart';
 import 'package:fitphone/widget/fit_animated_button.dart';
 import 'package:fitphone/widget/fit_text_form.dart';
@@ -62,6 +63,7 @@ class LoginScreen extends StatelessWidget {
             ),),
             SizedBox(height: 72),
             FitAnimatedButton(buttonText: "Register",onTap:() => sessionManager.registerUser()),
+            //FitAnimatedButton(buttonText: "Register",onTap:() => Navigator.push(context,  MaterialPageRoute(builder: (context) => SetupScreen()))),
           ],
         ),
       );

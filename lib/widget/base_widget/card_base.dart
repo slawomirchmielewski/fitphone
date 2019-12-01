@@ -28,8 +28,8 @@ class CardBase extends StatelessWidget{
   });
 
   static const double borderRadius = 20;
-  static const double leftPadding = 16;
-  static const double rightPadding = 16;
+  static const double leftPadding = 0;
+  static const double rightPadding = 0;
   static const double topPadding = 4;
   static const double bottomPadding = 4;
 

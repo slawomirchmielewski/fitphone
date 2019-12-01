@@ -31,7 +31,7 @@ class FitChartsSwitcher extends StatelessWidget {
       children: <Widget>[
         Container(
           height: 150,
-          color: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[100] : Colors.grey[900],
+          color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
           child: Column(
             mainAxisAlignment:MainAxisAlignment.center,
             children: <Widget>[
@@ -43,7 +43,7 @@ class FitChartsSwitcher extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text("Start"),
-                      Text("${settingsManager.getConvertedWeight(userViewModel.user.weight).toInt()} ${settingsManager.unitShortName}",style: style)
+                      Text("${settingsManager.getConvertedWeight(userViewModel.user.weight).roundToDouble()} ${settingsManager.unitShortName}",style: style)
                     ],
                   ),
                   Column(
@@ -51,7 +51,7 @@ class FitChartsSwitcher extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text("Now"),
-                      Text("${settingsManager.getConvertedWeight(weightViewModel.currentWeight.weight).toInt()} ${settingsManager.unitShortName}",style: style)
+                      Text("${settingsManager.getConvertedWeight(weightViewModel.currentWeight.weight).roundToDouble()} ${settingsManager.unitShortName}",style: style)
                     ],
                   ),
                   Column(
@@ -59,7 +59,7 @@ class FitChartsSwitcher extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(weightViewModel.getWeightDifferentText(userViewModel.user.weight)),
-                      Text("${settingsManager.getConvertedWeight(weightViewModel.calculateWeightDifferent(userViewModel.user.weight)).toInt()} ${settingsManager.unitShortName}",style: style)
+                      Text("${settingsManager.getConvertedWeight(weightViewModel.calculateWeightDifferent(userViewModel.user.weight)).roundToDouble()} ${settingsManager.unitShortName}",style: style)
                     ],
                   )
                 ],

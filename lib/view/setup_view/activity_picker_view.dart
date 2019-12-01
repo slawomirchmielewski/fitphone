@@ -15,12 +15,15 @@ class ActivityPickerView extends StatelessWidget {
     var setupManager = Provider.of<SetupManager>(context);
     var uiHelper = Provider.of<UIHelper>(context);
 
+
+    String imageURI = MediaQuery.of(context).platformBrightness == Brightness.light ? 'assets/activity_light.png' : 'assets/activity_dark.png';
+
     showBottomSheet(String title,String text, int multiplier){
       showRoundedModalBottomSheet(
         dismissOnTap: false,
         context: context,
         radius: 15.0,
-        color: Colors.white,
+        color: Theme.of(context).canvasColor,
         builder: (context) {
           return Container(
             height: 200,
@@ -181,7 +184,7 @@ class ActivityPickerView extends StatelessWidget {
               Text("What is your activity level ?",style: Theme.of(context).textTheme.title),
               SizedBox(height: 72),
               Center(
-                child: Image.asset("assets/activity_image.png",height: 160,fit: BoxFit.fitHeight),
+                child: Image.asset(imageURI,height: 160,fit: BoxFit.fitHeight),
               ),
               SizedBox(height: 35),
               uiHelper.isActivitySelected ? getSelection() : getActivity()

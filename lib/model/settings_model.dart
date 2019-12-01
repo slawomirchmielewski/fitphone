@@ -16,7 +16,7 @@ class Settings {
 
   factory Settings.init(){
     return Settings(
-      theme: "SystemSettings",
+      theme: "System",
       units: ""
     );
   }

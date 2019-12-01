@@ -3,7 +3,6 @@ import 'package:fitphone/view_model/session_manager.dart';
 import 'package:fitphone/view_model/settings_manager.dart';
 import 'package:fitphone/widget/fit_alert_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_modal/rounded_modal.dart';
 import 'package:fitphone/enums/setup_enums.dart';
@@ -16,7 +15,6 @@ class SettingsScreen extends StatelessWidget {
     final SettingsManager settingsManager = Provider.of<SettingsManager>(context);
 
     final TextStyle titleStyle  = Theme.of(context).textTheme.subtitle;
-    final Color iconsColor = Theme.of(context).iconTheme.color;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-             ListTile(title: Text("Unit of weight",style: titleStyle,),subtitle: Text(settingsManager.unitShortName),onTap: (){
+             ListTile(title: Text("Unit of weight",style: titleStyle,),subtitle: Text(settingsManager.unitsName),onTap: (){
                showRoundedModalBottomSheet(
                    color: Theme.of(context).canvasColor,
                    radius: 15,
@@ -63,6 +61,60 @@ class SettingsScreen extends StatelessWidget {
                      ),
                    ));
              },),
+
+            /*ListTile(
+              title: Text("Theme",style: titleStyle,),
+              subtitle: Text(settingsManager.themeName) ,
+              onTap: (){
+              showRoundedModalBottomSheet(
+                  color: Theme.of(context).canvasColor,
+                  radius: 15,
+                  context: context,
+                  builder: (context) => Container(
+                    padding: EdgeInsets.only(top: 8,bottom: 8),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        RadioListTile(
+                          groupValue: settingsManager.theme,
+                          value: ThemeMode.light,
+                          title: Text("Light"),
+                          onChanged: (value) {
+                            settingsManager.setTheme(ThemeMode.light);
+                            Navigator.pop(context);
+                          },
+                        ),
+                        RadioListTile(
+                          groupValue: settingsManager.theme,
+                          value: ThemeMode.dark,
+                          title: Text("Dark"),
+                          onChanged: (value) {
+                            settingsManager.setTheme(ThemeMode.dark);
+                            Navigator.pop(context);
+                          },
+                        ),
+                        RadioListTile(
+                          groupValue: settingsManager.theme,
+                          value: ThemeMode.system,
+                          title: Text("System"),
+                          onChanged: (value) {
+                            settingsManager.setTheme(ThemeMode.system);
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ));
+            },),*/
+            ListTile(title: Text("About FitPhone",style: titleStyle,),onTap: (){
+              showAboutDialog(
+                  context: context,
+                  applicationName: "FitPhone",
+                  applicationVersion: "1.0",
+                  applicationLegalese: "All graphic contents are downloaded from https://www.freepik.com"
+
+              );
+            }),
              ListTile(title: Text("Add Feedback",style: titleStyle,),onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AddFeedbackScreen()));
              }),

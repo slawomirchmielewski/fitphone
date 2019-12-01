@@ -23,7 +23,7 @@ class FitTextButton extends StatelessWidget {
         padding: EdgeInsets.all(16),
         width: double.infinity,
         decoration: BoxDecoration(
-         color: isSelected ? Colors.black : Colors.transparent,
+         color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
           border: Border.all(color: Theme.of(context).primaryColor,width: 1.5),
           borderRadius: BorderRadius.circular(10)
         ),

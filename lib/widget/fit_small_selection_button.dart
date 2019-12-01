@@ -14,7 +14,7 @@ class FitSmallSelectionButton<T> extends StatelessWidget {
     @required this.value,
     @required this.groupValue,
     @required this.onChange,
-    this.width
+    this.width = 120
   });
 
 

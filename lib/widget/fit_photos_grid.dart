@@ -47,7 +47,7 @@ class FitPhotosGrid extends StatelessWidget {
                   ],
                 ),
                 decoration: BoxDecoration(
-                  color: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
                   borderRadius: BorderRadius.circular(5)
                 ),
               ),
@@ -104,7 +104,7 @@ class FitPhotosGrid extends StatelessWidget {
                   children: <Widget>[
                     FitImage(
                       radius: 0,
-                      background: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
+                      background: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
                       imageUrl: photosViewModel.photos[index].url,
                     ),
                     SizedBox(height: 4),
@@ -133,7 +133,7 @@ class FitPhotosGrid extends StatelessWidget {
                   child: FitImage(
                     radius: 5,
                     imageUrl: photosViewModel.photos[index].url,
-                    background: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
+                    background: Theme.of(context).canvasColor
                     ),
                 ),
                 title: Text(photosViewModel.photos[index].name),

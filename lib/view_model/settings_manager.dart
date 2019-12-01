@@ -13,27 +13,28 @@ class SettingsManager extends ChangeNotifier with WidgetsBindingObserver {
   String _theme;
   String _units;
 
-  ThemeState get theme => _getTheme();
+  ThemeMode get theme => _getTheme();
   Unit get units => _getUnits();
   String get unitShortName => _getUnitShortName();
   String get themeName => _getThemeName();
+  String get unitsName => _getUnitName();
 
 
   StreamSubscription _userStream;
   StreamSubscription _settingsStream;
 
-  ThemeState _getTheme(){
+  ThemeMode _getTheme(){
 
-    ThemeState themeState = ThemeState.SystemSettings;
+    ThemeMode themeState = ThemeMode.system;
 
-    if(_theme == "LightTheme"){
-      themeState = ThemeState.LightTheme;
+    if(_theme == "Light"){
+      themeState = ThemeMode.light;
     }
-    else if(_theme == "DarkTheme"){
-      themeState = ThemeState.DarkThem;
+    else if(_theme == "Dark"){
+      themeState = ThemeMode.dark;
     }
-    else if(_theme == "SystemSettings"){
-      themeState = ThemeState.SystemSettings;
+    else if(_theme == "System"){
+      themeState = ThemeMode.system;
     }
     return themeState;
   }
@@ -110,21 +111,27 @@ class SettingsManager extends ChangeNotifier with WidgetsBindingObserver {
     return unit;
   }
 
-  setTheme(ThemeState themeState){
+  setTheme(ThemeMode themeState){
 
-    ThemeState state = themeState;
+    ThemeMode state = themeState;
 
     switch(state){
-      case ThemeState.LightTheme:
-        _theme = "LightTheme";
+      case ThemeMode.light:
+        _theme = "Light";
         break;
-      case ThemeState.DarkThem:
-        _theme = "DarkTheme";
+      case ThemeMode.dark:
+        _theme = "Dark";
         break;
-      case ThemeState.SystemSettings:
-        _theme = "SystemSettings";
+      case ThemeMode.system:
+        _theme = "System";
         break;
     }
+
+    FirebaseAPI().getCurrentUser().then((user){
+      if(user != null){
+        FirebaseAPI().setTheme(_theme, user.uid);
+      }
+    });
     notifyListeners();
   }
 
@@ -167,8 +174,12 @@ class SettingsManager extends ChangeNotifier with WidgetsBindingObserver {
     return shortName;
   }
 
- String _getThemeName() {
+  String _getThemeName() {
     return _theme;
+  }
+
+  String _getUnitName(){
+    return _units;
   }
 
   @override

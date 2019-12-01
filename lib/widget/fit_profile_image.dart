@@ -1,5 +1,3 @@
-import 'package:fitphone/utils/colors.dart';
-import 'package:fitphone/view/profile_screen.dart';
 import 'package:fitphone/view_model/user_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

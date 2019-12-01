@@ -21,6 +21,8 @@ class WeightViewModel extends ChangeNotifier with WidgetsBindingObserver{
   LoadingStates _weekLoadingState;
   WeightModel _currentWeight;
 
+  double _updateWeight;
+  double get weightToUpdate => _updateWeight;
   double get weight => _weight;
   WeightModel get currentWeight => _currentWeight;
 
@@ -79,6 +81,12 @@ class WeightViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
 
+  setWeightToUpdate(double value){
+    _updateWeight = value;
+    notifyListeners();
+  }
+
+
   ///Record new weight
   Future<void> recordWeight() async{
 
@@ -91,9 +99,12 @@ class WeightViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
   ///Update current weight
-  Future<void> updateWeight() async{
-    if(_weight != null){
-      //TODO add update code
+  Future<void> updateWeight(String id) async{
+    if(_updateWeight != null){
+      await FirebaseAPI().updateWeight(userId, id, _updateWeight).then((_){
+        _updateWeight = null;
+      });
+
     }
   }
 
@@ -231,11 +242,18 @@ class WeightViewModel extends ChangeNotifier with WidgetsBindingObserver{
     double currentMonthWeight;
 
 
-    if(yearWeightList.length > 2){
-      lastMonthWeight = yearWeightList[yearWeightList.length - 1].weight;
+    if(yearWeightList.length > 1){
+      lastMonthWeight = yearWeightList[yearWeightList.length - 2].weight;
       currentMonthWeight = yearWeightList.last.weight;
 
-      var percent = currentMonthWeight/lastMonthWeight * 100;
+
+      print(lastMonthWeight);
+      print(currentMonthWeight);
+
+      var percent = (currentMonthWeight/lastMonthWeight) *100;
+
+
+      print(percent.toString());
 
       _monthlyPercent = percent;
 
@@ -262,7 +280,9 @@ class WeightViewModel extends ChangeNotifier with WidgetsBindingObserver{
       WeightModel lastMonth = _yearWeightList.last;
 
       if(DateTime.now().month == lastMonth.month){
-        FirebaseAPI().updateMonthlyAvgWeight(userId,lastMonth.id, {"weight" : avgWeight});
+        if(lastMonth != null){
+          FirebaseAPI().updateMonthlyAvgWeight(userId,lastMonth.id, {"weight" : avgWeight});
+        }
       }
       else{
         FirebaseAPI().addMonthlyAvgWeight(userId, weightModel.toMap());

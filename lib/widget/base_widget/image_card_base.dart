@@ -24,6 +24,7 @@ class ImageCardBase extends StatelessWidget {
           height: 260,
           width: MediaQuery.of(context).size.width,
           child: Card(
+            elevation: 0,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -64,7 +64,7 @@ class WorkoutsActivityScreen extends StatelessWidget {
         children: <Widget>[
           Container(
             height: 150,
-            color: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[100] : Colors.grey[900],
+            color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
             child: Column(
               mainAxisAlignment:MainAxisAlignment.center,
               children: <Widget>[

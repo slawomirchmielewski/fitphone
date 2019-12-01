@@ -16,7 +16,7 @@ class CircleIndicator extends StatelessWidget {
       height: 8,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: index == groupIndex ? Colors.black : Colors.grey[400],
+        color: index == groupIndex ? Theme.of(context).primaryColor : Colors.grey[400].withOpacity(0.5),
       ),
     );
   }

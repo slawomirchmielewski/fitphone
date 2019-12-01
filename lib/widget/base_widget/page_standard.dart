@@ -28,6 +28,7 @@ class PageStandard extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: automaticallyImplyLeading,
           textTheme: Theme.of(context).textTheme,
+          centerTitle: true,
           title: title,
           elevation: 1,
           bottom: bottom,

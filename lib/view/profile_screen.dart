@@ -84,6 +84,8 @@ class ProfileScreen extends StatelessWidget{
 
                 SizedBox(height: 32),
                 Text(userViewModel.user != null ? userViewModel.user.name : "",style: Theme.of(context).textTheme.title.copyWith(fontWeight: FontWeight.bold)),
+                SizedBox(height: 8),
+                Text("Level ${userViewModel.user.level}"),
                 SizedBox(height: 32),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -101,7 +103,7 @@ class ProfileScreen extends StatelessWidget{
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: LinearProgressIndicator(
                     value: userViewModel.user.getLevelPercent(),
-                    backgroundColor: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
+                    backgroundColor: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
                   ),
                 ),
                 SizedBox(height: 32),

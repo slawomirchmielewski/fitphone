@@ -93,7 +93,7 @@ class _PageState extends State<Page> {
               actionsIconTheme: Theme.of(context).iconTheme,
               textTheme: Theme.of(context).textTheme,
               elevation: 1,
-              centerTitle: widget.centerTitle,
+              centerTitle: true,
               brightness: Theme.of(context).brightness,
               pinned: true,
               iconTheme: Theme.of(context).iconTheme,

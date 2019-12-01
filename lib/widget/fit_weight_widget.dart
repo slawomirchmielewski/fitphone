@@ -1,7 +1,5 @@
-import 'package:fitphone/view/current_week_weight_screen.dart';
 import 'package:fitphone/view_model/ui_helper.dart';
 import 'package:fitphone/view_model/weight_view_model.dart';
-import 'package:fitphone/widget/base_widget/card_base.dart';
 import 'package:fitphone/widget/base_widget/image_card_base.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +31,12 @@ class FitWeightWidget extends StatelessWidget {
                 fontSize: 12
             ),
             children: <TextSpan>[
-              TextSpan(text: " Good job! You have a "),
-              TextSpan(text: "${(100 - weightViewModel.monthlyPercent)?.round()}% weight loss "),
+              TextSpan(text: "Good job! You have a "),
+              TextSpan(text: "${(100 - weightViewModel.monthlyPercent)?.round()}% weight loss ",style: Theme.of(context).textTheme.body1.copyWith(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700
+              )),
               TextSpan(text: "compare to last month")
             ]
         ),
@@ -49,7 +51,11 @@ class FitWeightWidget extends StatelessWidget {
             ),
             children: <TextSpan>[
               TextSpan(text: "Hmmm! You have a "),
-              TextSpan(text: "${(weightViewModel.monthlyPercent - 100)?.round()}% weight gross "),
+              TextSpan(text: "${(weightViewModel.monthlyPercent - 100)?.round()}% weight gain ",style: Theme.of(context).textTheme.body1.copyWith(
+                color: Theme.of(context).primaryColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w700
+              )),
               TextSpan(text: "compare to last month")
             ]
         ),

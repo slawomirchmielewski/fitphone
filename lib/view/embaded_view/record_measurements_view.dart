@@ -1,4 +1,5 @@
 import 'package:fitphone/view_model/measurements_view_model.dart';
+import 'package:fitphone/view_model/user_view_model.dart';
 import 'package:fitphone/widget/base_widget/page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -32,6 +33,9 @@ class RecordMeasurementsView extends StatelessWidget {
         FlatButton(
           child: Text("Save",style: style,),
           onPressed: (){
+            measurementsViewModel.addMeasurements();
+            Provider.of<UserViewModel>(context).addPoints(5);
+            measurementsViewModel.clearMeasurements();
             Navigator.pop(context);
           },
         ),
@@ -52,8 +56,8 @@ class RecordMeasurementsView extends StatelessWidget {
                   ),
                   style: valueStyle,
                   textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  onChanged: (text){},
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (text) => measurementsViewModel.setChestValue(double.parse(text)),
                 ),
                 SizedBox(height: 8),
                 Text("Chest")
@@ -71,8 +75,8 @@ class RecordMeasurementsView extends StatelessWidget {
                   ),
                   style: valueStyle,
                   textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  onChanged: (text){},
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (text) => measurementsViewModel.setArmsValue(double.parse(text)),
                 ),
                 SizedBox(height: 8),
                 Text("Arms")
@@ -90,8 +94,8 @@ class RecordMeasurementsView extends StatelessWidget {
                   ),
                   style: valueStyle,
                   textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  onChanged: (text){},
+                  keyboardType:  TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (text) => measurementsViewModel.setWaistValue(double.parse(text)),
                 ),
                 SizedBox(height: 8),
                 Text("Waist")
@@ -109,14 +113,54 @@ class RecordMeasurementsView extends StatelessWidget {
                   ),
                   style: valueStyle,
                   textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  onChanged: (text){},
+                  keyboardType:  TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (text) => measurementsViewModel.setHipsValue(double.parse(text)),
                 ),
                 SizedBox(height: 8),
                 Text("Hips")
               ],
             ),
-          )
+          ),
+          SizedBox(height: 36),
+          Container(
+            width: 120,
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: "0 cm",
+                  ),
+                  style: valueStyle,
+                  textAlign: TextAlign.center,
+                  keyboardType:  TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (text) => measurementsViewModel.setCalvesValue(double.parse(text)),
+                ),
+                SizedBox(height: 8),
+                Text("Calves")
+              ],
+            ),
+          ),
+          SizedBox(height: 36),
+          Container(
+            width: 120,
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: "0 cm",
+                  ),
+                  style: valueStyle,
+                  textAlign: TextAlign.center,
+                  keyboardType:  TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (text) => measurementsViewModel.setThighValue(double.parse(text)),
+                ),
+                SizedBox(height: 8),
+                Text("Thigh")
+              ],
+            ),
+
+          ),
+          SizedBox(height: 36),
         ],
       ),
     );

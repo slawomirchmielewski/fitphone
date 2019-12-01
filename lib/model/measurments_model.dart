@@ -7,6 +7,8 @@ class Measurements{
   double arms;
   double hips;
   double chest;
+  double calves;
+  double thigh;
   int day;
   int week;
   int month;
@@ -23,7 +25,9 @@ class Measurements{
     this.day,
     this.week,
     this.month,
-    this.year
+    this.year,
+    this.calves,
+    this.thigh
   });
 
 
@@ -34,6 +38,8 @@ class Measurements{
       waist: map["waist"],
       arms: map["arms"],
       hips: map["hips"],
+      calves: map["calves"],
+      thigh: map["thigh"],
       chest: map["chest"],
       day: map["day"],
       week: map["week"],
@@ -49,6 +55,8 @@ class Measurements{
       "waist" : this.waist,
       "arms" : this.arms,
       "hips" : this.hips,
+      "calves" : this.calves,
+      "thigh" : this.thigh,
       "chest" : this.chest,
       "day" : this.day,
       "week" : this.week,

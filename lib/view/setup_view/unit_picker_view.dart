@@ -12,6 +12,8 @@ class UnitPickerView extends StatelessWidget {
 
     var uiHelper = Provider.of<UIHelper>(context);
     var settingsManager = Provider.of<SettingsManager>(context);
+
+    String imageURI = MediaQuery.of(context).platformBrightness == Brightness.light ? 'assets/unit_light.png' : 'assets/unit_dark.png';
     
     return Scaffold(
       appBar: AppBar(
@@ -36,7 +38,7 @@ class UnitPickerView extends StatelessWidget {
               Text("With units you would like to use ?",style: Theme.of(context).textTheme.title,),
               SizedBox(height: 72),
               Center(
-                child: Image.asset("assets/unit_image.png",height: 160,fit: BoxFit.fitHeight),
+                child: Image.asset(imageURI,height: 160,fit: BoxFit.fitHeight),
               ),
               SizedBox(height: 72),
               Center(

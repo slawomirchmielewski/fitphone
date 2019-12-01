@@ -16,37 +16,36 @@ class FitNewProgramCard extends StatelessWidget {
             height: 200,
             width: MediaQuery.of(context).size.width,
             child: Card(
+           //   color: Colors.lightGreen[300],
+              elevation: 0.3,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
 
-                  Text("New programs available",style: Theme.of(context).textTheme.title),
-                  Text("Programs for next month are ready to download"),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: <Widget>[
+                        Text("New programs available",style: Theme.of(context).textTheme.title),
+                        SizedBox(height: 8),
+                        Text("Programs for next month are ready to download",maxLines: 2,textAlign: TextAlign.center,style: Theme.of(context).textTheme.body1.copyWith(
+                        ),),
+                      ],
+                    ),
+                  ),
+                  OutlineButton.icon(
+                    shape: StadiumBorder(side: BorderSide(
+                      color: Colors.white
+                    )) ,
+                    onPressed: () => programsViewModel.downloadPrograms(),
+                    splashColor: Theme.of(context).primaryColor.withOpacity(0.3),
+                    icon: Icon(Icons.get_app,color: Theme.of(context).primaryColor),
+                    label: Text("Get programs",style: Theme.of(context).textTheme.body1.copyWith(
+                    ),),
 
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      OutlineButton.icon(
-                        shape: StadiumBorder() ,
-                        onPressed: () => programsViewModel.setProgramAvailability(false),
-                        splashColor: Theme.of(context).primaryColor.withOpacity(0.3),
-                        icon: Icon(Icons.close,color: Colors.red,),
-                        label: Text("Skip programs"),
-
-                      ),
-                      OutlineButton.icon(
-                          shape: StadiumBorder() ,
-                          onPressed: () => programsViewModel.downloadPrograms(),
-                          splashColor: Theme.of(context).primaryColor.withOpacity(0.3),
-                          icon: Icon(Icons.get_app,color: Theme.of(context).primaryColor,),
-                          label: Text("Get programs"),
-
-                      ),
-                    ],
-                  )
+                  ),
                 ],
               ),
             ),

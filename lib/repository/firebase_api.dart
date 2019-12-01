@@ -248,6 +248,10 @@ class FirebaseAPI {
     await _firestore.collection("users").document(id).collection("nutritions").document("nutritions").setData(map,merge: true);
   }
 
+  Future<void>updateWeight(String userId,String weightId,double weight) async{
+    await _firestore.collection("users").document(userId).collection("weights").document(weightId).updateData({"weight" : weight});
+  }
+
 
   updateNutritions(Map<String,dynamic> map) async{
     var id = await getCurrentUser().then((user) => user.uid).catchError((error) => print(error?.toString()));
@@ -290,14 +294,6 @@ class FirebaseAPI {
     return await _firestore.collection("users").document(userId).collection("programs").add(map).then((ref) => ref.documentID);
   }
 
-  addPhotosFolder(String userId, Map<String,dynamic> map) async{
-    await _firestore.collection("users").document(userId).collection("folders").add(map);
-  }
-
-  updatePhotosFolder(String userId,String folderId, Map<String,dynamic> map) async{
-    await _firestore.collection("users").document(userId).collection("folders").document(folderId).updateData(map);
-  }
-
   updateProgramInfo(String userId, Map<String,dynamic> map) async{
     await _firestore.collection("users").document(userId).collection("program_info").document("program_info").updateData(map);
   }
@@ -335,8 +331,8 @@ class FirebaseAPI {
     await _firestore.collection("users").document(userId).collection("weights").document(weightId).delete();
   }
 
-  Future<void> deletePhotoFolder(String userId, String folderId) async {
-    await _firestore.collection("users").document((userId)).collection("folders").document(folderId).delete();
+  Future<void> deleteMeasurements(String userId,measurementsId) async{
+    await _firestore.collection("users").document(userId).collection("measurements").document(measurementsId).delete();
   }
 
   Future<void> deletePhoto(String userId, String photoId, String photoPath) async {
@@ -399,14 +395,6 @@ class FirebaseAPI {
     return await _firestore.collection("users").document(id).collection("weights").where("month" ,isEqualTo: month).where("year",isEqualTo: year).getDocuments();
   }
 
-  Stream<QuerySnapshot> getPhotoFolders(String userId){
-    return _firestore.collection("users").document(userId).collection("folders").snapshots();
-  }
-
-  Future<QuerySnapshot> getPhotosFromFolder(String userId,String folderName) async{
-    return await _firestore.collection("users").document(userId).collection("photos").where("folder",isEqualTo: folderName).getDocuments();
-  }
-
 
   Stream<QuerySnapshot> getDoneWorkouts(String userId){
    return _firestore.collection("users").document(userId).collection("done_workouts").orderBy("date",descending: true).snapshots();
@@ -439,7 +427,7 @@ class FirebaseAPI {
   }
 
   Stream<QuerySnapshot> getMeasurementsFromYear(String userId,int year){
-    return _firestore.collection("users").document(userId).collection("month_avg_weight").where("year",isEqualTo: year).snapshots();
+    return _firestore.collection("users").document(userId).collection("month_avg_measurement").where("year",isEqualTo: year).snapshots();
 
   }
 }

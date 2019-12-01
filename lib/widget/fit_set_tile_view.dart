@@ -76,17 +76,20 @@ class _FitSetListTileState extends State<FitSetListTile> {
     final SettingsManager settingsManager = Provider.of<SettingsManager>(context);
 
     TextStyle _textStyle = Theme.of(context).textTheme.subhead.copyWith(
-        fontWeight: FontWeight.bold
+        fontWeight: FontWeight.bold,
+        fontSize: 12
     );
 
 
     TextStyle _textHint = Theme.of(context).textTheme.subhead.copyWith(
         fontWeight: FontWeight.bold,
+        fontSize: 12,
         color:  Colors.grey
     );
 
     TextStyle _textStyleDone = Theme.of(context).textTheme.subhead.copyWith(
         fontWeight: FontWeight.bold,
+        fontSize: 12,
         color: Theme.of(context).primaryColor
     );
 

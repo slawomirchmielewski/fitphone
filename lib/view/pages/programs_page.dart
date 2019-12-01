@@ -1,6 +1,7 @@
 import 'package:fitphone/view/embaded_view/workouts_view.dart';
 import 'package:fitphone/view/new_programs_screen.dart';
 import 'package:fitphone/view_model/programs_view_model.dart';
+import 'package:fitphone/view_model/settings_manager.dart';
 import 'package:fitphone/widget/base_widget/page.dart';
 import 'package:fitphone/widget/fit_new_program_card.dart';
 import 'package:fitphone/widget/fit_program_card.dart';
@@ -155,7 +156,7 @@ class ProgramsPage extends StatelessWidget {
                   )),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
+                      color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
                       borderRadius: BorderRadius.circular(5)
                     ),
                     child: Padding(

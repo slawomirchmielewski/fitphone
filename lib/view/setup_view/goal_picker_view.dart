@@ -14,6 +14,8 @@ class GoalPickerView extends StatelessWidget {
     var setupManager = Provider.of<SetupManager>(context);
     var uiHelper = Provider.of<UIHelper>(context);
 
+    String imageURI = MediaQuery.of(context).platformBrightness == Brightness.light ? 'assets/goal_light.png' : 'assets/goal_dark.png';
+
     return Scaffold(
       appBar: AppBar(
         brightness: Theme.of(context).brightness,
@@ -37,7 +39,7 @@ class GoalPickerView extends StatelessWidget {
               Text("What is your fitness goal ?",style: Theme.of(context).textTheme.title),
               SizedBox(height: 72),
               Center(
-                child: Image.asset("assets/goal_image.png",height: 160,fit: BoxFit.fitHeight),
+                child: Image.asset(imageURI,height: 160,fit: BoxFit.fitHeight),
               ),
               SizedBox(height: 72),
               Center(
@@ -47,7 +49,7 @@ class GoalPickerView extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     FitSmallSelectionButton(
-                      width: 100,
+                      //width: 100,
                       value: FitnessGoal.FatLoss,
                       name: "Fat Loss",
                       groupValue: setupManager.fitnessGoal,
@@ -58,7 +60,7 @@ class GoalPickerView extends StatelessWidget {
                     ),
                     SizedBox(height:16),
                     FitSmallSelectionButton(
-                        width: 100,
+                        //width: q,
                         value: FitnessGoal.MuscleGain,
                         name: "Muscle Gain",
                         groupValue: setupManager.fitnessGoal,

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fitphone/model/photo_model.dart';
 import 'package:fitphone/view_model/photos_view_model.dart';
 import 'package:fitphone/widget/action_button.dart';
@@ -10,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:rounded_modal/rounded_modal.dart';
 import 'package:toast/toast.dart';
 import 'package:pinch_zoom_image/pinch_zoom_image.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 
 
@@ -119,8 +119,9 @@ class PhotoView extends StatelessWidget {
       ),
       body: Center(
         child: PinchZoomImage(
-          image: CachedNetworkImage(
-            imageUrl: photo.url
+          image: FadeInImage.memoryNetwork(
+           image: photo.url,
+           placeholder: kTransparentImage,
           ),
           zoomedBackgroundColor: Colors.black,
           hideStatusBarWhileZooming: false,

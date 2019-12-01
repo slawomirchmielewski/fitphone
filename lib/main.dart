@@ -119,66 +119,70 @@ class _MyAppState extends State<MyApp> {
         )
 
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: MyApp.appName,
-        darkTheme: ThemeData.dark().copyWith(
+      child: Consumer<SettingsManager>(
+        builder:(context,settingsManager,_) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+         // themeMode: settingsManager.theme,
+          title: MyApp.appName,
+          darkTheme: ThemeData.dark().copyWith(
+              primaryColor: kFitPrimary,
+              accentColor: kFitPrimary,
+              applyElevationOverlayColor: true,
+              indicatorColor: kFitPrimary,
+              cursorColor: kFitPrimary,
+              cardColor: Colors.grey[900],
+              textSelectionHandleColor: kFitPrimary,
+              toggleableActiveColor: kFitPrimary,
+              scaffoldBackgroundColor: Color(0xFF161616),
+              dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))) )
+
+
+          ),
+          theme: ThemeData.light().copyWith(
             primaryColor: kFitPrimary,
-            accentColor: kFitPrimary,
-            applyElevationOverlayColor: true,
-            indicatorColor: kFitPrimary,
-            cursorColor: kFitPrimary,
-            cardColor: Colors.grey[900],
-            textSelectionHandleColor: kFitPrimary,
-            toggleableActiveColor: kFitPrimary,
-            scaffoldBackgroundColor: Color(0xFF161616),
             dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))) )
 
-
-        ),
-        theme: ThemeData.light().copyWith(
-          primaryColor: kFitPrimary,
-          dialogTheme: DialogTheme(shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))) )
-
-        ),
-        home: NotificationListener<OverscrollIndicatorNotification>(
-          onNotification: (overscroll) {
-            overscroll.disallowGlow();
-            return true;
-          },
-          child: Consumer(
-              builder: (context,SessionManager sessionManager,_) {
-
-                SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
-                SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                    statusBarColor: Colors.transparent,
-                    systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor
-                ));
-
-
-                switch(sessionManager.sessionState){
-                  case SessionState.Uninitialized:
-                    return SplashScreen();
-                    break;
-                  case SessionState.Unauthenticated:
-                    return LoginScreen();
-                    break;
-                  case SessionState.Authenticated:
-                    return MainScreen();
-                    break;
-                  case SessionState.Registered:
-                    return SetupScreen();
-                    break;
-                  case SessionState.Authenticating:
-                    return LoginScreen();
-                    break;
-                  default:
-                    return LoginScreen();
-                }
-              }
           ),
-        )
+          home: NotificationListener<OverscrollIndicatorNotification>(
+            onNotification: (overscroll) {
+              overscroll.disallowGlow();
+              return true;
+            },
+            child: Consumer(
+                builder: (context,SessionManager sessionManager,_) {
+
+                  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+                  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                     // statusBarIconBrightness: Theme.of(context).brightness,
+                      systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor
+                  ));
+
+
+                  switch(sessionManager.sessionState){
+                    case SessionState.Uninitialized:
+                      return SplashScreen();
+                      break;
+                    case SessionState.Unauthenticated:
+                      return LoginScreen();
+                      break;
+                    case SessionState.Authenticated:
+                      return MainScreen();
+                      break;
+                    case SessionState.Registered:
+                      return SetupScreen();
+                      break;
+                    case SessionState.Authenticating:
+                      return LoginScreen();
+                      break;
+                    default:
+                      return LoginScreen();
+                  }
+                }
+            ),
+          )
+        ),
       ),
     );
 

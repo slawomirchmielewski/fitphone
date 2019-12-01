@@ -200,6 +200,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
   Widget build(BuildContext context) {
 
     TextStyle _textStyle = Theme.of(context).textTheme.subtitle.copyWith(
+      fontSize: 12,
       fontWeight: FontWeight.bold
     );
 
@@ -273,9 +274,15 @@ class _WorkoutPageState extends State<WorkoutPage> {
                       children: <Widget>[
                         Container(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
+                              Text(workout[currentPageIndex].name,style: Theme.of(context).textTheme.subhead.copyWith(
+                                fontWeight: FontWeight.w600
+                              )),
+                              SizedBox(height: 16),
                               Row(
                                 children: <Widget>[
+
                                   Flexible(
                                     child: Container(
                                       child: TextField(
@@ -314,7 +321,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                                       shrinkWrap: true,
                                       itemCount: workout[currentPageIndex].notes.length,
                                       itemBuilder: (context,noteIndex)=> ListTile(
-                                        leading: Icon(Icons.rate_review),
+                                        leading: Icon(Icons.assignment),
                                         title: Text("${workout[currentPageIndex].notes[noteIndex]}"),
                                       )
                                   ),
@@ -331,7 +338,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                               itemBuilder: (context,exerIndex) => Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(doneExercises[exerIndex].name,style: Theme.of(context).textTheme.title,),
+                                  Text("${exerIndex + 1}. ${doneExercises[exerIndex].name}",style: Theme.of(context).textTheme.title,),
                                   ListView.builder(
                                     padding: EdgeInsets.zero,
                                     physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
@@ -395,7 +402,9 @@ class _WorkoutPageState extends State<WorkoutPage> {
                                },
                             ),
                               FlatButton(
-                                child: Text("Finish"),
+                                child: Text("Finish",style: Theme.of(context).textTheme.body1.copyWith(
+                                  color: Colors.red
+                                ),),
                                 onPressed: (){
                                   if(stopwatch.isRunning){
                                     stopwatch.stop();
@@ -483,7 +492,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
-                              color: MediaQuery.of(context).platformBrightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
+                              color: Theme.of(context).brightness == Brightness.light ? Colors.grey[200] : Colors.grey[900],
                             ),
                             height: 60,
                             width: double.infinity,

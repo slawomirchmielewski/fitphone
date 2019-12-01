@@ -17,6 +17,8 @@ class WelcomeView extends StatelessWidget {
 
     Future.delayed(Duration(milliseconds: 7000),() => uiHelper.setWelcomeButtonVisibility(true));
 
+    String imageURI = MediaQuery.of(context).platformBrightness == Brightness.light ? 'assets/welcome_light.png' : 'assets/welcome_dark.png';
+
     return Container(
         padding: EdgeInsets.only(left: 16,right: 16),
         child: SingleChildScrollView(
@@ -33,7 +35,7 @@ class WelcomeView extends StatelessWidget {
                   color: Theme.of(context).textTheme.title.color
                 )),
                 SizedBox(height: 32),
-                FadeIn(child: Image.asset('assets/welcome_image.png')),
+                Center(child: FadeIn(child: Image.asset(imageURI,width: MediaQuery.of(context).size.width - 64,fit: BoxFit.fitWidth,))),
                 SizedBox(height: 32),
                 Container(
                   child: Align(
@@ -47,7 +49,7 @@ class WelcomeView extends StatelessWidget {
                       text: [
                         " ",
                         "We are glad you joined us",
-                        "Before we start, tell us somethink about yourself."
+                        "Before we start, tell us somethink about you."
                     ],
                     ),
                   ),

@@ -6,9 +6,7 @@ import 'package:fitphone/widget/base_widget/page.dart';
 import 'package:fitphone/widget/fit_month_weight_chart.dart';
 import 'package:fitphone/widget/fit_weight_list_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:rounded_modal/rounded_modal.dart';
 
 import 'embaded_view/record_weight_view.dart';
 
@@ -22,7 +20,6 @@ class CurrentMonthWeightScreen extends StatelessWidget {
 
     final WeightViewModel weightViewModel = Provider.of<WeightViewModel>(context);
     final SettingsManager settingsManager = Provider.of<SettingsManager>(context);
-    const double padding = 16;
 
     return Page(
       automaticallyImplyLeading: true,
@@ -47,7 +44,6 @@ class CurrentMonthWeightScreen extends StatelessWidget {
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                   // color: Theme.of(context).primaryColorLight
                 ),
                 child: FitMonthWeightChart()
             ),
@@ -67,34 +63,6 @@ class CurrentMonthWeightScreen extends StatelessWidget {
 
                   return FitWeightListTile(
                     weightViewModel.monthWeightList[index],
-                    onLongPress: () {
-                      showRoundedModalBottomSheet(
-                          color: Theme.of(context).primaryColorLight,
-                          radius: 15,
-                          context: context,
-                          builder: (context) => Container(
-                            padding: EdgeInsets.only(top: 8,bottom: 8),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  leading: Icon(SimpleLineIcons.trash),
-                                  title: Text("Delete weight"),
-                                  onTap: (){
-                                    weightViewModel.deleteWeight(weightViewModel.monthWeightList[index].id).then((_){
-
-                                    }).catchError((error){
-                                      print(error);
-                                    });
-                                    Navigator.pop(context);
-                                  },),
-                                ListTile(leading: Icon(SimpleLineIcons.pencil),title: Text("Update weight"),onTap: (){
-                                  Navigator.pop(context);
-                                },),
-                              ],
-                            ),
-                          ));
-                    },
                   );}
             ),
           ],
