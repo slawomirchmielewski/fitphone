@@ -5,12 +5,11 @@ import 'package:fitphone/widget/fit_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:pinch_zoom_image/pinch_zoom_image.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_modal/rounded_modal.dart';
 import 'package:toast/toast.dart';
-
-//import 'package:pinch_zoom_image/pinch_zoom_image.dart';
-//import 'package:transparent_image/transparent_image.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 
 
@@ -118,7 +117,7 @@ class PhotoView extends StatelessWidget {
           color: Colors.white
         ),
       ),
-        body: Container() /*Center(
+      body: Center(
         child: PinchZoomImage(
           image: FadeInImage.memoryNetwork(
            image: photo.url,
@@ -127,7 +126,7 @@ class PhotoView extends StatelessWidget {
           zoomedBackgroundColor: Colors.black,
           hideStatusBarWhileZooming: false,
         ),
-      ),*/
+      ),
     );
   }
 }
