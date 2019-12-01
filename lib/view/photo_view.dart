@@ -2,15 +2,13 @@ import 'package:fitphone/model/photo_model.dart';
 import 'package:fitphone/view_model/photos_view_model.dart';
 import 'package:fitphone/widget/action_button.dart';
 import 'package:fitphone/widget/fit_alert_dialog.dart';
+import 'package:fitphone/widget/fit_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:pinch_zoom_image/pinch_zoom_image.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_modal/rounded_modal.dart';
 import 'package:toast/toast.dart';
-import 'package:transparent_image/transparent_image.dart';
-
 
 
 class PhotoView extends StatelessWidget {
@@ -118,15 +116,20 @@ class PhotoView extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: PinchZoomImage(
-          image: FadeInImage.memoryNetwork(
-           image: photo.url,
-           placeholder: kTransparentImage,
-          ),
-          zoomedBackgroundColor: Colors.black,
-          hideStatusBarWhileZooming: false,
-        ),
-      ),
+          child: FitImage(
+            imageUrl: photo.url,
+            background: Colors.black,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
+            boxFit: BoxFit.fitWidth,
+          )
+      )
     );
   }
 }
