@@ -137,7 +137,8 @@ class UserViewModel extends ChangeNotifier with WidgetsBindingObserver {
         _userStream?.pause();
         _userDateStream?.pause();
         break;
-      case AppLifecycleState.suspending:
+      case AppLifecycleState.detached:
+        // TODO: Handle this case.
         break;
     }
   }
