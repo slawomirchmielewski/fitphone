@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:fitphone/model/user_model.dart';
 import 'package:fitphone/utils/images_helper.dart';
 import 'package:flutter/foundation.dart';
